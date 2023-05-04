@@ -8,15 +8,15 @@
 ![Redis](https://img.shields.io/badge/redis-%23DD0031.svg?&style=for-the-badge&logo=redis&logoColor=white)
 ![JWT](https://img.shields.io/badge/JWT-black?style=for-the-badge&logo=JSON%20web%20tokens)
 
-_Simple eCommerce API built using NodeJS, Express and MongoDB._
+_An eCommerce RestfulAPI built using NodeJS, Express and MongoDB. It introduces a flexible solution for managing an online store's backend operations. The API provides endpoints for creating, reading, updating, and deleting products, as well as for processing orders and managing customer information._
+
 
 <!-- USAGE EXAMPLES -->
 
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos (Postman) work well in this space. You may also link to more resources.
 
-Postman
 
 ## Getting Started
 
@@ -35,7 +35,7 @@ NodeJS & MongoDB should be installed on your machine.
    ```
 2. Install NPM packages & create an .env file and supply it with variables from .env.sample and values on your own.
    ```sh
-   npm i && cp .evn.sample .env
+   npm install && cp .evn.sample .env
    ```
 3. Run the project.
    ```sh
@@ -46,10 +46,27 @@ NodeJS & MongoDB should be installed on your machine.
 
 ## Roadmap
 
-- [x] Feature 1
-- [ ] Feature 2
-- [ ] Feature 3
-  - [ ] Nested Feature
+- [ ] Login & Registeration as Customer or Seller.
+- [ ] User Management.
+- [ ] Product, Review and Category Service.
+- [ ] Cart Service.
+- [ ] Order Service via Stripe.
+- [x] Caching & Tokens.
+- [ ] Security.
+  - [ ] Authentication & Authorization.
+  - [ ] Protection against Cross-Origin attacks (XSS & CSRF)
+  - [ ] Encryption
+- [ ] Filters & Pagination.
+
+## Contributing
+
+Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
 ## Contact
 

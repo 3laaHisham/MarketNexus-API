@@ -35,7 +35,7 @@ NodeJS & MongoDB should be installed on your machine.
    ```
 2. Install NPM packages & create an .env file and supply it with variables from .env.sample and values on your own.
    ```sh
-   npm install && cp .evn.sample .env
+   npm install && copy .evn.sample .env
    ```
 3. Run the project.
    ```sh

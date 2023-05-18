@@ -28,6 +28,7 @@
     "mongoose": "^7.0.3",
     "morgan": "^1.10.0",
     "nodemon": "^2.0.22",
-    "redis": "^4.6.6"
+    "redis": "^4.6.6",
+    "validator": "^13.9.0"
   }
 }

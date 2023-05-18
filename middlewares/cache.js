@@ -1,5 +1,4 @@
 const redis = require("redis");
-const { asyncWrapper } = require("../utils/asyncWrapper");
 
 // self invoked
 let redisClient;

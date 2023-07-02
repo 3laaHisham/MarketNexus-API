@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
+// const {addressObject} = require("../utils/commonObjects");
 
 const userSchema = mongoose.Schema({
   name: {
@@ -36,3 +37,7 @@ const userSchema = mongoose.Schema({
 const User = mongoose.model("User", userSchema);
 
 module.exports = User;
+
+// suggested
+// address filef
+// address:[addressObject],

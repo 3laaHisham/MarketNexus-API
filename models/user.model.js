@@ -1,38 +1,93 @@
-const mongoose = require("mongoose");
-const validator = require("validator");
+import { Schema, model } from "mongoose";
+import { isEmail } from "validator";
+import { hashPassword, comparePasswords } from "../utils/hash";
 
-const userSchema = mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-    trim: true,
-    minlength: 3,
-    maxlength: 50,
-  },
-  email: {
-    type: String,
-    required: true,
-    trim: true,
-    validate(value) {
-      return validator.isEmail(value);
+const userSchema = Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+      trim: true,
+      minlength: 3,
+      maxlength: 50,
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+      validate(value) {
+        isEmail(value);
+      },
+    },
+    password: {
+      type: String,
+      required: true,
+      trim: true,
+      minlength: 8,
+      maxlength: 50,
+      select: false, // exclude from the query results by default.
+    },
+    address: {
+      type: [String],
+      required: true,
+      trim: true,
+      minlength: 3,
+      maxlength: 50,
+    },
+    phone: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+      minlength: 10,
+      maxlength: 10,
+    },
+    role: {
+      type: String,
+      enum: ["seller", "admin", "customer"],
+      default: "customer",
+    },
+    company: {
+      type: String,
+      trim: true,
+      minlength: 3,
+      maxlength: 50,
+      required: () => {
+        this.role === "seller";
+      },
     },
   },
-  password: {
-    type: String,
-    required: true,
-    trim: true,
-    minlength: 8,
-    maxlength: 50,
-  },
-  address: {
-    type: [String],
-    required: true,
-    trim: true,
-    minlength: 3,
-    maxlength: 50,
-  },
+  { timestamps: true }
+);
+
+userSchema.index({ name: 1, email: 1 }, { unique: true });
+
+// DOCUMENT MIDDLEWARE: runs before .save() and .create() !.update()
+userSchema.pre("save", async (next) => {
+  if (!this.isModified("password")) return next();
+
+  this.password = await hashPassword(this.password);
+
+  next();
 });
 
-const User = mongoose.model("User", userSchema);
+userSchema.pre("findOneAndUpdate", async function (next) {
+  if (!this._update.password) return next();
 
-module.exports = User;
+  this._update.password = await hashPassword(this._update.password);
+
+  next();
+});
+
+userSchema.statics.isEmailTaken = async function (email, excludeUserId) {
+  const user = await this.findOne({ email, _id: { $ne: excludeUserId } });
+  return !!user;
+};
+
+userSchema.methods.isPasswordMatch = async (password) =>
+  comparePasswords(this.password, password);
+
+const User = model("User", userSchema);
+
+export default User;

@@ -6,6 +6,15 @@ import morgan from "morgan";
 import helmet from "helmet";
 import compression from "compression";
 
+import {
+  authRoute,
+  userRoute,
+  productRoute,
+  reviewRoute,
+  cartRoute,
+  orderRoute,
+} from "./routes";
+
 require("dotenv").config();
 
 const PORT = process.env.PORT || 3000;
@@ -30,7 +39,13 @@ app.use(
   })
 );
 
-// routes
+app.use("/auth", authRoute);
+app.use("/users", userRoute);
+app.use("/products", productRoute);
+app.use("/reviews", reviewRoute);
+app.use("/cart", cartRoute);
+app.use("/orders", orderRoute);
+
 app.all("*", (req, res, next) => res.status(404).send("NOT FOUND"));
 
 connect(MONGO_URI)

@@ -1,11 +1,11 @@
-const authService = require("./auth/auth.service");
-const userService = require("./user/user.service");
-const productService = require("./product/product.service");
-const reviewService = require("./review/review.service");
-const cartService = require("./cart/cart.service");
-const orderService = require("./order/order.service");
+import authService from "./auth/auth.service";
+import userService from "./user/user.service";
+import productService from "./product/product.service";
+import reviewService from "./review/review.service";
+import cartService from "./cart/cart.service";
+import orderService from "./order/order.service";
 
-module.exports = {
+export default {
   authService,
   userService,
   productService,

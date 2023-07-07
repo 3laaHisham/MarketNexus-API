@@ -1,8 +1,8 @@
-const authentication = require("./authentication");
-const authorization = require("./authorization");
-const cache = require("./cache");
+import authentication from "./authentication";
+import authorization from "./authorization";
+import cache from "./cache";
 
-module.exports = {
+export default {
   authentication,
   authorization,
   cache,

@@ -1,13 +1,13 @@
-const userModel = require("./user.model");
-const productModel = require("./product.model");
-const reviewModel = require("./review.model");
-const cartModel = require("./cart.model");
-const orderModel = require("./order.model");
+import userModel from "./user.model";
+import productModel from "./product.model";
+import reviewModel from "./review.model";
+import cartModel from "./cart.model";
+import orderModel from "./order.model";
 
-module.exports = {
-    userModel,
-    productModel,
-    reviewModel,
-    cartModel,
-    orderModel,
+export default {
+  userModel,
+  productModel,
+  reviewModel,
+  cartModel,
+  orderModel,
 };

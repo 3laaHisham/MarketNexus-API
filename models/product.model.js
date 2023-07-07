@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
+import { Schema, model } from "mongoose";
 
-const productSchema = mongoose.Schema({
+const productSchema = Schema({
   name: {
     type: String,
     required: true,
@@ -17,14 +17,13 @@ const productSchema = mongoose.Schema({
     type: String,
     required: true,
     enum: [
-      "electronics",
-      "fashion",
-      "appliances",
-      "beauty",
-      "sports",
-      "books",
-      "toys",
-      "others",
+      "Electronics",
+      "Beauty",
+      "Sports",
+      "Books",
+      "Toys",
+      "Furniture",
+      "Clothes",
     ],
   },
   price: {
@@ -32,30 +31,16 @@ const productSchema = mongoose.Schema({
     required: true,
     min: 0,
   },
-  stock: {
-    type: Number,
-    required: true,
-    min: 0,
-  },
+
   seller: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: "User",
   },
-  reviews: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Review",
-    },
-  ],
-  rating: {
+  avgRating: {
     average: {
       type: Number,
       min: 0,
       max: 5,
-      default: 0,
-    },
-    number: {
-      type: Number,
       default: 0,
     },
   },
@@ -66,15 +51,21 @@ productSchema.index({
   description: "text",
 });
 
-productSchema.methods.addReview = (reviewID) => {
-  this.findByIdAndUpdate(productId, { $push: { reviews: reviewID } });
-};
-
 productSchema.statics.search = (query) =>
-  postModel.find(
+  this.find(
     { $text: { $search: query } },
     { score: { $meta: "textScore" } }
-  );
+  ).sort({ score: { $meta: "textScore" } });
 
-const Product = mongoose.model("Product", productSchema);
-module.exports = Product;
+productSchema.virtual("reviews", {
+  ref: "Review",
+  foreignField: "productId",
+  localField: "_id",
+});
+
+productSchema.virtual("noInStock", {
+  // calculate the number in stock from
+});
+
+const Product = model("Product", productSchema);
+export default Product;

@@ -6,13 +6,12 @@ import morgan from "morgan";
 import helmet from "helmet";
 import compression from "compression";
 
-import HttpError from "./utils/HttpError";
-import errorHandler from "./middlewares/errorHandler";
 require("dotenv").config();
 
-const app = express();
 const PORT = process.env.PORT || 3000;
 const MONGO_URI = process.env.MONGO_URI;
+
+const app = express();
 
 app.use(json());
 app.use(urlencoded({ extended: false }));
@@ -32,11 +31,7 @@ app.use(
 );
 
 // routes
-app.all("*", (req, res, next) => {
-  next(new HttpError(`Can't find ${req.originalUrl} on this server!`, 404));
-});
-
-app.use(errorHandler);
+app.all("*", (req, res, next) => res.status(404).send("NOT FOUND"));
 
 connect(MONGO_URI)
   .then(() =>

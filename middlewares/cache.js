@@ -1,9 +1,9 @@
-const redis = require("redis");
+import { createClient } from "redis";
 
 // self invoked
 let redisClient;
 async () => {
-  redisClient = redis.createClient();
+  redisClient = createClient();
 
   redisClient.on("error", (error) => console.error(`Error : ${error}`));
 
@@ -26,4 +26,4 @@ const cachedData = async (req, res, next) => {
   else next();
 };
 
-module.exports = { redisClient, cache, cachedData };
+export default { redisClient, cache, cachedData };

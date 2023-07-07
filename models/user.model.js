@@ -61,7 +61,7 @@ const userSchema = Schema(
   { timestamps: true }
 );
 
-userSchema.index({ name: 1, email: 1 }, { unique: true });
+// userSchema.index({ name: 1, email: 1 }, { unique: true });
 
 // DOCUMENT MIDDLEWARE: runs before .save() and .create() !.update()
 userSchema.pre("save", async (next) => {
@@ -80,13 +80,15 @@ userSchema.pre("findOneAndUpdate", async function (next) {
   next();
 });
 
-userSchema.statics.isEmailTaken = async function (email, excludeUserId) {
-  const user = await this.findOne({ email, _id: { $ne: excludeUserId } });
+userSchema.statics.isEmailTaken = async function (email) {
+  const user = await this.findOne({ email });
   return !!user;
 };
 
 userSchema.methods.isPasswordMatch = async (password) =>
   comparePasswords(this.password, password);
+
+userSchema.methods.seeRepositoryOfPingo;
 
 const User = model("User", userSchema);
 

@@ -1,3 +1,4 @@
 import HttpError from "./HttpError";
+import { hashPassword, comparePasswords } from "./hash";
 
-export default { HttpError };
+export default { HttpError, hashPassword, comparePasswords };

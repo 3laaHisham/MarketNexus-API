@@ -9,7 +9,6 @@ export default {
   authService,
   userService,
   productService,
-  categoryService,
   reviewService,
   cartService,
   orderService,

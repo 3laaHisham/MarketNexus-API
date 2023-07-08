@@ -1,15 +1,14 @@
-import { validate as _validate, object } from "joi";
+import joi from "joi";
 
-// write a method for joi validation and handle errors
 const isValid = async (schema, obj) => {
-  const { error } = _validate(obj, schema);
+  const { error } = schema.validate(obj);
   return !error;
 };
 
-const buildSchema = (schema) => object(schema).options({ abortEarly: false });
+const buildSchema = (schema) =>
+  joi.object(schema).options({ allowUnknown: false });
 
 // MongoDB ID format
-const idExpression = new RegExp("^[0-9a-fA-F]{24}$");
+const idRegex = new RegExp("^[0-9a-fA-F]{24}$");
 
-/* Exports */
-export default { isValid, buildSchema, idExpression };
+export default { isValid, buildSchema, idRegex };

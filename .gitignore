@@ -158,3 +158,5 @@ dist
 .ionide
 
 catalog.txt
+.idea/
+schema.txt

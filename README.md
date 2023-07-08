@@ -8,7 +8,7 @@
 ![Redis](https://img.shields.io/badge/redis-%23DD0031.svg?&style=for-the-badge&logo=redis&logoColor=white)
 ![JWT](https://img.shields.io/badge/JWT-black?style=for-the-badge&logo=JSON%20web%20tokens)
 
-_An eCommerce RestfulAPI built using NodeJS, Express and MongoDB. It introduces a flexible solution for managing an online store's backend operations. The API provides endpoints for creating, reading, updating, and deleting products, as well as for processing orders and managing customer information._
+_An eCommerce Restful API built using NodeJS, Express and MongoDB. It introduces a flexible solution for managing an online store's backend operations. The API provides endpoints for creating, reading, updating, and deleting products, as well as for processing orders and managing customer information._
 
 <!-- USAGE EXAMPLES -->
 
@@ -20,18 +20,19 @@ Use this space to show useful examples of how a project can be used. Additional 
 <summary>API Endpoints</summary>
 <br>
 
-Authentication:
+Authentication Services:
 
 - **POST /auth/login :** Login with user credentials. [Public]
 - **POST /auth/signup :** Sign up and create a new user account. [Public]
 - **POST /auth/logout :** Logout the currently authenticated user. [User]
 - **PUT /auth/change-password :** Change the password of the currently authenticated user. [User]
 
-User:
+User Services:
 
-- **GET /users :** query all users. [Public]
+- **GET /users :** Query all users by name, email, phone, role, company. [Public]
 - **GET /users/:id :** Get user data by ID. [Public]
-- **PUT /users/:id :** Update user details by ID. [User]
+- **GET /users/me :** get details of the currently authenticated user. [User]
+- **PUT /users/me :** Update details of the currently authenticated user. [User]
 - **DELETE /users/me :** Delete the account of the currently authenticated user. [User]
 - **DELETE /users/:id :** Delete user by ID. [Admin]
 
@@ -42,9 +43,9 @@ Product Services:
 - **POST /products :** Create a new product. [Seller]
 - **PUT /products/:id :** Update product details by ID. [Seller]
 - **DELETE /products/:id :** Delete product by ID. [Seller]
-- **GET /products/top-cheapest :** query the top 5 cheapest products. [Public]
-- **GET /products/top-rated :** query top-rated products. [Public]
-- **GET /products/most-sold :** query most sold products. [Public]
+- **GET /products/top-cheapest :** Get the top 5 cheapest products. [Public]
+- **GET /products/top-rated :** Get the top-rated products. [Public]
+- **GET /products/most-sold :** Get the most sold products. [Public]
 - **PUT /products/:id/stock :** Update product stock quantity. [Seller]
 - **POST /products/:id/colors :** Add a color option to a product. [Seller]
 - **POST /products/:id/sizes :** Add a size option to a product. [Seller]
@@ -71,10 +72,10 @@ Cart Services:
 Order Services:
 
 - **POST /orders :** Create a new order. [User]
-- \*\*GET /orders/user/:userId: Get all orders for the currently authenticated user. [User]
+- **GET /orders/user/:userId :** Get all orders for the currently authenticated user. [User]
 - **GET /orders/:id :** Query order by ID. [User]
 - **PUT /orders/:id/cancel :** Cancel an order. [User]
-- \*\*PUT /orders/:id/return: Initiate a return for an order. [User]
+- **PUT /orders/:id/return :** Initiate a return for an order. [User]
 - **PUT /orders/:id/status :** Update order status. [Admin]
 
 </details>
@@ -112,12 +113,13 @@ NodeJS & MongoDB should be installed on your machine.
 - [ ] Product, Review and Category Service.
 - [ ] Cart Service.
 - [ ] Order Service via Stripe.
-- [ ] Caching & Tokens.
+- [ ] Tests.
 - [ ] Security.
   - [ ] Authentication & Authorization.
   - [ ] Protection against Cross-Origin attacks (XSS & CSRF)
   - [ ] Encryption
-- [ ] Filters & Pagination.
+- [ ] Caching.
+- [ ] API Features (Filters, Pagination, Sorting & Limit).
 
 ## Contributing
 

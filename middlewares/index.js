@@ -1,9 +1,10 @@
-import authentication from "./authentication";
-import authorization from "./authorization";
+import isAuthenticated from "./authentication";
+import { isAuthorized, isResourceOwner } from "./authorization";
 import cache from "./cache";
 
 export default {
-  authentication,
-  authorization,
+  isAuthenticated,
+  isAuthorized,
+  isResourceOwner,
   cache,
 };

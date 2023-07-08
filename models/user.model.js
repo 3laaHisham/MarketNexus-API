@@ -31,7 +31,6 @@ const userSchema = Schema(
     address: {
       type: [String],
       required: true,
-      trim: true,
       minlength: 3,
       maxlength: 50,
     },
@@ -80,12 +79,9 @@ userSchema.pre("findOneAndUpdate", async function (next) {
   next();
 });
 
-userSchema.statics.isEmailTaken = async function (email) {
-  const user = await this.findOne({ email });
-  return !!user;
-};
+userSchema.statics.isEmailTaken = (email) => this.findOne({ email });
 
-userSchema.methods.isPasswordMatch = async (password) =>
+userSchema.methods.isPasswordMatch = (password) =>
   comparePasswords(this.password, password);
 
 userSchema.methods.seeRepositoryOfPingo;

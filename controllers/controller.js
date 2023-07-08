@@ -6,9 +6,8 @@ const controller =
   (service) =>
   async (...args) => {
     try {
-      // return result of service is { }
-      const { statusCode, message, output } = await service(...args);
-      res.status(statusCode).json({ statusCode, message, output });
+      const result = await service(...args);
+      res.status(StatusCodes.OK).send(result);
     } catch (e) {
       console.log(e);
       if (e instanceof HttpError) res.status(e.statusCode).send(e);

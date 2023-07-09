@@ -1,7 +1,8 @@
 import { hashPassword, comparePasswords } from "./hash";
 import HttpError from "./HttpError";
 import { generateToken, verifyToken } from "./jwt";
-import { isValid, buildSchema, idExpression } from "./validator";
+import { verifySchema, buildSchema, idExpression } from "./validator";
+import { setRedis, getRedis } from "./redis";
 
 export default {
   HttpError,
@@ -9,7 +10,10 @@ export default {
   comparePasswords,
   generateToken,
   verifyToken,
-  isValid,
+  verifySchema,
   buildSchema,
   idExpression,
+  setRedis,
+  getRedis,
+  delRedis,
 };

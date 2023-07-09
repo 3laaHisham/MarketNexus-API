@@ -1,38 +1,19 @@
 import { StatusCodes } from "http-status-codes";
-import userModel from "../../models";
-import { HttpError, isValid } from "../../utils";
+import User from "../../models";
+import { HttpError, verifySchema } from "../../utils";
 
-import {
-  queryUsersSchema,
-  updateUserSchema,
-  userIdSchema,
-} from "./user.schema";
-
-const getUser = async (id) => {
-  let validSchema = await isValid(userIdSchema, id);
-  if (!validSchema)
-    throw new HttpError(StatusCodes.BAD_REQUEST, "Not Valid Id");
-
-  let user = await userModel.find({ _id: id }).populate("reviews");
-  if (!user) throw new HttpError(StatusCodes.NOT_FOUND, "User not found");
-
-  return {
-    status: StatusCodes.OK,
-    message: "User retrieved successfully",
-    result: user,
-  };
-};
+import { queryUsersSchema, updateUserSchema } from "./user.schema";
 
 const getUsers = async (query) => {
-  // api features to limit
+  // api features
 
-  let validSchema = await isValid(queryUsersSchema, query);
-  if (!validSchema)
+  let isValidSchema = await verifySchema(queryUsersSchema, query);
+  if (!isValidSchema)
     throw new HttpError(StatusCodes.BAD_REQUEST, "Not valid query");
 
-  let users = await userModel.find(query).populate("reviews");
+  let users = await User.find(query).populate("reviews");
   if (!users)
-    throw new HttpError(StatusCodes.NOT_FOUND, "No users with given filters");
+    throw new HttpError(StatusCodes.NOT_FOUND, "No users for given filters");
 
   return {
     status: StatusCodes.OK,
@@ -42,14 +23,15 @@ const getUsers = async (query) => {
 };
 
 const updateUser = async (id, body) => {
-  let validSchema =
-    (await isValid(updateUserSchema, body)) &&
-    (await isValid(userIdSchema, id));
-  if (!validSchema)
-    throw new HttpError(StatusCodes.BAD_REQUEST, "Not valid id or fields");
+  let isValidSchema =
+    (await verifySchema(queryUsersSchema, id)) &&
+    (await verifySchema(updateUserSchema, body));
+  if (!isValidSchema)
+    throw new HttpError(StatusCodes.BAD_REQUEST, "Not valid id or schema");
 
-  let updatedUser = await userModel.findOneAndUpdate(id, body, {
+  let updatedUser = await User.findOneAndUpdate(id, body, {
     new: true,
+    runValidators: true,
   });
   if (!updatedUser)
     throw new HttpError(StatusCodes.NOT_FOUND, "User not found");
@@ -62,11 +44,11 @@ const updateUser = async (id, body) => {
 };
 
 const deleteUser = async (id) => {
-  let validSchema = await isValid(userIdSchema, id);
-  if (!validSchema)
+  let isValidSchema = await verifySchema(queryUsersSchema, id);
+  if (!isValidSchema)
     throw new HttpError(StatusCodes.BAD_REQUEST, "Not Valid Id");
 
-  let user = await userModel.findOneAndDelete({ _id: id });
+  let user = await User.findOneAndDelete(id);
   if (!user) throw new HttpError(StatusCodes.NOT_FOUND, "User not found");
 
   return {
@@ -77,7 +59,6 @@ const deleteUser = async (id) => {
 };
 
 export default {
-  getUser,
   getUsers,
   updateUser,
   deleteUser,

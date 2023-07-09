@@ -1,14 +1,20 @@
-import joi from "joi";
+import Joi from "joi";
 
-const isValid = async (schema, obj) => {
+const verifySchema = async (schema, obj) => {
   const { error } = schema.validate(obj);
   return !error;
 };
 
 const buildSchema = (schema) =>
-  joi.object(schema).options({ allowUnknown: false });
+  Joi.object(schema).options({ allowUnknown: false });
 
 // MongoDB ID format
 const idRegex = new RegExp("^[0-9a-fA-F]{24}$");
 
-export default { isValid, buildSchema, idRegex };
+const featuresFields = {
+  sort: Joi.string(),
+  limit: Joi.number().integer(),
+  page: Joi.number().integer(),
+};
+
+export default { verifySchema, buildSchema, idRegex, featuresFields };

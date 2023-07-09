@@ -29,7 +29,7 @@ Authentication Services:
 
 User Services:
 
-- **GET /users :** Query all users by name, email, phone, role, company. [Public]
+- **GET /users :** Query all users by name, email, phone, role. [Public]
 - **GET /users/:id :** Get user data by ID. [Public]
 - **GET /users/me :** get details of the currently authenticated user. [User]
 - **PUT /users/me :** Update details of the currently authenticated user. [User]
@@ -38,25 +38,20 @@ User Services:
 
 Product Services:
 
-- **GET /products :** Query products by name, category, description, price, rate. [Public]
+- **GET /products :** Query products by search term (name, description), category, price, rate. [Public]
 - **GET /products/:id :** Query product by ID. [Public]
+- **GET /products/top-cheapest :** Get the top 5 cheapest products by category. [Public]
+- **GET /products/top-rated :** Get the top-rated products by category. [Public]
+- **GET /products/most-sold :** Get the most sold products by category. [Public]
 - **POST /products :** Create a new product. [Seller]
 - **PUT /products/:id :** Update product details by ID. [Seller]
 - **DELETE /products/:id :** Delete product by ID. [Seller]
-- **GET /products/top-cheapest :** Get the top 5 cheapest products. [Public]
-- **GET /products/top-rated :** Get the top-rated products. [Public]
-- **GET /products/most-sold :** Get the most sold products. [Public]
-- **PUT /products/:id/stock :** Update product stock quantity. [Seller]
-- **POST /products/:id/colors :** Add a color option to a product. [Seller]
-- **POST /products/:id/sizes :** Add a size option to a product. [Seller]
-- **DELETE /products/:id/colors/:color :** Delete a color option from a product. [Seller]
-- **DELETE /products/:id/sizes/:size :** Delete a size option from a product. [Seller]
 
 Review Services:
 
 - **POST /reviews/:productId :** Create a new review on product by id. [User]
 - **GET /reviews/:productId/reviews :** Query all reviews on product by id [Public]
-- **GET /reviews/:id :** Query review by ID. [Public]
+- **GET /reviews/:id :** Get review by ID. [Public]
 - **PUT /reviews/:id :** Update review by ID. [User]
 - **DELETE /reviews/:id :** Delete review by ID. [User]
 
@@ -87,7 +82,7 @@ To get a local copy up and running follow these simple example steps.
 
 ### Prerequisites
 
-NodeJS & MongoDB should be installed on your machine.
+[NodeJS](https://nodejs.org/en/download), [MongoDB](https://www.mongodb.com/docs/manual/installation/) & [Redis](https://developer.redis.com/create/windows/) should be installed on your machine.
 
 ### Installation
 
@@ -108,18 +103,20 @@ NodeJS & MongoDB should be installed on your machine.
 
 ## Roadmap
 
-- [x] Login & Registeration as Customer or Seller.
-- [ ] User Management.
-- [ ] Product, Review and Category Service.
+- [x] Registeration, Login, Logout, Change Password.
+- [x] User Management.
+- [x] Product, Review Service.
 - [ ] Cart Service.
 - [ ] Order Service via Stripe.
 - [ ] Tests.
-- [ ] Security.
-  - [ ] Authentication & Authorization.
-  - [ ] Protection against Cross-Origin attacks (XSS & CSRF)
-  - [ ] Encryption
-- [ ] Caching.
-- [ ] API Features (Filters, Pagination, Sorting & Limit).
+- [x] Security.
+  - [x] Authentication & Authorization.
+  - [x] Protection against Cross-Origin attacks (XSS & CSRF).
+  - [x] Encryption.
+- [ ] Caching & Tokens.
+- [ ] API Features (Filters, Pagination, Sorting, Limit & Full Text Search).
+- [ ] CI/CD.
+- [ ] Documentation (Postman & Comments).
 
 ## Contributing
 

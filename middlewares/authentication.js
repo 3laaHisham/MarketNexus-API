@@ -1,10 +1,13 @@
 import { verifyToken } from "../utils";
 import { StatusCodes } from "http-status-codes";
+import { getRedis } from "../utils";
 
 const isAuthenticated = async (req, res, next) => {
   try {
     let token = req.headers.authorization;
-    let decoded = token ? await verifyToken(token) : undefined;
+
+    let tokenExist = token ? await getRedis(token) : undefined;
+    let decoded = tokenExist ? await verifyToken(token) : undefined;
 
     if (decoded) {
       req.user = decoded;

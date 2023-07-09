@@ -76,11 +76,15 @@ const productSchema = Schema(
   }
 );
 
-productSchema.index({
-  name: "text",
-  description: "text",
-});
+productSchema.index(
+  {
+    name: "text",
+    description: "text",
+  },
+  { weights: { name: 2, description: 1 } }
+);
 
+// Full test search using index
 productSchema.statics.search = (query) =>
   this.find(
     { $text: { $search: query } },

@@ -2,7 +2,7 @@ import express from "express";
 import { connect } from "mongoose";
 import session from "express-session";
 import { json, urlencoded } from "body-parser";
-import morgan from "morgan";
+import logger from "morgan";
 import helmet from "helmet";
 import compression from "compression";
 
@@ -14,6 +14,7 @@ import {
   cartRoute,
   orderRoute,
 } from "./routes";
+import { errorHandler } from "./middlewares";
 
 require("dotenv").config();
 
@@ -24,7 +25,7 @@ const app = express();
 
 app.use(json());
 app.use(urlencoded({ extended: false }));
-app.use(morgan("dev"));
+app.use(logger("dev"));
 app.use(helmet());
 app.use(compression());
 app.use(
@@ -39,7 +40,7 @@ app.use(
   })
 );
 
-app.use("/auth", authRoute);
+app.use("/", authRoute);
 app.use("/users", userRoute);
 app.use("/products", productRoute);
 app.use("/reviews", reviewRoute);
@@ -47,6 +48,8 @@ app.use("/cart", cartRoute);
 app.use("/orders", orderRoute);
 
 app.all("*", (req, res, next) => res.status(404).send("NOT FOUND"));
+
+app.use(errorHandler);
 
 connect(MONGO_URI)
   .then(() =>

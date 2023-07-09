@@ -1,32 +1,33 @@
 import express from "express";
 const router = express.Router();
 
-import controller from "./controller";
+import controller from "../controllers";
 
 import { userService } from "../services";
-const { getUser, getUsers, updateUser, deleteUser } = userService;
+const { getUsers, updateUser, deleteUser } = userService;
 
 import { isAuthenticated } from "../middlewares";
 
-router.get("/", (req, res) => controller(res)(getUsers)(req.query));
+router.get("/:id", controller(getUsers)({ _id: req.params.id }));
 
-router.get("/:id", (req, res) => controller(res)(getUser)(req.params.id));
+router.get("/", controller(getUsers)(req.query));
 
 // The following routes needs authentication.
 router.use(isAuthenticated);
 
-router.get("/me", async (req, res) => controller(res)(getUser)(req.user.id));
+router.get("/me", controller(getUsers)({ _id: req.user.id }));
 
-router.delete("/me", async (req, res) =>
-  controller(res)(deleteUser)(req.user.id)
+router.put(
+  "/me",
+  (controller = updateUser({ _id: req.user.id }, req.body.user))
 );
 
-router.put("/me", (req, res) =>
-  controller(res)(updateUser)(req.user.id, req.body.user)
-);
+router.delete("/me", controller(deleteUser)({ _id: req.user.id }));
 
-router.delete("/:id", isAuthorized("admin"), (req, res) =>
-  controller(res)(deleteUser)(req.params.id)
+router.delete(
+  "/:id",
+  isAuthorized("admin"),
+  controller(deleteUser)({ _id: req.params.id })
 );
 
 export default router;

@@ -29,9 +29,9 @@ const userSchema = Schema(
       select: false, // exclude from the query results by default.
     },
     address: {
-      type: [String],
+      type: String,
       required: true,
-      minlength: 3,
+      minlength: 5,
       maxlength: 50,
     },
     phone: {
@@ -39,19 +39,17 @@ const userSchema = Schema(
       required: true,
       unique: true,
       trim: true,
-      minlength: 10,
-      maxlength: 10,
+      minlength: 11,
+      maxlength: 11,
     },
     role: {
       type: String,
       enum: ["seller", "admin", "customer"],
       default: "customer",
     },
-    company: {
-      type: String,
+    isCompany: {
+      type: boolean,
       trim: true,
-      minlength: 3,
-      maxlength: 50,
       required: () => {
         this.role === "seller";
       },
@@ -60,7 +58,7 @@ const userSchema = Schema(
   { timestamps: true }
 );
 
-// userSchema.index({ name: 1, email: 1 }, { unique: true });
+userSchema.index({ email: 1 }, { unique: true });
 
 // DOCUMENT MIDDLEWARE: runs before .save() and .create() !.update()
 userSchema.pre("save", async (next) => {
@@ -79,12 +77,10 @@ userSchema.pre("findOneAndUpdate", async function (next) {
   next();
 });
 
-userSchema.statics.isEmailTaken = (email) => this.findOne({ email });
+userSchema.statics.isEmailExist = (email) => this.findOne({ email });
 
 userSchema.methods.isPasswordMatch = (password) =>
   comparePasswords(this.password, password);
-
-userSchema.methods.seeRepositoryOfPingo;
 
 const User = model("User", userSchema);
 

@@ -1,13 +1,13 @@
-import userModel from "./user.model";
-import productModel from "./product.model";
-import reviewModel from "./review.model";
-import cartModel from "./cart.model";
-import orderModel from "./order.model";
+import User from "./user.model";
+import Product from "./product.model";
+import Review from "./review.model";
+import Cart from "./cart.model";
+import Order from "./order.model";
 
 export default {
-  userModel,
-  productModel,
-  reviewModel,
-  cartModel,
-  orderModel,
+  User,
+  Product,
+  Review,
+  Cart,
+  Order,
 };

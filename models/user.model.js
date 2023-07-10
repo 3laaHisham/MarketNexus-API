@@ -1,6 +1,6 @@
 const { Schema, model } = require("mongoose");
 const { isEmail } = require("validator");
-const { hashPassword, comparePasswords } = require("../utils/hash");
+const { hashPassword, comparePasswords, addressObject } = require("../utils");
 
 const userSchema = Schema(
   {
@@ -29,7 +29,7 @@ const userSchema = Schema(
       select: false, // exclude from the query results by default.
     },
     address: {
-      type: String,
+      type: addressObject,
       required: true,
       minlength: 5,
       maxlength: 50,

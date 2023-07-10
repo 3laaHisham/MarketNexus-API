@@ -1,61 +1,86 @@
 const mongoose = require("mongoose");
-const { func } = require("joi");
-const { addressObject } = require("../utils/commonObjects");
+const { addressObject } = require("../utils");
 
 const orderSchema = mongoose.Schema({
-  userID: {
+  userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
+    required: true,
   },
-  products: [
-    {
-      id: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Product",
+  products: {
+    type: [
+      {
+        id: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Product",
+          required: true,
+        },
+        count: {
+          type: Number,
+          required: true,
+        },
+        color: String,
+        size: String,
       },
-      color: String,
-      size: String,
-      count: Number,
-    },
-  ],
+    ],
+    required: true,
+  },
   discount: {
     type: Number,
-    validate: {
-      validator: function (value) {
-        return value <= 100 || value >= 0;
-      },
-    },
+    min: 0,
+    max: 100,
+    default: 0,
   },
-  total: {
-    type: Number,
-    validate: {
-      validator: function (value) {
-        return value >= 0;
-      },
-      message: "Total price  must be a non-negative number.",
-    },
+  address: {
+    type: addressObject,
+    required: true,
   },
-  address: [addressObject],
   status: {
     type: String,
     enum: ["Not Processed", "Processing", "Shipped", "Delivered", "Cancelled"],
     default: "Not Processed",
   },
-  productPrice: Number,
-  taxPrice: Number,
-  deliveryPrice: Number,
+  total: {
+    type: Number,
+    min: 0,
+    required: true,
+  },
+  productsPrice: {
+    type: Number,
+    min: 0,
+    default: 0,
+  },
+  taxPrice: {
+    type: Number,
+    min: 0,
+    default: 0,
+  },
+  deliveryPrice: {
+    type: Number,
+    min: 0,
+    default: 0,
+  },
   paymentType: {
     type: String,
     enum: ["card", "cash"],
-    default: "cash",
+    required: true,
   },
   StripePaymentId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Payment",
+    type: Number,
     required: () => {
       this.paymentType === "card";
     },
   },
+  ordereddAt: {
+    type: Date,
+    default: Date.now(),
+    required: true,
+  },
   deliveredAt: Date,
-  ordereddAt: Date,
 });
+
+orderSchema.index({ userId: 1 });
+
+const Order = mongoose.model("Order", orderSchema);
+
+module.exports = Order;

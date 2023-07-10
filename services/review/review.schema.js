@@ -6,7 +6,7 @@ const reviewSchema = buildSchema({
   productId: Joi.string().required(),
   message: Joi.string().required(),
   date: Joi.date().required(),
-  noOfStars: Joi.number().integer().min(1).max(5).required(),
+  numStars: Joi.number().integer().min(1).max(5).required(),
 });
 
 module.exports = {

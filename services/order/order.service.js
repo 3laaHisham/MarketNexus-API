@@ -1,6 +1,5 @@
 const { StatusCodes } = require("http-status-codes");
-const orderSchema = require("./order.schema");
-const validateOrder = require("./order.schema");
+const { orderSchema } = require("./order.schema");
 const { HttpError, verifySchema } = require("../../utils");
 const orderModel = require("../../models");
 

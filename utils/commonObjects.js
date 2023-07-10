@@ -19,19 +19,6 @@ const addressObject = {
     required: true,
     trim: true,
   },
-  landMark: {
-    type: String,
-    trim: true,
-  },
-  additionalInfo: {
-    type: String,
-    trim: true,
-  },
-  postalCode: {
-    type: Number,
-    default: null,
-    trim: true,
-  },
 };
 
 module.exports = { addressObject };

@@ -18,18 +18,18 @@ const orderSchema = buildSchema({
     .min(0)
     .required()
     .error(new Error("Total price must be a non-negative number.")),
-  // address: Joi.array().items(addressObject).required(), fix
+  // address: Joi.array().items(addressObject).required(),
   status: Joi.string()
     .valid("Not Processed", "Processing", "Shipped", "Delivered", "Cancelled")
     .default("Not Processed"),
-  productPrice: Joi.number().required(),
+  productsPrice: Joi.number().required(),
   taxPrice: Joi.number().required(),
   deliveryPrice: Joi.number().required(),
   paymentType: Joi.string().valid("card", "cash").default("cash"),
   StripePaymentId: Joi.when("paymentType", {
     is: "card",
     then: Joi.string().required(),
-    otherwise: Joi.string().allow(null),
+    otherwise: Joi.string(),
   }),
   deliveredAt: Joi.date().allow(null),
   orderedAt: Joi.date().required(),

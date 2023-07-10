@@ -36,7 +36,7 @@ router.get("/top10-rated", (req, res) =>
 router.get("/most10-sold", (req, res) =>
   controller(res)(getProducts)({
     limit: 10,
-    sort: { noSold: -1 },
+    sort: { numSold: -1 },
     category: req.query.category,
   })
 );

@@ -1,24 +1,33 @@
 const mongoose = require("mongoose");
 
 const cartSchema = mongoose.Schema({
-    userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        require: true,
-        ref: "User"
-    },
-    product: [{
-        type: {
-            id: {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: "Product"
-            },
-            count: Number,
-            color: String,
-            size: String
-        }
-
-    }]
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    unique: true,
+    required: true,
+  },
+  products: {
+    type: [
+      {
+        id: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Product",
+          required: true,
+        },
+        count: {
+          type: Number,
+          required: true,
+        },
+        color: String,
+        size: String,
+      },
+    ],
+    required: true,
+  },
 });
+
+cartSchema.index({ userId: 1 }, { unique: true });
 
 const Cart = mongoose.model("Cart", cartSchema);
 

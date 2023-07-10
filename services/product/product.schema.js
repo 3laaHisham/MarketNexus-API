@@ -17,7 +17,7 @@ const commonFields = {
     .required(),
   price: Joi.number(),
   avgRating: Joi.number(),
-  noStock: Joi.number().required(),
+  numStock: Joi.number().required(),
   discount: Joi.number(),
 };
 

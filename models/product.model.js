@@ -49,16 +49,16 @@ const productSchema = Schema(
       max: 5,
       default: 0,
     },
-    noStock: {
+    numStock: {
       type: Number,
       required: true,
       min: 0,
     },
-    noSold: {
+    numSold: {
       type: Number,
       default: 0,
     },
-    noViews: {
+    numViews: {
       type: Number,
       default: 0,
     },

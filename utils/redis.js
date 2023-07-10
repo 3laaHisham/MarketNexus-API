@@ -1,4 +1,4 @@
-import { createClient } from "redis";
+const { createClient } = require("redis");
 
 // self invoked
 let redisClient;
@@ -26,4 +26,4 @@ const getRedis = async (key) => redisClient.get(key);
 
 const delRedis = async (key) => redisClient.del(key);
 
-export default { setRedis, getRedis, delRedis };
+module.exports = { setRedis, getRedis, delRedis };

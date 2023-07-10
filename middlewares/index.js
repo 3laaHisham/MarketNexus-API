@@ -1,12 +1,10 @@
-import isAuthenticated from "./authentication";
-import { isAuthorized, isResourceOwner } from "./authorization";
-import cache from "./cache";
-import errorHandler from "./errorHandler";
+const isAuthenticated = require("./authentication");
+const { isAuthorized, isResourceOwner } = require("./authorization");
+const cache = require("./cache");
 
-export default {
+module.exports = {
   isAuthenticated,
   isAuthorized,
   isResourceOwner,
   cache,
-  errorHandler,
 };

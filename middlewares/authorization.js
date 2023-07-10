@@ -1,4 +1,4 @@
-import { StatusCodes } from "http-status-codes";
+const { StatusCodes } = require("http-status-codes");
 
 const isAuthorized = (authorizedRole) => (req, res, next) => {
   try {
@@ -25,4 +25,4 @@ const isResourceOwner =
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: "Error" });
     }
   };
-export default { isAuthorized, isResourceOwner };
+module.exports = { isAuthorized, isResourceOwner };

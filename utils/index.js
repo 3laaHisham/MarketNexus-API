@@ -1,10 +1,11 @@
-import { hashPassword, comparePasswords } from "./hash";
-import HttpError from "./HttpError";
-import { generateToken, verifyToken } from "./jwt";
-import { verifySchema, buildSchema, idExpression } from "./validator";
-import { setRedis, getRedis } from "./redis";
+const { hashPassword, comparePasswords } = require("./hash");
+const HttpError = require("./HttpError");
+const { generateToken, verifyToken } = require("./jwt");
+const { verifySchema, buildSchema, idRegex } = require("./validator");
+const { setRedis, getRedis, delRedis } = require("./redis");
+const { addressObject } = require("./commonObjects");
 
-export default {
+module.exports = {
   HttpError,
   hashPassword,
   comparePasswords,
@@ -12,8 +13,9 @@ export default {
   verifyToken,
   verifySchema,
   buildSchema,
-  idExpression,
+  idRegex,
   setRedis,
-  getRedis,
   delRedis,
+  getRedis,
+  addressObject,
 };

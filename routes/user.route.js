@@ -1,33 +1,36 @@
-import express from "express";
+const express = require("express");
 const router = express.Router();
 
-import controller from "../controllers";
+const controller = require("../controllers");
 
-import { userService } from "../services";
+const { userService } = require("../services");
 const { getUsers, updateUser, deleteUser } = userService;
 
-import { isAuthenticated } from "../middlewares";
+const { isAuthenticated, isAuthorized } = require("../middlewares");
 
-router.get("/:id", controller(getUsers)({ _id: req.params.id }));
+router.get("/:id", (req, res) =>
+  controller(res)(getUsers)({ _id: req.params.id })
+);
 
-router.get("/", controller(getUsers)(req.query));
+router.get("/", (req, res) => controller(res)(getUsers)(req.query));
 
 // The following routes needs authentication.
 router.use(isAuthenticated);
 
-router.get("/me", controller(getUsers)({ _id: req.user.id }));
-
-router.put(
-  "/me",
-  (controller = updateUser({ _id: req.user.id }, req.body.user))
+router.get("/me", (req, res) =>
+  controller(res)(getUsers)({ _id: req.user.id })
 );
 
-router.delete("/me", controller(deleteUser)({ _id: req.user.id }));
-
-router.delete(
-  "/:id",
-  isAuthorized("admin"),
-  controller(deleteUser)({ _id: req.params.id })
+router.put("/me", (req, res) =>
+  controller(res)(updateUser)({ _id: req.user.id }, req.body.user)
 );
 
-export default router;
+router.delete("/me", (req, res) =>
+  controller(res)(deleteUser)({ _id: req.user.id })
+);
+
+router.delete("/:id", isAuthorized("admin"), (req, res) =>
+  controller(res)(deleteUser)({ _id: req.params.id })
+);
+
+module.exports = router;

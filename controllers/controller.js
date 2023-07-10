@@ -1,13 +1,16 @@
 const controller =
+  (res) =>
   (service) =>
-  (...args) =>
-  async (req, res, next) => {
+  async (...args) => {
     try {
       const result = await service(...args);
       res.status(StatusCodes.OK).send(result);
-    } catch (e) {
-      next(e);
+    } catch (error) {
+      console.log(error);
+
+      if (error instanceof HttpError) res.status(error.statusCode).send(error);
+      else res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error);
     }
   };
 
-export default controller;
+module.exports = controller;

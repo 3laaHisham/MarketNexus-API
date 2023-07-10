@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+const { Schema, model } = require("mongoose");
 
 const productSchema = Schema(
   {
@@ -98,4 +98,4 @@ productSchema.virtual("reviews", {
 });
 
 const Product = model("Product", productSchema);
-export default Product;
+module.exports = Product;

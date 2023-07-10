@@ -82,7 +82,7 @@ To get a local copy up and running follow these simple example steps.
 
 ### Prerequisites
 
-[NodeJS](https://nodejs.org/en/download), [MongoDB](https://www.mongodb.com/docs/manual/installation/) & [Redis](https://developer.redis.com/create/windows/) should be installed on your machine.
+[NodeJS](https://nodejs.org/en/download) & [MongoDB](https://www.mongodb.com/docs/manual/installation/) should be installed on your machine.
 
 ### Installation
 

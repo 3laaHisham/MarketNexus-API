@@ -1,5 +1,5 @@
-import Joi from "joi";
-import { buildSchema, idRegex } from "../../utils";
+const Joi = require("joi");
+const { buildSchema, idRegex } = require("../../utils");
 
 const userIdSchema = buildSchema({
   _id: Joi.string().regex(idRegex).required(),
@@ -7,7 +7,7 @@ const userIdSchema = buildSchema({
 
 const registerSchema = buildSchema({
   name: Joi.string().required(),
-  email: Joi.email().required(),
+  email: Joi.string().email().required(),
   password: Joi.string().required(),
   address: Joi.string().required(),
   phone: Joi.number().required(),
@@ -20,7 +20,7 @@ const registerSchema = buildSchema({
 });
 
 const loginSchema = buildSchema({
-  email: Joi.email().required(),
+  email: Joi.string().email().required(),
   password: Joi.string().required(),
 });
 
@@ -30,7 +30,7 @@ const changePasswordSchema = buildSchema({
   newPasswordConfirm: Joi.string().required(),
 });
 
-export default {
+module.exports = {
   registerSchema,
   loginSchema,
   changePasswordSchema,

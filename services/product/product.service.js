@@ -1,12 +1,12 @@
-import { StatusCodes } from "http-status-codes";
-import Product from "../../models";
-import { HttpError, verifySchema } from "../../utils";
+const { StatusCodes } = require("http-status-codes");
+const Product = require("../../models");
+const { HttpError, verifySchema } = require("../../utils");
 
-import {
+const {
   queryProductsSchema,
   updateProductSchema,
   addProductSchema,
-} from "./product.schema";
+} = require("./product.schema");
 
 const getProducts = async (query) => {
   let isValidSchema = await verifySchema(queryProductsSchema, query);
@@ -81,4 +81,4 @@ const deleteProduct = async (id) => {
   };
 };
 
-export { getProducts, addProduct, updateProduct, deleteProduct };
+module.exports = { getProducts, addProduct, updateProduct, deleteProduct };

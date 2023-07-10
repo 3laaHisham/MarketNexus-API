@@ -1,6 +1,6 @@
-import { verifyToken } from "../utils";
-import { StatusCodes } from "http-status-codes";
-import { getRedis } from "../utils";
+const { verifyToken } = require("../utils");
+const { StatusCodes } = require("http-status-codes");
+const { getRedis } = require("../utils");
 
 const isAuthenticated = async (req, res, next) => {
   try {
@@ -20,4 +20,4 @@ const isAuthenticated = async (req, res, next) => {
   }
 };
 
-export default isAuthenticated;
+module.exports = isAuthenticated;

@@ -1,39 +1,40 @@
-import express from "express";
+const express = require("express");
 const router = express.Router();
 
-import controller from "../controllers";
+const controller = require("../controllers");
 
-import { productService } from "../services";
+const { productService } = require("../services");
 const { getProducts, addProduct, updateProduct, deleteProduct } =
   productService;
 
-import { isAuthenticated, isAuthorized, isResourceOwner } from "../middlewares";
+const {
+  isAuthenticated,
+  isAuthorized,
+  isResourceOwner,
+} = require("../middlewares");
 
-router.get("/:id", controller(getProducts)({ _id: id }));
+router.get("/:id", (req, res) => controller(res)(getProducts)({ _id: id }));
 
-router.get("/", controller(getProducts)(req.query));
+router.get("/", (req, res) => controller(res)(getProducts)(req.query));
 
-router.get(
-  "/top10-cheapest",
-  controller(getProducts)({
+router.get("/top10-cheapest", (req, res) =>
+  controller(res)(getProducts)({
     limit: 10,
     sort: { price: 1 },
     category: req.query.category,
   })
 );
 
-router.get(
-  "/top10-rated",
-  controller(getProducts)({
+router.get("/top10-rated", (req, res) =>
+  controller(res)(getProducts)({
     limit: 10,
     sort: { avgRating: -1 },
     category: req.query.category,
   })
 );
 
-router.get(
-  "/most10-sold",
-  controller(getProducts)({
+router.get("/most10-sold", (req, res) =>
+  controller(res)(getProducts)({
     limit: 10,
     sort: { noSold: -1 },
     category: req.query.category,
@@ -42,12 +43,18 @@ router.get(
 
 router.use(isAuthenticated, isAuthorized("seller"));
 
-router.post("/", controller(addProduct)(req.body));
+router.post("/", (req, res) => controller(res)(addProduct)(req.body));
 
-router.use(isResourceOwner("Product", req.params.id, req.user.id));
+router.use((req, res) =>
+  isResourceOwner("Product", req.params.id, req.user.id)
+);
 
-router.put("/:id", controller(updateProduct)({ _id: req.params.id }, req.body));
+router.put("/:id", (req, res) =>
+  controller(res)(updateProduct)({ _id: req.params.id }, req.body)
+);
 
-router.delete("/:id", controller(deleteProduct)({ _id: req.params.id }));
+router.delete("/:id", (req, res) =>
+  controller(res)(deleteProduct)({ _id: req.params.id })
+);
 
-export default router;
+module.exports = router;

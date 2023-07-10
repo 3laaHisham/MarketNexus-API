@@ -1,7 +1,7 @@
-import { StatusCodes } from "http-status-codes";
-import User from "../../models";
+const { StatusCodes } = require("http-status-codes");
+const User = require("../../models");
 
-import {
+const {
   HttpError,
   hashPassword,
   generateToken,
@@ -9,14 +9,14 @@ import {
   verifySchema,
   setRedis,
   delRedis,
-} from "../../utils";
+} = require("../../utils");
 
-import {
+const {
   registerSchema,
   loginSchema,
   changePasswordSchema,
   userIdSchema,
-} from "./auth.schema";
+} = require("./auth.schema");
 
 const register = async (body) => {
   let isValidSchema = await verifySchema(registerSchema, body);
@@ -103,4 +103,4 @@ const changePassword = async (id, body) => {
   };
 };
 
-export default { register, login, logout, changePassword };
+module.exports = { register, login, logout, changePassword };

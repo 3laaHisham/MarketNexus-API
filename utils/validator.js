@@ -1,4 +1,4 @@
-import Joi from "joi";
+const Joi = require("joi");
 
 const verifySchema = async (schema, obj) => {
   const { error } = schema.validate(obj);
@@ -9,7 +9,7 @@ const buildSchema = (schema) =>
   Joi.object(schema).options({ allowUnknown: false });
 
 // MongoDB ID format
-const idRegex = new RegExp("^[0-9a-fA-F]{24}$");
+const idRegex = /^[0-9a-fA-F]{24}$/;
 
 const featuresFields = {
   sort: Joi.string(),
@@ -17,4 +17,4 @@ const featuresFields = {
   page: Joi.number().integer(),
 };
 
-export default { verifySchema, buildSchema, idRegex, featuresFields };
+module.exports = { verifySchema, buildSchema, idRegex, featuresFields };

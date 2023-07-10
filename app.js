@@ -1,20 +1,19 @@
-import express from "express";
-import { connect } from "mongoose";
-import session from "express-session";
-import { json, urlencoded } from "body-parser";
-import logger from "morgan";
-import helmet from "helmet";
-import compression from "compression";
+const express = require("express");
+const { connect } = require("mongoose");
+const session = require("express-session");
+const { json, urlencoded } = require("body-parser");
+const logger = require("morgan");
+const helmet = require("helmet");
+const compression = require("compression");
 
-import {
+const {
   authRoute,
   userRoute,
   productRoute,
   reviewRoute,
   cartRoute,
   orderRoute,
-} from "./routes";
-import { errorHandler } from "./middlewares";
+} = require("./routes");
 
 require("dotenv").config();
 
@@ -40,16 +39,15 @@ app.use(
   })
 );
 
-app.use("/", authRoute);
+app.use("/", (req, res) => res.send("HELLO WORLD!"));
+app.use("/auth", authRoute);
 app.use("/users", userRoute);
 app.use("/products", productRoute);
 app.use("/reviews", reviewRoute);
 app.use("/cart", cartRoute);
 app.use("/orders", orderRoute);
 
-app.all("*", (req, res, next) => res.status(404).send("NOT FOUND"));
-
-app.use(errorHandler);
+app.all("*", (req, res) => res.status(404).send("NOT FOUND"));
 
 connect(MONGO_URI)
   .then(() =>

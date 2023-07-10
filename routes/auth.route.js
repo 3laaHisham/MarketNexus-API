@@ -1,27 +1,27 @@
-import express from "express";
+const express = require("express");
 const router = express.Router();
 
-import controller from "../controllers";
+const controller = require("../controllers");
 
-import { authService } from "../services";
+const { authService } = require("../services");
 const { register, login, logout, changePassword } = authService;
 
-import { isAuthenticated } from "../middlewares";
+const { isAuthenticated } = require("../middlewares");
 
-router.post("/register", controller(register)(req.body));
+router.post("/register", (req, res) => controller(res)(register)(req.body));
 
-router.post(
-  "/login",
-  controller(login)((token = req.header.authorization), req.body)
+router.post("/login", (req, res) =>
+  controller(res)(login)((token = req.header.authorization), req.body)
 );
 
 router.use(isAuthenticated);
 
-router.post("/logout", controller(logout)({ _id: req.user.id }));
-
-router.put(
-  "/change-password",
-  controller(changePassword)({ _id: req.user.id }, req.body)
+router.post("/logout", (req, res) =>
+  controller(res)(logout)({ _id: req.user.id })
 );
 
-export default router;
+router.put("/change-password", (req, res) =>
+  controller(res)(changePassword)({ _id: req.user.id }, req.body)
+);
+
+module.exports = router;

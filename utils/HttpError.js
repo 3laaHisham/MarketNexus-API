@@ -1,4 +1,4 @@
-import { StatusCodes } from "http-status-codes";
+const { StatusCodes } = require("http-status-codes");
 
 class HttpError extends Error {
   constructor(statusCode, message) {
@@ -10,4 +10,4 @@ class HttpError extends Error {
   }
 }
 
-export default HttpError;
+module.exports = HttpError;

@@ -1,5 +1,5 @@
-import Joi from "joi";
-import { buildSchema, idRegex, featuresFields } from "../../utils";
+const Joi = require("joi");
+const { buildSchema, idRegex, featuresFields } = require("../../utils");
 
 const commonFields = {
   name: Joi.string(),
@@ -21,16 +21,16 @@ const commonFields = {
   discount: Joi.number(),
 };
 
-const queryProductsSchema = buildSchema({
-  _id: Joi.string().regex(idRegex),
-  ...updateProductSchema._inner.children,
-  ...featuresFields,
-});
-
 const updateProductSchema = buildSchema({
   ...commonFields,
   color: Joi.string(),
   size: Joi.string(),
+});
+
+const queryProductsSchema = buildSchema({
+  _id: Joi.string().regex(idRegex),
+  ...updateProductSchema._inner.children,
+  ...featuresFields,
 });
 
 const addProductSchema = buildSchema({
@@ -41,4 +41,4 @@ const addProductSchema = buildSchema({
   sizes: Joi.array().items(Joi.string()).required(),
 });
 
-export default { queryProductsSchema, updateProductSchema, addProductSchema };
+module.exports = { queryProductsSchema, updateProductSchema, addProductSchema };

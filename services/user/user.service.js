@@ -1,8 +1,8 @@
-import { StatusCodes } from "http-status-codes";
-import User from "../../models";
-import { HttpError, verifySchema } from "../../utils";
+const { StatusCodes } = require("http-status-codes");
+const User = require("../../models");
+const { HttpError, verifySchema } = require("../../utils");
 
-import { queryUsersSchema, updateUserSchema } from "./user.schema";
+const { queryUsersSchema, updateUserSchema } = require("./user.schema");
 
 const getUsers = async (query) => {
   // api features
@@ -58,7 +58,7 @@ const deleteUser = async (id) => {
   };
 };
 
-export default {
+module.exports = {
   getUsers,
   updateUser,
   deleteUser,

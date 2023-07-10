@@ -1,6 +1,6 @@
-import { Schema, model } from "mongoose";
-import { isEmail } from "validator";
-import { hashPassword, comparePasswords } from "../utils/hash";
+const { Schema, model } = require("mongoose");
+const { isEmail } = require("validator");
+const { hashPassword, comparePasswords } = require("../utils/hash");
 
 const userSchema = Schema(
   {
@@ -48,7 +48,7 @@ const userSchema = Schema(
       default: "customer",
     },
     isCompany: {
-      type: boolean,
+      type: Boolean,
       trim: true,
       required: () => {
         this.role === "seller";
@@ -84,4 +84,4 @@ userSchema.methods.isPasswordMatch = (password) =>
 
 const User = model("User", userSchema);
 
-export default User;
+module.exports = User;

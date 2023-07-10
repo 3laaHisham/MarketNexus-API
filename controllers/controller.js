@@ -1,3 +1,5 @@
+const { HttpError } = require("../utils");
+
 const controller =
   (res) =>
   (service) =>

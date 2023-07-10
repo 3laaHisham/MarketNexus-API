@@ -39,7 +39,6 @@ app.use(
   })
 );
 
-app.use("/", (req, res) => res.send("HELLO WORLD!"));
 app.use("/auth", authRoute);
 app.use("/users", userRoute);
 app.use("/products", productRoute);
@@ -47,6 +46,7 @@ app.use("/reviews", reviewRoute);
 app.use("/cart", cartRoute);
 app.use("/orders", orderRoute);
 
+app.use("/", (req, res) => res.send("HELLO WORLD!"));
 app.all("*", (req, res) => res.status(404).send("NOT FOUND"));
 
 connect(MONGO_URI)

@@ -1,11 +1,11 @@
 const { StatusCodes } = require("http-status-codes");
 const reviewSchema = require("./review.schema");
 const validateReview = require("./review.schema");
-const { HttpError, isValid } = require("../../utils");
+const { HttpError, verifySchema } = require("../../utils");
 const reviewModel = require("../../models");
 
 async function createNewreview(review) {
-  const isReviewValid = await isValid(reviewSchema, review);
+  const isReviewValid = await verifySchema(reviewSchema, review);
   if (!isReviewValid)
     throw new HttpError(StatusCodes.BAD_REQUEST, "review fields are not valid");
 

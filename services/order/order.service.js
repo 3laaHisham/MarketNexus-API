@@ -1,29 +1,15 @@
 const { StatusCodes } = require("http-status-codes");
 const orderSchema = require("./order.schema");
 const validateOrder = require("./order.schema");
-const { HttpError, isValid } = require("../../utils");
+const { HttpError, verifySchema } = require("../../utils");
 const orderModel = require("../../models");
 
 async function createNewOrder(order) {
-  const isOrderValid = await isValid(orderSchema, order);
+  const isOrderValid = await verifySchema(orderSchema, order);
   if (!isOrderValid)
     throw new HttpError(StatusCodes.BAD_REQUEST, "Order fields are not valid");
 
-  const newOrder = new orderModel({
-    userId: order.userId,
-    products: order.products,
-    discount: order.discount,
-    total: order.total,
-    address: order.address,
-    status: order.status,
-    productPrice: order.productPrice,
-    taxPrice: order.taxPrice,
-    deliveryPrice: order.deliveryPrice,
-    paymentType: order.paymentType,
-    StripePaymentId: order.StripePaymentId,
-    deliveredAt: order.deliveredAt,
-    orderedAt: order.orderedAt,
-  });
+  const newOrder = new orderModel(order);
 
   const savedOrder = await newOrder.save();
   return {

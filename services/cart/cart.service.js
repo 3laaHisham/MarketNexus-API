@@ -14,12 +14,10 @@ async function createNewCart(userId) {
     return savedCart
 }
 
-async function isAvailableAndUpdate(productID, color, size) {
+async function isAvailable(productID, color, size) {
 
     const product = await productModel.findOne({ _id: productID, "product.color": color, "product.size": size });
-    if (product) {
-        //TODO remove it from products document(-1 from size and remove the size and the color)
-    }
+
     return product;
 }
 
@@ -27,7 +25,7 @@ async function isAvailableAndUpdate(productID, color, size) {
 async function addProduct(userID, newProduct) {
     if (await !verifySchema(cartSchema, newProduct))
         throw new HttpError(StatusCodes.BAD_REQUEST, "product is not valid");
-    if (await !isAvailableAndUpdate(product.id, product.color, product.size))
+    if (await !isAvailable(product.id, product.color, product.size))
         throw new HttpError(StatusCodes.NOT_FOUND, "product is not available");
 
 
@@ -41,7 +39,6 @@ async function addProduct(userID, newProduct) {
     currentCart = await cartModel.findOneAndUpdate({ userId: userID }, { $push: newProduct }, { new: true });
     if (!currentCart) {
         //TODO
-        // add the removed product to products model
         await returnProduct(product.id, product.color, product.size);
         throw new HttpError(StatusCodes.INTERNAL_SERVER_ERROR, "product can not be added to the cart");
     }
@@ -51,18 +48,45 @@ async function addProduct(userID, newProduct) {
         result: currentCart
     }
 }
+async function changeCountOfProduct(productId, amount, userID) {
 
-async function g() {
-    const carts = await cartModel
-        .find({})
-        .populate("userID", "name email")
-        .populate("products.id", "name")
-        .populate("StripePaymentId");
-    if (!carts) throw new HttpError(StatusCodes.NOT_FOUND, "No carts found");
+    const updatedCart = await cartModel.findOneAndUpdate({ userID: userID, 'product.id': productId }, { $inc: { "product.$[].count": amount } }, { new: true });
+
+    if (!updatedCart)
+        throw new HttpError(StatusCodes.NOT_FOUND, "product is not found in the cart. Count update failed ");
 
     return {
         status: StatusCodes.OK,
-        message: "All cart are retrieved successfully",
-        result: carts,
+        message: "product count is updated successfully",
+        result: updatedCart
+    }
+}
+async function getCurrentCart(userID) {
+    const cart = await cartModel.find({ userID: userID })
+    if (!cart) throw new HttpError(StatusCodes.NOT_FOUND, "No carts found");
+
+    return {
+        status: StatusCodes.OK,
+        message: "cart is retrieved successfully",
+        result: cart,
+    };
+}
+async function deleteCurrentCart(userID) {
+    const cart = await cartModel.deleteOne({ userID: userID })
+    if (!cart) throw new HttpError(StatusCodes.NOT_FOUND, "No carts found to be deleted");
+
+    return {
+        status: StatusCodes.OK,
+        message: "cart is deleted successfully",
+        result: cart,
+    };
+}
+
+async function deleteProduct(productID, userID) {
+    //TODO
+    return {
+        status: StatusCodes.OK,
+        message: "cart is deleted successfully",
+        result: cart,
     };
 }

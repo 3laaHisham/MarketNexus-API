@@ -29,26 +29,26 @@ const register = async (user) => {
 
   user.password = await hashPassword(user.password);
 
-  const user = new User(user);
-  await user.save();
+  const newUser = new User(user);
+  await newUser.save();
 
   return {
     status: StatusCodes.CREATED,
     message: 'User created successfully',
-    result: user
+    result: newUser
   };
 };
 
-const login = async (token, user) => {
+const login = async (token, userDetails) => {
   const isLogged = token ? await verifyToken(token) : undefined;
   if (isLogged)
     throw new HttpError(StatusCodes.BAD_REQUEST, 'Already logged in');
 
-  const isValidSchema = await verifySchema(loginSchema, user);
+  const isValidSchema = await verifySchema(loginSchema, userDetails);
   if (!isValidSchema)
     throw new HttpError(StatusCodes.BAD_REQUEST, 'Schema not satisfied');
 
-  const { email, password } = user;
+  const { email, password } = userDetails;
 
   const user = await User.isEmailExist(email);
   if (!user) throw new HttpError(StatusCodes.NOT_FOUND, 'User not found');
@@ -76,19 +76,19 @@ const logout = async (id) => {
   };
 };
 
-const changePassword = async (id, user) => {
-  const isValidSchema = await verifySchema(changePasswordSchema, user);
+const changePassword = async (id, newUser) => {
+  const isValidSchema = await verifySchema(changePasswordSchema, newUser);
   if (!isValidSchema)
     throw new HttpError(StatusCodes.BAD_REQUEST, 'Not valid schema');
 
   const user = await User.findById(id);
   if (!user) throw new HttpError(StatusCodes.NOT_FOUND, 'User not found');
 
-  const isPasswordMatch = await user.isPasswordMatch(user.oldPassword);
+  const isPasswordMatch = await user.isPasswordMatch(newUser.oldPassword);
   if (!isPasswordMatch)
     throw new HttpError(StatusCodes.UNAUTHORIZED, 'Wrong password');
 
-  user.password = await hashPassword(user.newPassword);
+  user.password = await hashPassword(user.newUser);
   await user.save();
 
   return {

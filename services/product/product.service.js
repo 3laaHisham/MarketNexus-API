@@ -36,13 +36,13 @@ const addProduct = async (product) => {
   if (!isValidSchema)
     throw new HttpError(StatusCodes.BAD_REQUEST, 'Schema not satisfied');
 
-  const product = new Product(product);
-  await product.save();
+  const newProduct = new Product(product);
+  await newProduct.save();
 
   return {
     status: StatusCodes.CREATED,
     message: 'Product created successfully',
-    result: product
+    result: newProduct
   };
 };
 

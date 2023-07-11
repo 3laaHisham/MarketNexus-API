@@ -35,7 +35,6 @@ const queryProductsSchema = buildSchema({
 
 const addProductSchema = buildSchema({
   ...commonFields,
-  seller: Joi.string().regex(idRegex).required(),
   specification: Joi.object().required(),
   colors: Joi.array().items(Joi.string()).required(),
   sizes: Joi.array().items(Joi.string()).required()

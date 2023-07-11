@@ -42,7 +42,7 @@ const updateUser = async (id, user) => {
 };
 
 const deleteUser = async (id) => {
-  const user = await User.findOnefindByIdAndDelete(id);
+  const user = await User.findByIdAndDelete(id);
   if (!user) throw new HttpError(StatusCodes.NOT_FOUND, 'User not found');
 
   return {

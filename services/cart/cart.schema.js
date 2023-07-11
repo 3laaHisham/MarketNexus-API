@@ -15,3 +15,5 @@ const orderSchema = buildSchema({
     )
     .required()
 });
+
+module.exports = { orderSchema };

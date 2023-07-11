@@ -3,6 +3,10 @@ const router = express.Router();
 
 const controller = require('../controllers');
 
+const { reviewService } = require('../services');
+const { getReviews, createNewReview, updateReview, deleteReview } =
+  reviewService;
+
 const { isAuthenticated, isResourceOwner } = require('../middlewares');
 const { Review } = require('../models');
 
@@ -13,7 +17,11 @@ router.get('/:id', (req, res) =>
 );
 
 router.post('/:productId', (req, res) =>
-  controller(res)(createNewReview)(req.params.productId, req.body.review)
+  controller(res)(createNewReview)(
+    req.user.id,
+    req.params.productId,
+    req.body.review
+  )
 );
 
 router.use((req, res) => isResourceOwner(Review, req.params.id, req.user.id));

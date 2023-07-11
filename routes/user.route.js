@@ -18,7 +18,7 @@ router.get('/', (req, res) => controller(res)(getUsers)(req.query));
 router.use(isAuthenticated);
 
 router.get('/me', (req, res) =>
-  controller(res)(getUsers)({ _id: req.user.id }, res)
+  controller(res)(getUsers)({ _id: req.user.id })
 );
 
 router.put('/me', (req, res) =>

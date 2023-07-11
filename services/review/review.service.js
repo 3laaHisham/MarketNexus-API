@@ -1,33 +1,41 @@
 const { StatusCodes } = require('http-status-codes');
 
-const reviewSchema = require('./review.schema');
-const validateReview = require('./review.schema');
+const { createReviewSchema, queryReviewsSchema } = require('./review.schema');
+
 const { HttpError, verifySchema } = require('../../utils');
-const { Review } = require('../../models');
+const { Review, Product } = require('../../models');
 
-async function createNewReview(review) {
-  const isReviewValid = await verifySchema(reviewSchema, review);
+async function createNewReview(userId, productId, review) {
+  const isReviewValid = await verifySchema(createReviewSchema, review);
   if (!isReviewValid)
-    throw new HttpError(StatusCodes.BAD_REQUEST, 'review fields are not valid');
+    throw new HttpError(StatusCodes.BAD_REQUEST, 'Review schema is not valid');
 
-  try {
-    const newReview = new Review({ review });
+  // Check if user & product exist
+  const existingProduct = await Product.findById(productId);
+  if (!existingProduct)
+    throw new HttpError(StatusCodes.NOT_FOUND, 'User was not found');
 
-    const savedReview = await newReview.save();
-    return {
-      message: 'review created successfully',
-      result: savedReview
-    };
-  } catch (error) {
-    throw new HttpError(
-      StatusCodes.INTERNAL_SERVER_ERROR,
-      'Can not create review'
-    );
-  }
+  const newReview = new Review({
+    userId,
+    productId,
+    date: Date.now(),
+    ...review
+  });
+  const savedReview = await newReview.save();
+
+  return {
+    status: StatusCodes.OK,
+    message: 'Review created successfully',
+    result: savedReview
+  };
 }
 
-async function getAllReviews() {
-  const reviews = await Review.find({}).populate('userId', 'name email');
+async function getReviews(query) {
+  const isQueryValid = await verifySchema(queryReviewsSchema, query);
+  if (!isQueryValid)
+    throw new HttpError(StatusCodes.BAD_REQUEST, 'Review schema is not valid');
+
+  const reviews = await Review.find(query).populate('userId', 'name email');
   if (!reviews) throw new HttpError(StatusCodes.NOT_FOUND, 'No reviews found');
 
   return {
@@ -37,67 +45,32 @@ async function getAllReviews() {
   };
 }
 
-async function getReviewById(id) {
-  const review = await Review.findOne({ _id: id }).populate(
-    'userId',
-    'name email'
-  );
-  if (!review) throw new HttpError(StatusCodes.NOT_FOUND, 'No review found');
+async function updateReview(reviewID, newReview) {
+  const updatedReview = await Review.findByIdAndUpdate(reviewID, newReview, {
+    new: true
+  });
+  if (!updatedReview)
+    throw new HttpError(StatusCodes.NOT_FOUND, 'Review update failed');
 
   return {
     status: StatusCodes.OK,
-    message: 'review retrieved successfully',
-    result: review
-  };
-}
-async function updateReview(reviewID, newMessage, newNumberOfStars) {
-  let updatedReview;
-
-  if (newMessage) {
-    updatedReview = await Review.findByIdAndUpdate(
-      reviewID,
-      { message: newMessage },
-      { new: true }
-    );
-    if (!updatedReview)
-      throw new HttpError(
-        StatusCodes.NOT_FOUND,
-        'review message update failed'
-      );
-  }
-  if (newNumberOfStars) {
-    updatedReview = await Review.findByIdAndUpdate(
-      reviewID,
-      { message: newMessage },
-      { new: true }
-    );
-    if (!updatedReview)
-      throw new HttpError(
-        StatusCodes.NOT_FOUND,
-        'review number of stars update failed'
-      );
-  }
-  if (!updateReview)
-    throw new HttpError(StatusCodes.NOT_FOUND, 'review was not updated');
-  return {
-    status: StatusCodes.OK,
-    message: 'review updated successfully',
+    message: 'Review updated successfully',
     result: updatedReview
   };
 }
 async function deleteReview(reviewID) {
-  const deletedReview = await Review.findByIdfindByIdAndDelete(reviewID);
+  const deletedReview = await Review.findByIdAndDelete(reviewID);
   if (!deletedReview)
     throw new HttpError(
       StatusCodes.NOT_FOUND,
-      'review was not found to be deleted'
+      'Review was not found to be deleted'
     );
 
   return {
     status: StatusCodes.OK,
-    message: 'review deleted successfully',
+    message: 'Review deleted successfully',
     result: deletedReview
   };
 }
 
-module.exports = {};
+module.exports = { getReviews, createNewReview, updateReview, deleteReview };

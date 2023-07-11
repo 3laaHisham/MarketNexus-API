@@ -98,4 +98,5 @@ productSchema.virtual('reviews', {
 });
 
 const Product = model('Product', productSchema);
+
 module.exports = Product;

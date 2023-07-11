@@ -12,9 +12,11 @@ const buildSchema = (schema) =>
 const idRegex = /^[0-9a-fA-F]{24}$/;
 
 const featuresFields = {
+  select: Joi.string(),
   sort: Joi.string(),
   limit: Joi.number().integer(),
-  page: Joi.number().integer()
+  page: Joi.number().integer(),
+  search: Joi.string()
 };
 
 module.exports = { verifySchema, buildSchema, idRegex, featuresFields };

@@ -27,7 +27,7 @@ const updateUser = async (id, user) => {
   if (!isValidQuerySchema)
     throw new HttpError(StatusCodes.BAD_REQUEST, 'Not valid schema');
 
-  const updatedUser = await User.findOneAndUpdate(id, user, {
+  const updatedUser = await User.findByIdAndUpdate(id, user, {
     new: true,
     runValidators: true
   });

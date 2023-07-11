@@ -12,8 +12,7 @@ const {
   deleteProduct
 } = cartService;
 
-const { isAuthenticated, isResourceOwner } = require('../middlewares');
-const { Cart } = require('../models');
+const { isAuthenticated } = require('../middlewares');
 
 router.use(isAuthenticated);
 
@@ -35,8 +34,8 @@ router.delete('/products/:id', (req, res) =>
   controller(res)(deleteProduct)(req.params.id, req.user.id)
 );
 
-router.delete('/:id', (req, res) =>
-  controller(res)(deleteCurrentCart)(req.params.id)
+router.delete('/', (req, res) =>
+  controller(res)(deleteCurrentCart)(req.user.id)
 );
 
 module.exports = router;

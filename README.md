@@ -62,7 +62,7 @@ Cart Services:
 - **PUT /cart/products/:id/increase :** Increase the quantity of a product in the cart by one. [User]
 - **PUT /cart/products/:id/reduce :** Reduce the quantity of a product in the cart by one. [User]
 - **DELETE /cart/products/:id :** Delete a product from the cart. [User]
-- **DELETE /cart/:id :** Delete the entire cart. [User]
+- **DELETE /cart/ :** Empty the entire cart. [User]
 
 Order Services:
 

@@ -11,17 +11,22 @@ const {
   isAuthorized,
   isResourceOwner
 } = require('../middlewares');
+
 const { Order } = require('../models');
 
 router.use(isAuthenticated);
 
-router.post('/', (req, res) => controller(res)(createNewOrder)(req.body.order));
-
-router.get('/', (req, res) => controller(res)(getAllOrders)(req.query));
+router.post('/', (req, res) =>
+  controller(res)(createNewOrder)(req.user.id, req.body.order)
+);
 
 router.get('/:id', (req, res) =>
   controller(res)(getAllOrders)({ _id: req.params.id })
 );
+
+router.get('/', (req, res) => controller(res)(getAllOrders)(req.query));
+
+router.use((req, res) => isResourceOwner(Order, req.params.id, req.user.id));
 
 router.put('/:id/cancel', (req, res) =>
   controller(res)(updateOrder)(req.params.id, { status: 'Cancelled' })

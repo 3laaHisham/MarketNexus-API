@@ -29,17 +29,17 @@ Authentication Services:
 
 User Services:
 
+- **GET /users/:id :** Get user details by ID. [Public]
 - **GET /users :** Query all users by name, email, phone, role. [Public]
-- **GET /users/:id :** Get user data by ID. [Public]
-- **GET /users/me :** get details of the user. [User]
-- **PUT /users/me :** Update details of the user. [User]
-- **DELETE /users/me :** Delete account of the user. [User]
-- **DELETE /users/:id :** Delete user by ID. [Admin]
+- **GET /users/me :** Get details of this user. [User]
+- **PUT /users/me :** Update details of this user. [User]
+- **DELETE /users/me :** Delete account of this user. [User]
+- **DELETE /users/:id :** Delete this user by ID. [Admin]
 
 Product Services:
 
+- **GET /products/:id :** Get product details by ID. [Public]
 - **GET /products/ :** Query products by: search term (name, description), category, price, rate. [Public]
-- **GET /products/:id :** Get product by ID. [Public]
 - **GET /products/top-cheapest :** Get the top 5 cheapest products by category. [Public]
 - **GET /products/top-rated :** Get the top-rated products by category. [Public]
 - **GET /products/most-sold :** Get the most sold products by category. [Public]
@@ -49,9 +49,8 @@ Product Services:
 
 Review Services:
 
-- **GET /reviews/:productId/reviews :** Query all reviews on product. [Public]
-- **GET /reviews/:id :** Get review by ID. [Public]
-- **POST /reviews/ :** Create a new review on product by id. [User]
+- **GET /reviews/:id :** Get review details by ID. [Public]
+- **POST /reviews/:productId :** Create a new review on product by id. [User]
 - **PUT /reviews/:id :** Update review by ID. [User]
 - **DELETE /reviews/:id :** Delete review by ID. [User]
 

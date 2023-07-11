@@ -6,18 +6,14 @@ const controller = require('../controllers');
 const { isAuthenticated, isResourceOwner } = require('../middlewares');
 const { Review } = require('../models');
 
+router.use(isAuthenticated);
+
 router.get('/:id', (req, res) =>
   controller(res)(getReviews)({ _id: req.params.id })
 );
 
-router.get('/product/:productID', (req, res) =>
-  controller(res)(getReviews)({ userId: req.params.productID })
-);
-
-router.use(isAuthenticated);
-
-router.post('/', (req, res) =>
-  controller(res)(createNewReview)(req.body.review)
+router.post('/:productId', (req, res) =>
+  controller(res)(createNewReview)(req.params.productId, req.body.review)
 );
 
 router.use((req, res) => isResourceOwner(Review, req.params.id, req.user.id));

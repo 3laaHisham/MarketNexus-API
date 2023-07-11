@@ -1,4 +1,4 @@
-const { HttpError } = require("../utils");
+const { HttpError } = require('../utils');
 
 const controller =
   (res) =>

@@ -1,45 +1,45 @@
-const { Schema, model } = require("mongoose");
+const { Schema, model } = require('mongoose');
 
 const productSchema = Schema(
   {
     seller: {
       type: Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
+      ref: 'User',
+      required: true
     },
     name: {
       type: String,
       required: true,
       trim: true,
       minlength: 3,
-      maxlength: 50,
+      maxlength: 50
     },
     description: {
       type: String,
       required: true,
-      maxlength: 500,
+      maxlength: 500
     },
     specification: {
       type: Object,
-      required: true,
+      required: true
     },
     category: {
       type: String,
       required: true,
       enum: [
-        "Electronics",
-        "Beauty",
-        "Sports",
-        "Books",
-        "Toys",
-        "Furniture",
-        "Clothes",
-      ],
+        'Electronics',
+        'Beauty',
+        'Sports',
+        'Books',
+        'Toys',
+        'Furniture',
+        'Clothes'
+      ]
     },
     price: {
       type: Number,
       required: true,
-      min: 0,
+      min: 0
     },
     colors: Array,
     sizes: Array,
@@ -47,39 +47,39 @@ const productSchema = Schema(
       type: Number,
       min: 0,
       max: 5,
-      default: 0,
+      default: 0
     },
     numStock: {
       type: Number,
       required: true,
-      min: 0,
+      min: 0
     },
     numSold: {
       type: Number,
-      default: 0,
+      default: 0
     },
     numViews: {
       type: Number,
-      default: 0,
+      default: 0
     },
     discount: {
       type: Number,
       min: 0,
       max: 100,
-      default: 0,
-    },
+      default: 0
+    }
   },
   {
     timestamps: true,
     toJSON: { virtuals: true },
-    toObject: { virtuals: true },
+    toObject: { virtuals: true }
   }
 );
 
 productSchema.index(
   {
-    name: "text",
-    description: "text",
+    name: 'text',
+    description: 'text'
   },
   { weights: { name: 2, description: 1 } }
 );
@@ -88,14 +88,14 @@ productSchema.index(
 productSchema.statics.search = (query) =>
   this.find(
     { $text: { $search: query } },
-    { score: { $meta: "textScore" } }
-  ).sort({ score: { $meta: "textScore" } });
+    { score: { $meta: 'textScore' } }
+  ).sort({ score: { $meta: 'textScore' } });
 
-productSchema.virtual("reviews", {
-  ref: "Review",
-  foreignField: "productId",
-  localField: "_id",
+productSchema.virtual('reviews', {
+  ref: 'Review',
+  foreignField: 'productId',
+  localField: '_id'
 });
 
-const Product = model("Product", productSchema);
+const Product = model('Product', productSchema);
 module.exports = Product;

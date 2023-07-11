@@ -1,60 +1,60 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
 
-const controller = require("../controllers");
+const controller = require('../controllers');
 
-const { productService } = require("../services");
+const { productService } = require('../services');
 const { getProducts, addProduct, updateProduct, deleteProduct } =
   productService;
+
+const { Product } = require('../models');
 
 const {
   isAuthenticated,
   isAuthorized,
-  isResourceOwner,
-} = require("../middlewares");
+  isResourceOwner
+} = require('../middlewares');
 
-router.get("/:id", (req, res) => controller(res)(getProducts)({ _id: id }));
+router.get('/:id', (req, res) => controller(res)(getProducts)({ _id: id }));
 
-router.get("/", (req, res) => controller(res)(getProducts)(req.query));
+router.get('/', (req, res) => controller(res)(getProducts)(req.query));
 
-router.get("/top10-cheapest", (req, res) =>
+router.get('/top10-cheapest', (req, res) =>
   controller(res)(getProducts)({
     limit: 10,
     sort: { price: 1 },
-    category: req.query.category,
+    category: req.query.category
   })
 );
 
-router.get("/top10-rated", (req, res) =>
+router.get('/top10-rated', (req, res) =>
   controller(res)(getProducts)({
     limit: 10,
     sort: { avgRating: -1 },
-    category: req.query.category,
+    category: req.query.category
   })
 );
 
-router.get("/most10-sold", (req, res) =>
+router.get('/most10-sold', (req, res) =>
   controller(res)(getProducts)({
     limit: 10,
     sort: { numSold: -1 },
-    category: req.query.category,
+    category: req.query.category
   })
 );
 
-router.use(isAuthenticated, isAuthorized("seller"));
+router.use(isAuthenticated, isAuthorized('seller'));
 
-router.post("/", (req, res) => controller(res)(addProduct)(req.body));
+router.post('/', (req, res) => controller(res)(addProduct)(req.body.product));
 
-router.use((req, res) =>
-  isResourceOwner("Product", req.params.id, req.user.id)
+router.use((req, res) => isResourceOwner(Product, req.params.id, req.user.id));
+
+router.put('/:id', (req, res) =>
+  controller(res)(updateProduct)(req.params.id, req.body.product)
 );
 
-router.put("/:id", (req, res) =>
-  controller(res)(updateProduct)({ _id: req.params.id }, req.body)
-);
-
-router.delete("/:id", (req, res) =>
-  controller(res)(deleteProduct)({ _id: req.params.id })
+router.delete('/:id', (req, res) =>
+  controller(res)(deleteProduct)(req.params.id)
 );
 
 module.exports = router;

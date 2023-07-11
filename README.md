@@ -24,53 +24,52 @@ Authentication Services:
 
 - **POST /auth/login :** Login with user credentials. [Public]
 - **POST /auth/signup :** Sign up and create a new user account. [Public]
-- **POST /auth/logout :** Logout the currently authenticated user. [User]
-- **PUT /auth/change-password :** Change the password of the currently authenticated user. [User]
+- **POST /auth/logout :** Logout of the session. [User]
+- **PUT /auth/change-password :** Change the password. [User]
 
 User Services:
 
 - **GET /users :** Query all users by name, email, phone, role. [Public]
 - **GET /users/:id :** Get user data by ID. [Public]
-- **GET /users/me :** get details of the currently authenticated user. [User]
-- **PUT /users/me :** Update details of the currently authenticated user. [User]
-- **DELETE /users/me :** Delete the account of the currently authenticated user. [User]
+- **GET /users/me :** get details of the user. [User]
+- **PUT /users/me :** Update details of the user. [User]
+- **DELETE /users/me :** Delete account of the user. [User]
 - **DELETE /users/:id :** Delete user by ID. [Admin]
 
 Product Services:
 
-- **GET /products :** Query products by search term (name, description), category, price, rate. [Public]
-- **GET /products/:id :** Query product by ID. [Public]
+- **GET /products/ :** Query products by: search term (name, description), category, price, rate. [Public]
+- **GET /products/:id :** Get product by ID. [Public]
 - **GET /products/top-cheapest :** Get the top 5 cheapest products by category. [Public]
 - **GET /products/top-rated :** Get the top-rated products by category. [Public]
 - **GET /products/most-sold :** Get the most sold products by category. [Public]
-- **POST /products :** Create a new product. [Seller]
+- **POST /products/ :** Create a new product. [Seller]
 - **PUT /products/:id :** Update product details by ID. [Seller]
 - **DELETE /products/:id :** Delete product by ID. [Seller]
 
 Review Services:
 
-- **POST /reviews/:productId :** Create a new review on product by id. [User]
-- **GET /reviews/:productId/reviews :** Query all reviews on product by id [Public]
+- **GET /reviews/:productId/reviews :** Query all reviews on product. [Public]
 - **GET /reviews/:id :** Get review by ID. [Public]
+- **POST /reviews/ :** Create a new review on product by id. [User]
 - **PUT /reviews/:id :** Update review by ID. [User]
 - **DELETE /reviews/:id :** Delete review by ID. [User]
 
 Cart Services:
 
+- **GET /cart :** Get cart details. [User]
 - **POST /cart/products :** Add a product to the cart. [User]
-- **PUT /cart/products/:id/reduce :** Reduce the quantity of a product in the cart by one. [User]
 - **PUT /cart/products/:id/increase :** Increase the quantity of a product in the cart by one. [User]
-- **GET /cart :** Get the cart for the currently authenticated user. [User]
+- **PUT /cart/products/:id/reduce :** Reduce the quantity of a product in the cart by one. [User]
 - **DELETE /cart/products/:id :** Delete a product from the cart. [User]
 - **DELETE /cart/:id :** Delete the entire cart. [User]
 
 Order Services:
 
-- **POST /orders :** Create a new order. [User]
-- **GET /orders/user/:userId :** Get all orders for the currently authenticated user. [User]
-- **GET /orders/:id :** Query order by ID. [User]
+- **GET /orders/:id :** Get order by id. [User]
+- **GET /orders/ :** Query orders by date. [User]
+- **POST /orders/ :** Create a new order. [User]
 - **PUT /orders/:id/cancel :** Cancel an order. [User]
-- **PUT /orders/:id/return :** Initiate a return for an order. [User]
 - **PUT /orders/:id/status :** Update order status. [Admin]
 
 </details>

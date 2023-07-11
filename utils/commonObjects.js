@@ -1,24 +1,20 @@
 const addressObject = {
   country: {
     type: String,
-    required: true,
-    trim: true,
+    required: true
   },
   city: {
     type: String,
-    required: true,
-    trim: true,
+    required: true
   },
   street: {
     type: String,
-    required: true,
-    trim: true,
+    required: true
   },
   flatNumber: {
     type: String,
-    required: true,
-    trim: true,
-  },
+    required: true
+  }
 };
 
 module.exports = { addressObject };

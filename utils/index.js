@@ -1,9 +1,14 @@
-const { hashPassword, comparePasswords } = require("./hash");
-const HttpError = require("./HttpError");
-const { generateToken, verifyToken } = require("./jwt");
-const { verifySchema, buildSchema, idRegex } = require("./validator");
-const { setRedis, getRedis, delRedis } = require("./redis");
-const { addressObject } = require("./commonObjects");
+const { hashPassword, comparePasswords } = require('./hash');
+const HttpError = require('./HttpError');
+const { generateToken, verifyToken } = require('./jwt');
+const {
+  verifySchema,
+  buildSchema,
+  idRegex,
+  featuresFields
+} = require('./validator');
+const { setRedis, getRedis, delRedis } = require('./redis');
+const { addressObject } = require('./commonObjects');
 
 module.exports = {
   HttpError,
@@ -14,8 +19,9 @@ module.exports = {
   verifySchema,
   buildSchema,
   idRegex,
+  featuresFields,
   setRedis,
   delRedis,
   getRedis,
-  addressObject,
+  addressObject
 };

@@ -1,5 +1,5 @@
-const { StatusCodes } = require("http-status-codes");
-const User = require("../../models");
+const { StatusCodes } = require('http-status-codes');
+const User = require('../../models');
 
 const {
   HttpError,
@@ -8,98 +8,92 @@ const {
   verifyToken,
   verifySchema,
   setRedis,
-  delRedis,
-} = require("../../utils");
+  delRedis
+} = require('../../utils');
 
 const {
   registerSchema,
   loginSchema,
   changePasswordSchema,
-  userIdSchema,
-} = require("./auth.schema");
+  userIdSchema
+} = require('./auth.schema');
 
-const register = async (body) => {
-  let isValidSchema = await verifySchema(registerSchema, body);
+const register = async (user) => {
+  const isValidSchema = await verifySchema(registerSchema, user);
   if (!isValidSchema)
-    throw new HttpError(StatusCodes.BAD_REQUEST, "Schema not satisfied");
+    throw new HttpError(StatusCodes.BAD_REQUEST, 'Schema not satisfied');
 
-  const isUser = await User.isEmailExist(body.email);
+  const isUser = await User.isEmailExist(user.email);
   if (isUser)
-    throw new HttpError(StatusCodes.BAD_REQUEST, "Email already taken");
+    throw new HttpError(StatusCodes.BAD_REQUEST, 'Email already taken');
 
-  body.password = await hashPassword(body.password);
+  user.password = await hashPassword(user.password);
 
-  const user = new User(body);
+  const user = new User(user);
   await user.save();
 
   return {
     status: StatusCodes.CREATED,
-    message: "User created successfully",
-    result: user,
+    message: 'User created successfully',
+    result: user
   };
 };
 
-const login = async (header, body) => {
-  if (header.authorization && (await verifyToken(header.authorization)))
-    throw new HttpError(StatusCodes.BAD_REQUEST, "Already logged in");
+const login = async (token, user) => {
+  const isLogged = token ? await verifyToken(token) : undefined;
+  if (isLogged)
+    throw new HttpError(StatusCodes.BAD_REQUEST, 'Already logged in');
 
-  let isValidSchema = await verifySchema(loginSchema, body);
+  const isValidSchema = await verifySchema(loginSchema, user);
   if (!isValidSchema)
-    throw new HttpError(StatusCodes.BAD_REQUEST, "Schema not satisfied");
+    throw new HttpError(StatusCodes.BAD_REQUEST, 'Schema not satisfied');
 
-  const { email, password } = body;
+  const { email, password } = user;
 
   const user = await User.isEmailExist(email);
-  if (!user) throw new HttpError(StatusCodes.NOT_FOUND, "User not found");
+  if (!user) throw new HttpError(StatusCodes.NOT_FOUND, 'User not found');
 
   const isPasswordMatch = await user.isPasswordMatch(password);
   if (!isPasswordMatch)
-    throw new HttpError(StatusCodes.UNAUTHORIZED, "Wrong password");
+    throw new HttpError(StatusCodes.UNAUTHORIZED, 'Wrong password');
 
-  const token = await generateToken(user.id, role);
-  await setRedis(token, "");
+  const newToken = await generateToken(user._id, role);
+  await setRedis(newToken, newToken);
 
   return {
     status: StatusCodes.OK,
-    message: "User logged in successfully",
-    result: token,
+    message: 'User logged in successfully',
+    result: newToken
   };
 };
 
 const logout = async (id) => {
-  // delete token
-  let isValidSchema = await verifySchema(userIdSchema, id);
-  if (!isValidSchema)
-    throw new HttpError(StatusCodes.BAD_REQUEST, "Not valid id");
-
   await delRedis(id);
 
   return {
     status: StatusCodes.OK,
-    message: "User logged out successfully",
+    message: 'User logged out successfully'
   };
 };
 
-const changePassword = async (id, body) => {
-  let isValidSchema =
-    (await verifySchema(userIdSchema, id)) &&
-    (await verifySchema(changePasswordSchema, body));
+const changePassword = async (id, user) => {
+  const isValidSchema = await verifySchema(changePasswordSchema, user);
   if (!isValidSchema)
-    throw new HttpError(StatusCodes.BAD_REQUEST, "Not valid id or schema");
+    throw new HttpError(StatusCodes.BAD_REQUEST, 'Not valid schema');
 
-  const user = await User.find(id);
-  if (!user) throw new HttpError(StatusCodes.NOT_FOUND, "User not found");
+  const user = await User.findById(id);
+  if (!user) throw new HttpError(StatusCodes.NOT_FOUND, 'User not found');
 
-  const isPasswordMatch = await user.isPasswordMatch(body.oldPassword);
+  const isPasswordMatch = await user.isPasswordMatch(user.oldPassword);
   if (!isPasswordMatch)
-    throw new HttpError(StatusCodes.UNAUTHORIZED, "Wrong password");
+    throw new HttpError(StatusCodes.UNAUTHORIZED, 'Wrong password');
 
-  user.password = await hashPassword(body.newPassword);
+  user.password = await hashPassword(user.newPassword);
   await user.save();
 
   return {
     status: StatusCodes.OK,
-    message: "Password changed successfully",
+    message: 'Password changed successfully'
   };
 };
 

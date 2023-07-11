@@ -6,7 +6,9 @@
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js",
-    "test": "jest"
+    "test": "jest",
+    "prettier": "prettier --check **/*.js",
+    "prettier:fix": "prettier --write \"./**/*.{js,jsx,json}\""
   },
   "repository": {
     "type": "git",

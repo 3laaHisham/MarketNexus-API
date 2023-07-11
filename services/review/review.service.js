@@ -1,101 +1,103 @@
-const { StatusCodes } = require("http-status-codes");
+const { StatusCodes } = require('http-status-codes');
 
-const reviewSchema = require("./review.schema");
-const validateReview = require("./review.schema");
-const { HttpError, verifySchema } = require("../../utils");
-const reviewModel = require("../../models");
+const reviewSchema = require('./review.schema');
+const validateReview = require('./review.schema');
+const { HttpError, verifySchema } = require('../../utils');
+const { Review } = require('../../models');
 
-async function createNewreview(review) {
+async function createNewReview(review) {
   const isReviewValid = await verifySchema(reviewSchema, review);
   if (!isReviewValid)
-    throw new HttpError(StatusCodes.BAD_REQUEST, "review fields are not valid");
+    throw new HttpError(StatusCodes.BAD_REQUEST, 'review fields are not valid');
 
   try {
-    const newReview = new reviewModel({ review });
+    const newReview = new Review({ review });
 
     const savedReview = await newReview.save();
     return {
-      status: StatusCodes.OK,
-      message: "review created successfully",
-      result: savedReview,
+      message: 'review created successfully',
+      result: savedReview
     };
   } catch (error) {
     throw new HttpError(
       StatusCodes.INTERNAL_SERVER_ERROR,
-      "Can not create review"
+      'Can not create review'
     );
   }
 }
 
 async function getAllReviews() {
-  const reviews = await reviewModel.find({}).populate("userID", "name email");
-  if (!reviews) throw new HttpError(StatusCodes.NOT_FOUND, "No reviews found");
+  const reviews = await Review.find({}).populate('userId', 'name email');
+  if (!reviews) throw new HttpError(StatusCodes.NOT_FOUND, 'No reviews found');
 
   return {
     status: StatusCodes.OK,
-    message: "All reviews are retrieved successfully ",
-    result: reviews,
+    message: 'All reviews are retrieved successfully ',
+    result: reviews
   };
 }
 
 async function getReviewById(id) {
-  const review = await reviewModel
-    .findOne({ _id: id })
-    .populate("userID", "name email");
-  if (!review) throw new HttpError(StatusCodes.NOT_FOUND, "No review found");
+  const review = await Review.findOne({ _id: id }).populate(
+    'userId',
+    'name email'
+  );
+  if (!review) throw new HttpError(StatusCodes.NOT_FOUND, 'No review found');
 
   return {
     status: StatusCodes.OK,
-    message: "review retrieved successfully",
-    result: review,
+    message: 'review retrieved successfully',
+    result: review
   };
 }
 async function updateReview(reviewID, newMessage, newNumberOfStars) {
   let updatedReview;
 
   if (newMessage) {
-    updatedReview = await reviewModel.findOneAndUpdate(
-      { _id: reviewID },
+    updatedReview = await Review.findByIdAndUpdate(
+      reviewID,
       { message: newMessage },
       { new: true }
     );
     if (!updatedReview)
       throw new HttpError(
         StatusCodes.NOT_FOUND,
-        "review message update failed"
+        'review message update failed'
       );
   }
   if (newNumberOfStars) {
-    updatedReview = await reviewModel.findOneAndUpdate(
-      { _id: reviewID },
+    updatedReview = await Review.findByIdAndUpdate(
+      reviewID,
       { message: newMessage },
       { new: true }
     );
     if (!updatedReview)
       throw new HttpError(
         StatusCodes.NOT_FOUND,
-        "review number of stars update failed"
+        'review number of stars update failed'
       );
   }
   if (!updateReview)
-    throw new HttpError(StatusCodes.NOT_FOUND, "review was not updated");
+    throw new HttpError(StatusCodes.NOT_FOUND, 'review was not updated');
   return {
     status: StatusCodes.OK,
-    message: "review updated successfully",
-    result: updatedReview,
+    message: 'review updated successfully',
+    result: updatedReview
   };
 }
 async function deleteReview(reviewID) {
-  const deletedReview = await Review.findOneAndDelete({ _id: reviewID });
+  const deletedReview = await Review.findByIdfindByIdAndDelete(reviewID);
   if (!deletedReview)
     throw new HttpError(
       StatusCodes.NOT_FOUND,
-      "review was not found to be deleted"
+      'review was not found to be deleted'
     );
 
   return {
     status: StatusCodes.OK,
-    message: "review deleted successfully",
-    result: deletedReview,
+    message: 'review deleted successfully',
+    result: deletedReview
   };
 }
+
+module.exports = {};

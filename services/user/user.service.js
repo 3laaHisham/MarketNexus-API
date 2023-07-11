@@ -1,65 +1,58 @@
-const { StatusCodes } = require("http-status-codes");
-const User = require("../../models");
-const { HttpError, verifySchema } = require("../../utils");
+const { StatusCodes } = require('http-status-codes');
+const User = require('../../models');
+const { HttpError, verifySchema } = require('../../utils');
 
-const { queryUsersSchema, updateUserSchema } = require("./user.schema");
+const { queryUsersSchema, updateUserSchema } = require('./user.schema');
 
 const getUsers = async (query) => {
   // api features
 
-  let isValidSchema = await verifySchema(queryUsersSchema, query);
+  const isValidSchema = await verifySchema(queryUsersSchema, query);
   if (!isValidSchema)
-    throw new HttpError(StatusCodes.BAD_REQUEST, "Not valid query");
+    throw new HttpError(StatusCodes.BAD_REQUEST, 'Not valid query');
 
-  let users = await User.find(query).populate("reviews");
+  const users = await User.find(query).populate('reviews');
   if (!users)
-    throw new HttpError(StatusCodes.NOT_FOUND, "No users for given filters");
+    throw new HttpError(StatusCodes.NOT_FOUND, 'No users for given filters');
 
   return {
     status: StatusCodes.OK,
-    message: "User retrieved successfully",
-    result: users,
+    message: 'User retrieved successfully',
+    result: users
   };
 };
 
-const updateUser = async (id, body) => {
-  let isValidSchema =
-    (await verifySchema(queryUsersSchema, id)) &&
-    (await verifySchema(updateUserSchema, body));
-  if (!isValidSchema)
-    throw new HttpError(StatusCodes.BAD_REQUEST, "Not valid id or schema");
+const updateUser = async (id, user) => {
+  const isValidQuerySchema = await verifySchema(updateUserSchema, user);
+  if (!isValidQuerySchema)
+    throw new HttpError(StatusCodes.BAD_REQUEST, 'Not valid schema');
 
-  let updatedUser = await User.findOneAndUpdate(id, body, {
+  const updatedUser = await User.findOneAndUpdate(id, user, {
     new: true,
-    runValidators: true,
+    runValidators: true
   });
   if (!updatedUser)
-    throw new HttpError(StatusCodes.NOT_FOUND, "User not found");
+    throw new HttpError(StatusCodes.NOT_FOUND, 'User not found');
 
   return {
     status: StatusCodes.OK,
-    message: "User updated successfully",
-    result: updatedUser,
+    message: 'User updated successfully',
+    result: updatedUser
   };
 };
 
 const deleteUser = async (id) => {
-  let isValidSchema = await verifySchema(queryUsersSchema, id);
-  if (!isValidSchema)
-    throw new HttpError(StatusCodes.BAD_REQUEST, "Not Valid Id");
-
-  let user = await User.findOneAndDelete(id);
-  if (!user) throw new HttpError(StatusCodes.NOT_FOUND, "User not found");
+  const user = await User.findOnefindByIdAndDelete(id);
+  if (!user) throw new HttpError(StatusCodes.NOT_FOUND, 'User not found');
 
   return {
     status: StatusCodes.OK,
-    message: "User deleted successfully",
-    result: null,
+    message: 'User deleted successfully'
   };
 };
 
 module.exports = {
   getUsers,
   updateUser,
-  deleteUser,
+  deleteUser
 };

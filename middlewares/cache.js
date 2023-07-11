@@ -1,11 +1,11 @@
-const { createClient } = require("redis");
+const { createClient } = require('redis');
 
 // self invoked
 let redisClient;
 async () => {
   redisClient = createClient();
 
-  redisClient.on("error", (error) => console.error(`Error : ${error}`));
+  redisClient.on('error', (error) => console.error(`Error : ${error}`));
 
   await redisClient.connect();
 };
@@ -21,7 +21,7 @@ const cachedData = async (req, res, next) => {
   if (cachedResults)
     res.send({
       fromCache: true,
-      data: JSON.parse(cachedResults),
+      data: JSON.parse(cachedResults)
     });
   else next();
 };

@@ -1,23 +1,34 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const controller = require("../controllers");
 
-const { isAuthenticated, isAuthorized } = require("../middlewares");
+const controller = require('../controllers');
+
+const { orderService } = require('../services');
+const { createNewOrder, getAllOrders, updateOrder } = orderService;
+
+const {
+  isAuthenticated,
+  isAuthorized,
+  isResourceOwner
+} = require('../middlewares');
+const { Order } = require('../models');
 
 router.use(isAuthenticated);
 
-router.post("/", (req, res) => controller(res)(getOrderById)(req.body.order));
+router.post('/', (req, res) => controller(res)(createNewOrder)(req.body.order));
 
-router.get("/", (req, res) => controller(res)(getAllOrders)());
+router.get('/', (req, res) => controller(res)(getAllOrders)(req.query));
 
-router.get("/:id", (req, res) => controller(res)(getOrderById)(req.params.id));
-//the order of the next functions is important
-router.put("/:id/cancel", (req, res) =>
-  controller(res)(cancelOrder)(req.params.id)
+router.get('/:id', (req, res) =>
+  controller(res)(getAllOrders)({ _id: req.params.id })
 );
 
-router.put("/:id/status", isAuthorized("admin"), (req, res) =>
-  controller(res)(updateOrderStatus)(req.params.id, req.body.status)
+router.put('/:id/cancel', (req, res) =>
+  controller(res)(updateOrder)(req.params.id, { status: 'Cancelled' })
+);
+
+router.put('/:id/status', isAuthorized('admin'), (req, res) =>
+  controller(res)(updateOrder)(req.params.id, { status: req.body.status })
 );
 
 module.exports = router;

@@ -26,7 +26,7 @@ async function createNewOrder(userId, order) {
     ...order
   };
 
-  const isOrderValid = await verifySchema(createOrderSchema, orderDetails);
+  const isOrderValid = await verifySchema(createOrderSchema, order);
   if (!isOrderValid)
     throw new HttpError(StatusCodes.BAD_REQUEST, 'Order fields are not valid');
 
@@ -52,7 +52,7 @@ async function createNewOrder(userId, order) {
       });
   }
 
-  const newOrder = new Order();
+  const newOrder = new Order(orderDetails);
   const savedOrder = await newOrder.save();
 
   return {

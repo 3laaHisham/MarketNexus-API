@@ -17,7 +17,7 @@ async () => {
 };
 
 const setRedis = async (key, data) =>
-  await redisClient.set(key, JSON.stringify(data), {
+  redisClient.set(key, JSON.stringify(data), {
     EX: 36000
   });
 

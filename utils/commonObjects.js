@@ -1,3 +1,5 @@
+const Joi = require('joi');
+
 const addressObject = {
   country: {
     type: String,
@@ -17,4 +19,11 @@ const addressObject = {
   }
 };
 
-module.exports = { addressObject };
+const addressJoi = {
+  country: Joi.string().required(),
+  city: Joi.string().required(),
+  street: Joi.string().required(),
+  flatNumber: Joi.string().required()
+};
+
+module.exports = { addressObject, addressJoi };

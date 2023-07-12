@@ -11,7 +11,7 @@ class APIFeatures {
     const excludedFields = ['page', 'sort', 'limit', 'fields'];
     excludedFields.forEach((el) => delete queryObj[el]);
 
-    const queryStr = JSON.stringify(queryObj);
+    let queryStr = JSON.stringify(queryObj);
     queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
 
     this.query = this.query.find(JSON.parse(queryStr));
@@ -46,6 +46,10 @@ class APIFeatures {
     this.query = this.query.skip(skip).limit(limit);
     return this;
   }
+
+  //   async getQuery() {
+  //     const query = await this.query;
+  //     return query;
 }
 
 module.exports = APIFeatures;

@@ -13,7 +13,7 @@ router.post('/register', (req, res) =>
 );
 
 router.post('/login', (req, res) =>
-  controller(res)(login)((token = req.header.authorization), req.body.user)
+  controller(res)(login)((token = req.headers.authorization), req.body.user)
 );
 
 router.use(isAuthenticated);

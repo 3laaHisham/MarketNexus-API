@@ -85,11 +85,12 @@ productSchema.index(
 );
 
 // Full test search using index
-productSchema.statics.search = (query) =>
-  this.find(
+productSchema.statics.search = async function (query) {
+  return await this.find(
     { $text: { $search: query } },
     { score: { $meta: 'textScore' } }
   ).sort({ score: { $meta: 'textScore' } });
+};
 
 productSchema.virtual('reviews', {
   ref: 'Review',

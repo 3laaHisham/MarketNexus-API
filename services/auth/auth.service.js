@@ -17,18 +17,18 @@ const {
   changePasswordSchema
 } = require('./auth.schema');
 
-const register = async (user) => {
-  const isValidSchema = await verifySchema(registerSchema, user);
+const register = async (userDetails) => {
+  const isValidSchema = await verifySchema(registerSchema, userDetails);
   if (!isValidSchema)
     throw new HttpError(StatusCodes.BAD_REQUEST, 'Schema not satisfied');
 
-  const isUser = await User.isEmailExist(user.email);
+  const { email, password } = userDetails;
+
+  const isUser = await User.findOne({ email });
   if (isUser)
     throw new HttpError(StatusCodes.BAD_REQUEST, 'Email already taken');
 
-  user.password = await hashPassword(user.password);
-
-  const newUser = new User(user);
+  const newUser = new User(userDetails);
   await newUser.save();
 
   const userCart = new Cart({
@@ -55,20 +55,20 @@ const login = async (token, userDetails) => {
 
   const { email, password } = userDetails;
 
-  const user = await User.isEmailExist(email);
+  const user = await User.findOne({ email }).select('+password');
   if (!user) throw new HttpError(StatusCodes.NOT_FOUND, 'User not found');
 
   const isPasswordMatch = await user.isPasswordMatch(password);
   if (!isPasswordMatch)
     throw new HttpError(StatusCodes.UNAUTHORIZED, 'Wrong password');
 
-  const newToken = await generateToken(user._id, role);
+  const newToken = await generateToken(user._id, user.role);
   await setRedis(newToken, newToken);
 
   return {
     status: StatusCodes.OK,
     message: 'User logged in successfully',
-    result: newToken
+    token: newToken
   };
 };
 
@@ -93,7 +93,7 @@ const changePassword = async (id, newUser) => {
   if (!isPasswordMatch)
     throw new HttpError(StatusCodes.UNAUTHORIZED, 'Wrong password');
 
-  user.password = await hashPassword(user.newUser);
+  user.password = newUser.newPassword;
   await user.save();
 
   return {

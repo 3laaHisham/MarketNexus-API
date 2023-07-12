@@ -2,7 +2,7 @@ const { createClient } = require('redis');
 
 // self invoked
 let redisClient;
-async () => {
+(async () => {
   redisClient = createClient({
     password: 'iLiUvBPms3YF0iPLmIjBW25zx3YZIt5G',
     socket: {
@@ -14,14 +14,14 @@ async () => {
   redisClient.on('error', (error) => console.error(`Error : ${error}`));
 
   await redisClient.connect();
-};
+})();
 
 const setRedis = async (key, data) =>
   redisClient.set(key, JSON.stringify(data), {
     EX: 36000
   });
 
-const getRedis = async (key) => redisClient.get(key);
+const getRedis = async (key) => JSON.parse(redisClient.get(key));
 
 const delRedis = async (key) => redisClient.del(key);
 

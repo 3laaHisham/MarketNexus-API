@@ -36,7 +36,7 @@ const cartSchema = mongoose.Schema(
 
 cartSchema.index({ userId: 1 }, { unique: true });
 
-cartSchema.method.calculateTotal = () => {
+cartSchema.method.calculateTotal = function () {
   let total = 0;
   for (let i = 0; i < this.products.length; i++)
     total += this.products[i].price * this.products[i].count;

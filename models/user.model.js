@@ -25,22 +25,19 @@ const userSchema = Schema(
       required: true,
       trim: true,
       minlength: 8,
-      maxlength: 50,
       select: false // exclude from the query results by default.
     },
     address: {
       type: addressObject,
-      required: true,
-      minlength: 5,
-      maxlength: 50
+      required: true
     },
     phone: {
       type: String,
       required: true,
       unique: true,
       trim: true,
-      minlength: 11,
-      maxlength: 11
+      minlength: 10,
+      maxlength: 13
     },
     role: {
       type: String,
@@ -61,10 +58,11 @@ const userSchema = Schema(
 userSchema.index({ email: 1 }, { unique: true });
 
 // DOCUMENT MIDDLEWARE: runs before .save() and .create() !.update()
-userSchema.pre('save', async (next) => {
+userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
 
-  this.password = await hashPassword(this.password);
+  let hashed = await hashPassword(this.password);
+  this.password = hashed;
 
   next();
 });
@@ -72,15 +70,15 @@ userSchema.pre('save', async (next) => {
 userSchema.pre('findByIdAndUpdate', async function (next) {
   if (!this._update.password) return next();
 
-  this._update.password = await hashPassword(this._update.password);
+  let hashed = await hashPassword(this._update.password);
+  this._update.password = hashed;
 
   next();
 });
 
-userSchema.statics.isEmailExist = (email) => this.findOne({ email });
-
-userSchema.methods.isPasswordMatch = (password) =>
-  comparePasswords(this.password, password);
+userSchema.methods.isPasswordMatch = function (password) {
+  return comparePasswords(password, this.password);
+};
 
 const User = model('User', userSchema);
 

@@ -1,7 +1,7 @@
 const Joi = require('joi');
 
 const verifySchema = async (schema, obj) => {
-  const { error } = schema.validate(obj);
+  const { error } = await schema.validate(obj);
   return !error;
 };
 
@@ -16,7 +16,7 @@ const featuresFields = {
   sort: Joi.string(),
   limit: Joi.number().integer(),
   page: Joi.number().integer(),
-  search: Joi.string()
+  txtSearch: Joi.string()
 };
 
 module.exports = { verifySchema, buildSchema, idRegex, featuresFields };

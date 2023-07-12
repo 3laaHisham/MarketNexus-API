@@ -6,6 +6,7 @@ const cache = async (id, data) => {
 };
 
 const getCached = async (req, res, next) => {
+  // cache by what?
   const id = req.user.id;
 
   const cachedResults = await getRedis(id);

@@ -5,9 +5,9 @@ const isAuthorized = (authorizedRole) => (req, res, next) => {
     const { role } = req.user;
     if (role === authorizedRole) next();
 
-    res.status(StatusCodes.FORBIDDEN).json({ message: 'Unauthorized' });
+    res.status(StatusCodes.FORBIDDEN).json('Unauthorized');
   } catch (e) {
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Error' });
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json('Error');
   }
 };
 
@@ -20,9 +20,9 @@ const isResourceOwner =
 
       if (ownerId == userId) next();
 
-      res.status(StatusCodes.FORBIDDEN).json({ message: 'Unauthorized' });
+      res.status(StatusCodes.FORBIDDEN).json('Unauthorized');
     } catch (e) {
-      res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Error' });
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).json('Error');
     }
   };
 module.exports = { isAuthorized, isResourceOwner };

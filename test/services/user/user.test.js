@@ -47,13 +47,13 @@ test("testing update user email phone password ", async () => {
     let arr = await addFakeUsers([0]);
 
     expect(
-        await userService.updateUser(currUser.name, { $set: { email: "bad email" } })
+        await userService.updateUser(fakeUsers.users.name, { $set: { email: "bad email" } })
     ).toThrow();
     expect(
-        await userService.updateUser(currUser.name, { $set: { phone: "4" } })
+        await userService.updateUser(fakeUsers.users.name, { $set: { phone: "4" } })
     ).toThrow();
     expect(
-        await userService.updateUser(currUser.name, { $set: { password: "b" } })
+        await userService.updateUser(fakeUsers.users.name, { $set: { password: "b" } })
     ).toThrow();
 
 

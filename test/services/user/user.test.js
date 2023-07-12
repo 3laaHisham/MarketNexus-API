@@ -2,6 +2,7 @@ const userService = require("../../../services/user/user.service");
 const setup = require("../../setupTest");
 const fakeUsers = require("../../fakeData/fakeUsers");
 const { expect } = require("chai");
+const { set } = require("mongoose");
 const dbName = "test";
 const collectionName = "users";
 async function addFakeUsers(arrUserIndex) {
@@ -31,10 +32,10 @@ test("testing update user name ", async () => {
     let arr = await addFakeUsers([0]);
     const currUser = setup.run(setup.findCallback(dbName, collectionName, { name: fakeUsers.users[0].name }));
     const result = await userService.updateUser(currUser.name, { $set: { name: "new name0" } });
-
+    expect(result).toBeTruthy();
     expect(result.status).toBe(200);
     expect(result.message).toBe("User updated successfully")
-    expect(result).toBeTruthy();
+
     expect(result.name).toEqual("new name0");
 });
 
@@ -58,3 +59,23 @@ test("testing update user email phone password ", async () => {
 
 
 });
+test("testing delete user ", async () => {
+
+
+    if (!await setup.run(setup.clearCollection(dbName, collectionName)))
+        return null;
+    let arr = await addFakeUsers([0]);
+    const temp = await set.run(setup.findCallback(dbName, collectionName, { name: fakeUsers.users[0].name }));
+
+    const id = temp[0]._id;
+
+    const result = await userService.deleteUser(id)
+
+    expect(result).toBeTruthy();
+    expect(result.status).toBe(200);
+    expect(result.message).toBe("User deleted successfully")
+
+
+}
+
+);

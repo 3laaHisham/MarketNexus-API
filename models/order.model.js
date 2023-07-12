@@ -51,16 +51,6 @@ const orderSchema = mongoose.Schema(
       ],
       default: 'Not Processed'
     },
-    total: {
-      type: Number,
-      min: 0,
-      required: true
-    },
-    productsPrice: {
-      type: Number,
-      min: 0,
-      default: 0
-    },
     taxPrice: {
       type: Number,
       min: 0,
@@ -92,6 +82,28 @@ const orderSchema = mongoose.Schema(
 );
 
 orderSchema.index({ userId: 1 });
+
+orderSchema.virtual('productsPrice').get(function () {
+  let productsPrice = this.products.reduce(
+    (acc, product) => acc + product.price * product.quantity,
+    0
+  );
+
+  return productsPrice;
+});
+
+orderSchema.virtual('total').get(function () {
+  let total = 0;
+
+  total += this.products.reduce(
+    (acc, product) => acc + product.price * product.quantity,
+    0
+  );
+  total += this.taxPrice;
+  total += this.deliveryPrice;
+
+  return total;
+});
 
 const Order = mongoose.model('Order', orderSchema);
 

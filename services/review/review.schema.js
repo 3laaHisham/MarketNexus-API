@@ -1,14 +1,25 @@
 const Joi = require('joi');
-const { buildSchema } = require('../../utils/validator');
+const {
+  buildSchema,
+  idRegex,
+  featuresFields
+} = require('../../utils/validator');
 
-const reviewSchema = buildSchema({
-  userId: Joi.string().required(),
-  productId: Joi.string().required(),
+const createReviewSchema = buildSchema({
   message: Joi.string().required(),
-  date: Joi.date().required(),
-  numStars: Joi.number().integer().min(1).max(5).required()
+  numStars: Joi.number().integer().min(1).max(5).required(),
+
+  date: Joi.date().forbidden()
+});
+
+const queryReviewSchema = buildSchema({
+  ...featuresFields,
+  userId: Joi.string().regex(idRegex),
+  productId: Joi.string().regex(idRegex),
+  numStars: Joi.number().integer().min(1).max(5)
 });
 
 module.exports = {
-  reviewSchema
+  createReviewSchema,
+  queryReviewSchema
 };

@@ -17,7 +17,9 @@ const getProducts = async (query) => {
   delete query.name;
   delete query.description;
 
-  const products = Product.find(query).populate('reviews');
+  const products = Product.find(query)
+    .populate('reviews', 'message numStars')
+    .populate('sellerId', 'name email');
   if (query.name || query.description) products.search(fullTextSearch);
   products = products.exec();
 
@@ -31,12 +33,12 @@ const getProducts = async (query) => {
   };
 };
 
-const addProduct = async (product) => {
+const addProduct = async (sellerId, product) => {
   const isValidSchema = await verifySchema(addProductSchema, product);
   if (!isValidSchema)
     throw new HttpError(StatusCodes.BAD_REQUEST, 'Schema not satisfied');
 
-  const newProduct = new Product(product);
+  const newProduct = new Product({ sellerId, ...product });
   await newProduct.save();
 
   return {
@@ -66,7 +68,7 @@ const updateProduct = async (id, product) => {
 };
 
 const deleteProduct = async (id) => {
-  const product = await Product.findByIdfindByIdAndDelete(id);
+  const product = await Product.findByIdAndDelete(id);
   if (!product) throw new HttpError(StatusCodes.NOT_FOUND, 'Product not found');
 
   return {

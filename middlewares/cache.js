@@ -1,29 +1,21 @@
-const { createClient } = require('redis');
-
-// self invoked
-let redisClient;
-async () => {
-  redisClient = createClient();
-
-  redisClient.on('error', (error) => console.error(`Error : ${error}`));
-
-  await redisClient.connect();
-};
+const { StatusCodes } = require('http-status-codes');
+const { setRedis, getRedis } = require('../utils');
 
 const cache = async (id, data) => {
-  await redisClient.setex(id, 36000, JSON.stringify(data));
+  await setRedis(id, data);
 };
 
-const cachedData = async (req, res, next) => {
-  const id = req.params.id;
+const getCached = async (req, res, next) => {
+  const id = req.user.id;
 
-  const cachedResults = await redisClient.get(id);
+  const cachedResults = await getRedis(id);
   if (cachedResults)
     res.send({
-      fromCache: true,
-      data: JSON.parse(cachedResults)
+      status: StatusCodes.OK,
+      message: 'Retrieved data from cache',
+      result: JSON.parse(cachedResults)
     });
   else next();
 };
 
-module.exports = { redisClient, cache, cachedData };
+module.exports = { cache, getCached };

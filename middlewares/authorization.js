@@ -18,7 +18,7 @@ const isResourceOwner =
       const ownerId =
         resource.modelName === 'Product' ? resource.sellerId : resource.userId;
 
-      if (ownerId === userId) next();
+      if (ownerId == userId) next();
 
       res.status(StatusCodes.FORBIDDEN).json({ message: 'Unauthorized' });
     } catch (e) {

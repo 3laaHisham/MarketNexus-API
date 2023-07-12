@@ -1,4 +1,5 @@
 const { StatusCodes } = require('http-status-codes');
+
 const {
   createOrderSchema,
   updateOrderSchema,
@@ -10,31 +11,49 @@ const { Order, Cart, Product, User } = require('../../models');
 async function createNewOrder(userId, order) {
   const cart = await Cart.findOne({ userId });
   let { products } = cart;
-  let total = cart.calculateTotal();
 
   const user = await User.findById(userId);
   let { address } = user;
 
-  const orderDetails = { userId, products, total, address, ...order };
+  // get StripePaymentId
 
-  const isOrderValid = await verifySchema(createOrderSchema, orderDetails);
+  const orderDetails = {
+    userId,
+    products,
+    address,
+    date: Date.now(),
+    status: 'Not Processed',
+    ...order
+  };
+
+  const isOrderValid = await verifySchema(createOrderSchema, order);
   if (!isOrderValid)
     throw new HttpError(StatusCodes.BAD_REQUEST, 'Order fields are not valid');
 
-  const newOrder = new Order();
-  const savedOrder = await newOrder.save();
-
+  // Empty Cart
   await cart.update({ products: [] });
 
+  // Check if product is available & update its stock
   for (let i = 0; i < order.products.length; i++) {
-    let product = order.products[i];
-    await Product.findByIdAndUpdate(product.id, {
-      $inc: {
-        numSold: product.count,
-        numStock: -product.count
-      }
-    });
+    let productDetails = order.products[i];
+    let product = await Product.findById(productDetails.id);
+
+    if (product.numStock == 0)
+      throw new HttpError(
+        StatusCodes.NOT_ACCEPTABLE,
+        `${product.id} is not available`
+      );
+    else
+      await product.update({
+        $inc: {
+          numSold: productDetails.count,
+          numStock: -productDetails.count
+        }
+      });
   }
+
+  const newOrder = new Order(orderDetails);
+  const savedOrder = await newOrder.save();
 
   return {
     status: StatusCodes.OK,
@@ -50,7 +69,7 @@ async function getAllOrders(query) {
 
   const orders = await Order.find(query)
     .populate('userId', 'name email')
-    .populate('products.id', 'name');
+    .populate('products.id', 'name numStock');
   if (!orders) throw new HttpError(StatusCodes.NOT_FOUND, 'No orders found');
 
   return {

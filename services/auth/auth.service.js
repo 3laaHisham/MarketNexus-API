@@ -1,5 +1,5 @@
 const { StatusCodes } = require('http-status-codes');
-const User = require('../../models');
+const { User, Cart } = require('../../models');
 
 const {
   HttpError,
@@ -14,8 +14,7 @@ const {
 const {
   registerSchema,
   loginSchema,
-  changePasswordSchema,
-  userIdSchema
+  changePasswordSchema
 } = require('./auth.schema');
 
 const register = async (user) => {
@@ -31,6 +30,12 @@ const register = async (user) => {
 
   const newUser = new User(user);
   await newUser.save();
+
+  const userCart = new Cart({
+    userId: newUser._id,
+    products: []
+  });
+  await userCart.save();
 
   return {
     status: StatusCodes.CREATED,

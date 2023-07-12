@@ -45,7 +45,9 @@ router.get('/most10-sold', (req, res) =>
 
 router.use(isAuthenticated, isAuthorized('seller'));
 
-router.post('/', (req, res) => controller(res)(addProduct)(req.body.product));
+router.post('/', (req, res) =>
+  controller(res)(addProduct)(req.user.id, req.body.product)
+);
 
 router.use((req, res) => isResourceOwner(Product, req.params.id, req.user.id));
 

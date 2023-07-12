@@ -26,12 +26,10 @@ test("testing getUsers ", async () => {
     }
 });
 test("testing update user name ", async () => {
-
-    let arr = await addFakeUsers([0, 1, 2]);
+    if (!await setup.run(setup.clearCollection(dbName, collectionName)))
+        return null;
+    let arr = await addFakeUsers([0]);
     const currUser = setup.run(setup.findCallback(dbName, collectionName, { name: fakeUsers.users[0].name }));
-    if (!currUser)
-        addFakeUsers([1, 2, 3]);
-    user.name = "new name";
     const result = await userService.updateUser(currUser.name, { $set: { name: "new name0" } });
 
     expect(result.status).toBe(200);
@@ -41,3 +39,22 @@ test("testing update user name ", async () => {
 });
 
 
+test("testing update user email phone password ", async () => {
+
+
+    if (!await setup.run(setup.clearCollection(dbName, collectionName)))
+        return null;
+    let arr = await addFakeUsers([0]);
+
+    expect(
+        await userService.updateUser(currUser.name, { $set: { email: "bad email" } })
+    ).toThrow();
+    expect(
+        await userService.updateUser(currUser.name, { $set: { phone: "4" } })
+    ).toThrow();
+    expect(
+        await userService.updateUser(currUser.name, { $set: { password: "b" } })
+    ).toThrow();
+
+
+});

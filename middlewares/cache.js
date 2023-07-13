@@ -5,9 +5,8 @@ const cache = async (key, data) => {
   await setRedis(key, data);
 };
 
-const getCached = async (req, res, next) => {
-  // How to concat two json files in one json?
-  const key = Object.assign(req.params, req.query);
+const getCached = (route) => async (req, res, next) => {
+  const key = Object.assign(route, req.query);
 
   const cachedResults = await getRedis(key);
   if (cachedResults)

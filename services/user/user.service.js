@@ -15,6 +15,9 @@ const getUsers = async (query) => {
   if (!users)
     throw new HttpError(StatusCodes.NOT_FOUND, 'No users for given filters');
 
+  const key = Object.assign('user', query);
+  await setRedis(key, users);
+
   return {
     status: StatusCodes.OK,
     message: 'User retrieved successfully',

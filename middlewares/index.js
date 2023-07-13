@@ -1,10 +1,11 @@
-const isAuthenticated = require('./authentication');
+const { isAuthenticated } = require('./authentication');
 const { isAuthorized, isResourceOwner } = require('./authorization');
-const cache = require('./cache');
+const { cache, getCached } = require('./cache');
 
 module.exports = {
   isAuthenticated,
   isAuthorized,
   isResourceOwner,
-  cache
+  cache,
+  getCached
 };

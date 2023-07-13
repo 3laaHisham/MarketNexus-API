@@ -7,12 +7,16 @@ const { reviewService } = require('../services');
 const { getReviews, createNewReview, updateReview, deleteReview } =
   reviewService;
 
-const { isAuthenticated, isResourceOwner } = require('../middlewares');
+const {
+  isAuthenticated,
+  isResourceOwner,
+  getCached
+} = require('../middlewares');
 const { Review } = require('../models');
 
 router.use(isAuthenticated);
 
-router.get('/:id', (req, res) =>
+router.get('/:id', getCached('review'), (req, res) =>
   controller(res)(getReviews)({ _id: req.params.id })
 );
 

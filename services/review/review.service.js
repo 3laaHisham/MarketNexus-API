@@ -6,7 +6,12 @@ const {
   updateReviewSchema
 } = require('./review.schema');
 
-const { APIFeatures, HttpError, verifySchema } = require('../../utils');
+const {
+  APIFeatures,
+  HttpError,
+  verifySchema,
+  setRedis
+} = require('../../utils');
 const { Review, Product } = require('../../models');
 
 async function createNewReview(userId, productId, review) {
@@ -43,6 +48,9 @@ async function getReviews(query) {
 
   const reviews = await apiFeatures.query().populate('userId', 'name email');
   if (!reviews) throw new HttpError(StatusCodes.NOT_FOUND, 'No reviews found');
+
+  const key = Object.assign('review', query);
+  await setRedis(key, reviews);
 
   return {
     status: StatusCodes.OK,

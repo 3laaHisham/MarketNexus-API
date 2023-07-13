@@ -1,6 +1,11 @@
 const { StatusCodes } = require('http-status-codes');
 const { Product } = require('../../models');
-const { APIFeatures, HttpError, verifySchema } = require('../../utils');
+const {
+  APIFeatures,
+  HttpError,
+  verifySchema,
+  setRedis
+} = require('../../utils');
 
 const {
   queryProductsSchema,
@@ -21,6 +26,9 @@ const getProducts = async (query) => {
     .populate('sellerId', 'name email');
   if (!products)
     throw new HttpError(StatusCodes.NOT_FOUND, 'No products found');
+
+  const key = Object.assign('product', query);
+  await setRedis(key, products);
 
   return {
     status: StatusCodes.OK,

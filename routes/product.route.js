@@ -12,30 +12,35 @@ const { Product } = require('../models');
 const {
   isAuthenticated,
   isAuthorized,
-  isResourceOwner
+  isResourceOwner,
+  getCached
 } = require('../middlewares');
 
-router.get('/:id', (req, res) => controller(res)(getProducts)({ _id: id }));
+router.get('/:id', getCached('product'), (req, res) =>
+  controller(res)(getProducts)({ _id: id })
+);
 
-router.get('/', (req, res) => controller(res)(getProducts)(req.query));
+router.get('/', getCached('product'), (req, res) =>
+  controller(res)(getProducts)(req.query)
+);
 
-router.get('/top10-cheapest', (req, res) =>
+router.get('/top10-cheapest', getCached('product'), (req, res) =>
   controller(res)(getProducts)({
     limit: 10,
-    sort: { price: 1 },
+    sort: 'price',
     category: req.query.category
   })
 );
 
-router.get('/top10-rated', (req, res) =>
+router.get('/top10-rated', getCached('product'), (req, res) =>
   controller(res)(getProducts)({
     limit: 10,
-    sort: { avgRating: -1 },
+    sort: '-avgRating',
     category: req.query.category
   })
 );
 
-router.get('/most10-sold', (req, res) =>
+router.get('/most10-sold', getCached('product'), (req, res) =>
   controller(res)(getProducts)({
     limit: 10,
     sort: '-numSold',

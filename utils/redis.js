@@ -17,12 +17,12 @@ let redisClient;
 })();
 
 const setRedis = async (key, data) =>
-  redisClient.set(key, JSON.stringify(data), {
+  redisClient.set(JSON.stringify(key), JSON.stringify(data), {
     EX: 36000
   });
 
-const getRedis = async (key) => JSON.parse(redisClient.get(key));
+const getRedis = async (key) => redisClient.get(JSON.stringify(key));
 
-const delRedis = async (key) => redisClient.del(key);
+const delRedis = async (key) => redisClient.del(JSON.stringify(key));
 
 module.exports = { setRedis, getRedis, delRedis };

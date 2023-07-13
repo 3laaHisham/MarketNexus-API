@@ -2,6 +2,8 @@ const Joi = require('joi');
 
 const verifySchema = async (schema, obj) => {
   const { error } = await schema.validate(obj);
+
+  if (error) console.log(error);
   return !error;
 };
 

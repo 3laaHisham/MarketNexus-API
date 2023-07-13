@@ -2,11 +2,13 @@ const { StatusCodes } = require('http-status-codes');
 const { HttpError } = require('../utils');
 
 const controller =
-  (res) =>
+  (res, session) =>
   (service) =>
   async (...args) => {
     try {
       const result = await service(...args);
+      if (session && result.token) session.token = result.token;
+
       res.status(StatusCodes.OK).json(result);
     } catch (error) {
       console.log(error);

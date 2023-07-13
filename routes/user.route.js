@@ -18,14 +18,16 @@ router.get('/', (req, res) => controller(res)(getUsers)(req.query));
 router.use(isAuthenticated);
 
 router.get('/me', (req, res) =>
-  controller(res)(getUsers)({ _id: req.user.id })
+  controller(res)(getUsers)({ _id: req.session.user.id })
 );
 
 router.put('/me', (req, res) =>
-  controller(res)(updateUser)(req.user.id, req.body.user)
+  controller(res)(updateUser)(req.session.user.id, req.body.user)
 );
 
-router.delete('/me', (req, res) => controller(res)(deleteUser)(req.user.id));
+router.delete('/me', (req, res) =>
+  controller(res)(deleteUser)(req.session.user.id)
+);
 
 router.delete('/:id', isAuthorized('admin'), (req, res) =>
   controller(res)(deleteUser)(req.params.id)

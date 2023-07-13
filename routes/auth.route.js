@@ -13,15 +13,20 @@ router.post('/register', (req, res) =>
 );
 
 router.post('/login', (req, res) =>
-  controller(res)(login)((token = req.headers.authorization), req.body.user)
+  controller(res, req.session)(login)(
+    (token = req.session.token),
+    req.body.user
+  )
 );
 
 router.use(isAuthenticated);
 
-router.post('/logout', (req, res) => controller(res)(logout)(req.user.id));
+router.post('/logout', (req, res) =>
+  controller(res)(logout)(req.session.token)
+);
 
 router.put('/change-password', (req, res) =>
-  controller(res)(changePassword)(req.user.id, req.body.user)
+  controller(res)(changePassword)(req.session.user.id, req.body.user)
 );
 
 module.exports = router;

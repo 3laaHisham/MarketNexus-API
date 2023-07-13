@@ -17,7 +17,7 @@ const { Order } = require('../models');
 router.use(isAuthenticated);
 
 router.post('/', (req, res) =>
-  controller(res)(createNewOrder)(req.user.id, req.body.order)
+  controller(res)(createNewOrder)(req.session.user.id, req.body.order)
 );
 
 router.get('/:id', (req, res) =>
@@ -26,7 +26,9 @@ router.get('/:id', (req, res) =>
 
 router.get('/', (req, res) => controller(res)(getAllOrders)(req.query));
 
-router.use((req, res) => isResourceOwner(Order, req.params.id, req.user.id));
+router.use((req, res) =>
+  isResourceOwner(Order, req.params.id, req.session.user.id)
+);
 
 router.put('/:id/cancel', (req, res) =>
   controller(res)(updateOrder)(req.params.id, { status: 'Cancelled' })

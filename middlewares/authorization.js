@@ -2,7 +2,7 @@ const { StatusCodes } = require('http-status-codes');
 
 const isAuthorized = (authorizedRole) => (req, res, next) => {
   try {
-    const { role } = req.user;
+    const { role } = req.session.user;
     if (role === authorizedRole) next();
 
     res.status(StatusCodes.FORBIDDEN).json('Unauthorized');

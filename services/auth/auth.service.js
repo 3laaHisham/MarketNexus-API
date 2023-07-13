@@ -8,6 +8,7 @@ const {
   verifyToken,
   verifySchema,
   setRedis,
+  getRedis,
   delRedis
 } = require('../../utils');
 
@@ -45,7 +46,8 @@ const register = async (userDetails) => {
 };
 
 const login = async (token, userDetails) => {
-  const isLogged = token ? await verifyToken(token) : undefined;
+  const tokenExist = token ? await getRedis(token) : undefined;
+  const isLogged = tokenExist ? await verifyToken(token) : undefined;
   if (isLogged)
     throw new HttpError(StatusCodes.BAD_REQUEST, 'Already logged in');
 
@@ -72,8 +74,8 @@ const login = async (token, userDetails) => {
   };
 };
 
-const logout = async (id) => {
-  await delRedis(id);
+const logout = async (token) => {
+  await delRedis(token);
 
   return {
     status: StatusCodes.OK,
@@ -86,7 +88,7 @@ const changePassword = async (id, newUser) => {
   if (!isValidSchema)
     throw new HttpError(StatusCodes.BAD_REQUEST, 'Not valid schema');
 
-  const user = await User.findById(id);
+  const user = await User.findById(id).select('+password');
   if (!user) throw new HttpError(StatusCodes.NOT_FOUND, 'User not found');
 
   const isPasswordMatch = await user.isPasswordMatch(newUser.oldPassword);

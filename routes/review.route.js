@@ -18,13 +18,15 @@ router.get('/:id', (req, res) =>
 
 router.post('/:productId', (req, res) =>
   controller(res)(createNewReview)(
-    req.user.id,
+    req.session.user.id,
     req.params.productId,
     req.body.review
   )
 );
 
-router.use((req, res) => isResourceOwner(Review, req.params.id, req.user.id));
+router.use((req, res) =>
+  isResourceOwner(Review, req.params.id, req.session.user.id)
+);
 
 router.put(':/id', (req, res) =>
   controller(res)(updateReview)(req.params.id, req.body.review)

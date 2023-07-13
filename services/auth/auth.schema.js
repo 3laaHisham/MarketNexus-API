@@ -23,7 +23,7 @@ const loginSchema = buildSchema({
 const changePasswordSchema = buildSchema({
   oldPassword: Joi.string().required(),
   newPassword: Joi.string().required(),
-  newPasswordConfirm: Joi.string().equal('newPassword').required()
+  newPasswordConfirm: Joi.string().valid(Joi.ref('newPassword')).required()
 });
 
 // how to validate a field equal another field in Joi with nodejs?

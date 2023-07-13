@@ -12,7 +12,7 @@ router.get('/:id', (req, res) =>
   controller(res)(getUsers)({ _id: req.params.id })
 );
 
-router.get('/', (req, res) => controller(res)(getUsers)(req.query));
+router.get('/search', (req, res) => controller(res)(getUsers)(req.query));
 
 // The following routes needs authentication.
 router.use(isAuthenticated);

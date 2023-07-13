@@ -24,7 +24,7 @@ router.get('/:id', (req, res) =>
   controller(res)(getAllOrders)({ _id: req.params.id })
 );
 
-router.get('/', (req, res) => controller(res)(getAllOrders)(req.query));
+router.get('/search', (req, res) => controller(res)(getAllOrders)(req.query));
 
 router.use((req, res) =>
   isResourceOwner(Order, req.params.id, req.session.user.id)

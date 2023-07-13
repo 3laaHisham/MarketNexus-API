@@ -20,7 +20,7 @@ router.get('/:id', getCached('product'), (req, res) =>
   controller(res)(getProducts)({ _id: id })
 );
 
-router.get('/', getCached('product'), (req, res) =>
+router.get('/search', getCached('product'), (req, res) =>
   controller(res)(getProducts)(req.query)
 );
 

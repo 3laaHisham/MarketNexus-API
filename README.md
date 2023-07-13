@@ -32,7 +32,7 @@ Authentication Services:
 User Services:
 
 - **GET /users/:id :** Get user details by ID. [Public]
-- **GET /users :** Query all users by name, email, phone, role. [Public]
+- **GET /users/search :** Query all users by name, email, phone, role. [Public]
 - **GET /users/me :** Get details of this user. [User]
 - **PUT /users/me :** Update details of this user. [User]
 - **DELETE /users/me :** Delete account of this user. [User]
@@ -41,7 +41,7 @@ User Services:
 Product Services:
 
 - **GET /products/:id :** Get product details by ID. [Public]
-- **GET /products/ :** Query products by: search term (name, description), category, price, rate. [Public]
+- **GET /products/search :** Query products by: search term (name, description), category, price, rate. [Public]
 - **GET /products/top-cheapest :** Get the top 5 cheapest products by category. [Public]
 - **GET /products/top-rated :** Get the top-rated products by category. [Public]
 - **GET /products/most-sold :** Get the most sold products by category. [Public]

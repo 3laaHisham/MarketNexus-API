@@ -1,17 +1,17 @@
 const { StatusCodes } = require('http-status-codes');
-const User = require('../../models');
-const { HttpError, verifySchema } = require('../../utils');
+const { User } = require('../../models');
+const { APIFeatures, HttpError, verifySchema } = require('../../utils');
 
 const { queryUsersSchema, updateUserSchema } = require('./user.schema');
 
 const getUsers = async (query) => {
-  // api features
-
   const isValidSchema = await verifySchema(queryUsersSchema, query);
   if (!isValidSchema)
     throw new HttpError(StatusCodes.BAD_REQUEST, 'Not valid query');
 
-  const users = await User.find(query).populate('reviews');
+  const apiFeatures = APIFeatures(User, query);
+
+  const users = await apiFeatures.query().populate('reviews');
   if (!users)
     throw new HttpError(StatusCodes.NOT_FOUND, 'No users for given filters');
 

@@ -2,7 +2,7 @@ const { StatusCodes } = require('http-status-codes');
 
 const { createReviewSchema, queryReviewsSchema } = require('./review.schema');
 
-const { HttpError, verifySchema } = require('../../utils');
+const { APIFeatures, HttpError, verifySchema } = require('../../utils');
 const { Review, Product } = require('../../models');
 
 async function createNewReview(userId, productId, review) {
@@ -35,7 +35,9 @@ async function getReviews(query) {
   if (!isQueryValid)
     throw new HttpError(StatusCodes.BAD_REQUEST, 'Review schema is not valid');
 
-  const reviews = await Review.find(query).populate('userId', 'name email');
+  const apiFeatures = APIFeatures(Review, query);
+
+  const reviews = await apiFeatures.query().populate('userId', 'name email');
   if (!reviews) throw new HttpError(StatusCodes.NOT_FOUND, 'No reviews found');
 
   return {

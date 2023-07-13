@@ -9,8 +9,10 @@ const {
 } = require('./validator');
 const { setRedis, getRedis, delRedis } = require('./redis');
 const { addressObject, addressJoi } = require('./commonObjects');
+const APIFeatures = require('./apiFeatures');
 
 module.exports = {
+  APIFeatures,
   HttpError,
   hashPassword,
   comparePasswords,

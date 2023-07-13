@@ -5,7 +5,7 @@ const {
   updateOrderSchema,
   queryOrdersSchema
 } = require('./order.schema');
-const { HttpError, verifySchema } = require('../../utils');
+const { APIFeatures, HttpError, verifySchema } = require('../../utils');
 const { Order, Cart, Product, User } = require('../../models');
 
 async function createNewOrder(userId, order) {
@@ -67,7 +67,10 @@ async function getAllOrders(query) {
   if (!isOrderValid)
     throw new HttpError(StatusCodes.BAD_REQUEST, 'Order fields are not valid');
 
-  const orders = await Order.find(query)
+  const apiFeatures = APIFeatures(Order, query);
+
+  const orders = await apiFeatures
+    .query()
     .populate('userId', 'name email')
     .populate('products.id', 'name numStock');
   if (!orders) throw new HttpError(StatusCodes.NOT_FOUND, 'No orders found');

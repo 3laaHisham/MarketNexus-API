@@ -1,51 +1,75 @@
-// method that given query body that contains or not filter, limit, page and sort fields, it creates a query object of mongoose
-
 class APIFeatures {
-  constructor(query, queryString) {
-    this.query = query;
-    this.queryString = queryString;
+  features = ['page', 'sort', 'limit', 'select', 'txtSearch'];
+
+  constructor(model, reqQuery) {
+    this.query = model;
+    this.reqQuery = reqQuery;
+
+    this.filterQuery = { ...reqQuery };
+    this.filterQuery.filter((e) => !features.includes(e));
   }
 
+  query() {
+    this.filter();
+
+    if (this.reqQuery.sort) this.sort();
+    if (this.reqQuery.select) this.select();
+    if (this.reqQuery.page) this.paginate();
+    if (this.reqQuery.txtSearch && model.modelName === 'Product') this.search();
+
+    return this.query;
+  }
+
+  // field.(eq|ne|gte|gt|lte|lt)=value
   filter() {
-    const queryObj = { ...this.queryString };
-    const excludedFields = ['page', 'sort', 'limit', 'select', 'txtSearch'];
-    excludedFields.forEach((el) => delete queryObj[el]);
+    const filterStr = JSON.stringify(this.filterQuery);
+    filterStr = filterStr.replace(
+      /\b(eq|ne|gte|gt|lte|lt)\b/g,
+      (match) => `$${match}`
+    );
 
-    // filter=(price)-(eq|ne|gte|gt|lte|lt)-(value)
-    let queryStr = JSON.stringify(queryObj);
-    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
-
-    this.query = this.query.find(JSON.parse(queryStr));
-    return this.query;
+    this.query = this.query.find(JSON.parse(filterStr));
   }
 
+  // sort=(-|)field1,(-|)field2
   sort() {
-    if (this.queryString.sort) {
-      const sortBy = this.queryString.sort.split(',').join(' ');
-      this.query = this.query.sort(sortBy);
-    } else {
-      this.query = this.query.sort('-createdAt');
-    }
-    return this.query;
+    const fields = this.reqQuery.sort.split(',');
+    const sortBy = {};
+
+    fields.forEach((field) => {
+      const fieldName = field.startsWith('-') ? field.slice(1) : field;
+      const sortOrder = field.startsWith('-') ? -1 : 1;
+
+      sortBy[fieldName] = sortOrder;
+    });
+
+    this.query = this.query.sort(sortBy);
   }
 
-  limitFields() {
-    if (this.queryString.fields) {
-      const fields = this.queryString.fields.split(',').join(' ');
-      this.query = this.query.select(fields);
-    } else {
-      this.query = this.query.select('-__v');
-    }
-    return this.query;
+  // select=field1,field2
+  select() {
+    const selected = this.reqQuery.select.split(',').join(' ');
+
+    this.query = this.query.select(selected);
   }
 
+  // page=value
   paginate() {
-    const page = this.queryString.page * 1 || 1;
-    const limit = this.queryString.limit * 1 || 100;
+    const page = this.reqQuery.page * 1 || 1;
+    const limit = this.reqQuery.limit * 1 || 10;
     const skip = (page - 1) * limit;
 
     this.query = this.query.skip(skip).limit(limit);
-    return this.query;
+  }
+
+  // txtSearch=value
+  // valid only with product
+  search() {
+    const search = this.reqQuery.txtSearch;
+
+    this.query = this.query
+      .find({ $text: { $search: search } }, { score: { $meta: 'textScore' } })
+      .sort({ score: { $meta: 'textScore' } });
   }
 }
 

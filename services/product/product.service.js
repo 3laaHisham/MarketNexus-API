@@ -1,6 +1,6 @@
 const { StatusCodes } = require('http-status-codes');
-const Product = require('../../models');
-const { HttpError, verifySchema } = require('../../utils');
+const { Product } = require('../../models');
+const { APIFeatures, HttpError, verifySchema } = require('../../utils');
 
 const {
   queryProductsSchema,
@@ -13,18 +13,14 @@ const getProducts = async (query) => {
   if (!isValidSchema)
     throw new HttpError(StatusCodes.BAD_REQUEST, 'Not valid query');
 
-  const fullTextSearch = { name: query.name, description: query.description };
-  delete query.name;
-  delete query.description;
+  const apiFeatures = APIFeatures(Product, query);
 
-  const products = Product.find(query)
+  const products = await apiFeatures
+    .query()
     .populate('reviews', 'message numStars')
     .populate('sellerId', 'name email');
-  if (query.name || query.description) products.search(fullTextSearch);
-  products = products.exec();
-
   if (!products)
-    throw new HttpError(StatusCodes.NOT_FOUND, 'No products for given query');
+    throw new HttpError(StatusCodes.NOT_FOUND, 'No products found');
 
   return {
     status: StatusCodes.OK,

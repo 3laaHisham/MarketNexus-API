@@ -16,7 +16,7 @@ _An eCommerce Restful API built using NodeJS, Express and MongoDB. It introduces
 
 Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos (Postman) work well in this space. You may also link to more resources.
 
-[Postman Documentation](https://martian-robot-977935.postman.co/view/MarketNexus-API~009aa56b-3cba-452d-a6e5-611926683980/documentation/23841686-b8c44d99-332c-40d4-8b96-11ea0963f3b0)
+[Postman Documentation](https://martian-robot-977935.postman.co/workspace/MarketNexus-API~009aa56b-3cba-452d-a6e5-611926683980/collection/23841686-b8c44d99-332c-40d4-8b96-11ea0963f3b0?action=share&creator=23841686)
 
 <details>
 <summary>API Endpoints</summary>
@@ -114,7 +114,7 @@ To get a local copy up and running follow these simple example steps.
   - [x] Protection against Cross-Origin attacks (XSS & CSRF).
   - [x] Encryption.
 - [ ] Caching & Tokens.
-- [ ] API Features (Filters, Pagination, Sorting, Limit & Full Text Search).
+- [x] API Features (Filters, Sorting, Limit, Pagination & Full Text Search).
 - [x] CI/CD.
 - [ ] Documentation.
 

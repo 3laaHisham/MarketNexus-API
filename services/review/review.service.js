@@ -1,6 +1,10 @@
 const { StatusCodes } = require('http-status-codes');
 
-const { createReviewSchema, queryReviewsSchema } = require('./review.schema');
+const {
+  createReviewSchema,
+  queryReviewsSchema,
+  updateReviewSchema
+} = require('./review.schema');
 
 const { APIFeatures, HttpError, verifySchema } = require('../../utils');
 const { Review, Product } = require('../../models');
@@ -48,6 +52,10 @@ async function getReviews(query) {
 }
 
 async function updateReview(reviewID, newReview) {
+  const isReviewValid = await verifySchema(updateReviewSchema, newReview);
+  if (!isReviewValid)
+    throw new HttpError(StatusCodes.BAD_REQUEST, 'Review schema is not valid');
+
   const updatedReview = await Review.findByIdAndUpdate(reviewID, newReview, {
     new: true
   });

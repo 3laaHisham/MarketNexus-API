@@ -1,5 +1,5 @@
 const Joi = require('joi');
-const { buildSchema, idRegex } = require('../../utils');
+const { buildSchema, idRegex, featuresFields } = require('../../utils');
 
 const updateUserSchema = buildSchema({
   name: Joi.string(),
@@ -10,7 +10,8 @@ const updateUserSchema = buildSchema({
 
 const queryUsersSchema = buildSchema({
   _id: Joi.string().regex(idRegex),
-  ...updateUserSchema._inner.children
+  ...updateUserSchema._inner.children,
+  ...featuresFields
 });
 
 module.exports = { queryUsersSchema, updateUserSchema };

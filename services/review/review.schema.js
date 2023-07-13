@@ -19,7 +19,13 @@ const queryReviewSchema = buildSchema({
   numStars: Joi.number().integer().min(1).max(5)
 });
 
+const updateReviewSchema = buildSchema({
+  message: Joi.string(),
+  numStars: Joi.number().integer().min(1).max(5)
+});
+
 module.exports = {
   createReviewSchema,
-  queryReviewSchema
+  queryReviewSchema,
+  updateReviewSchema
 };

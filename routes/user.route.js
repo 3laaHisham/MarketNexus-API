@@ -8,9 +8,7 @@ const { getUsers, updateUser, deleteUser } = userService;
 
 const { isAuthenticated, isAuthorized, getCached } = require('../middlewares');
 
-router.get('/:id', (req, res) =>
-  controller(res)(getUsers)({ _id: req.params.id })
-);
+router.get('/:id', (req, res) => controller(res)(getUsers)({ _id: req.params.id }));
 
 router.get('/search', (req, res) => controller(res)(getUsers)(req.query));
 
@@ -21,13 +19,9 @@ router.get('/me', getCached('user'), (req, res) =>
   controller(res)(getUsers)({ _id: req.session.user.id })
 );
 
-router.put('/me', (req, res) =>
-  controller(res)(updateUser)(req.session.user.id, req.body.user)
-);
+router.put('/me', (req, res) => controller(res)(updateUser)(req.session.user.id, req.body));
 
-router.delete('/me', (req, res) =>
-  controller(res)(deleteUser)(req.session.user.id)
-);
+router.delete('/me', (req, res) => controller(res)(deleteUser)(req.session.user.id));
 
 router.delete('/:id', isAuthorized('admin'), (req, res) =>
   controller(res)(deleteUser)(req.params.id)

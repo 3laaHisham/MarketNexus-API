@@ -4,25 +4,15 @@ const router = express.Router();
 const controller = require('../controllers');
 
 const { productService } = require('../services');
-const { getProducts, addProduct, updateProduct, deleteProduct } =
-  productService;
+const { getProducts, addProduct, updateProduct, deleteProduct } = productService;
 
 const { Product } = require('../models');
 
-const {
-  isAuthenticated,
-  isAuthorized,
-  isResourceOwner,
-  getCached
-} = require('../middlewares');
+const { isAuthenticated, isAuthorized, isResourceOwner, getCached } = require('../middlewares');
 
-router.get('/:id', getCached('product'), (req, res) =>
-  controller(res)(getProducts)({ _id: id })
-);
+router.get('/:id', getCached('product'), (req, res) => controller(res)(getProducts)({ _id: id }));
 
-router.get('/search', getCached('product'), (req, res) =>
-  controller(res)(getProducts)(req.query)
-);
+router.get('/search', getCached('product'), (req, res) => controller(res)(getProducts)(req.query));
 
 router.get('/top10-cheapest', getCached('product'), (req, res) =>
   controller(res)(getProducts)({
@@ -50,20 +40,12 @@ router.get('/most10-sold', getCached('product'), (req, res) =>
 
 router.use(isAuthenticated, isAuthorized('seller'));
 
-router.post('/', (req, res) =>
-  controller(res)(addProduct)(req.session.user.id, req.body.product)
-);
+router.post('/', (req, res) => controller(res)(addProduct)(req.session.user.id, req.body));
 
-router.use((req, res) =>
-  isResourceOwner(Product, req.params.id, req.session.user.id)
-);
+router.use((req, res) => isResourceOwner(Product, req.params.id, req.session.user.id));
 
-router.put('/:id', (req, res) =>
-  controller(res)(updateProduct)(req.params.id, req.body.product)
-);
+router.put('/:id', (req, res) => controller(res)(updateProduct)(req.params.id, req.body));
 
-router.delete('/:id', (req, res) =>
-  controller(res)(deleteProduct)(req.params.id)
-);
+router.delete('/:id', (req, res) => controller(res)(deleteProduct)(req.params.id));
 
 module.exports = router;

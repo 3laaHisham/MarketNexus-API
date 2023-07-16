@@ -9,12 +9,11 @@ const controller =
       const result = await service(...args);
       if (session && result.token) session.token = result.token;
 
-      res.status(StatusCodes.OK).json(result);
+      res.status(result.status).json(result);
     } catch (error) {
       console.log(error);
 
-      if (error instanceof HttpError)
-        res.status(error.statusCode).json(error.message);
+      if (error instanceof HttpError) res.status(error.statusCode).json(error.message);
       else res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error.message);
     }
   };

@@ -3,12 +3,11 @@ const Joi = require('joi');
 const verifySchema = async (schema, obj) => {
   const { error } = await schema.validate(obj);
 
-  if (error) console.log(error);
+  if (error) console.log(error.details);
   return !error;
 };
 
-const buildSchema = (schema) =>
-  Joi.object(schema).options({ allowUnknown: false });
+const buildSchema = (schema) => Joi.object(schema).options({ allowUnknown: false });
 
 // MongoDB ID format
 const idRegex = /^[0-9a-fA-F]{24}$/;

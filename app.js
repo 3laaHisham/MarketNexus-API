@@ -50,7 +50,7 @@ app.use('/', (req, res) => res.send('HELLO WORLD!'));
 app.all('*', (req, res) => res.status(404).send('NOT FOUND'));
 
 connect(MONGO_URI)
-  .then(() =>
-    app.listen(PORT, () => console.log(`Server started on port ${PORT}`))
-  )
+  .then(() => app.listen(PORT, () => console.log(`Server started on port ${PORT}`)))
   .catch((err) => console.log(err));
+
+module.exports = app;

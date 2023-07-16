@@ -3,7 +3,6 @@ const { User, Cart } = require('../../models');
 
 const {
   HttpError,
-  hashPassword,
   generateToken,
   verifyToken,
   verifySchema,
@@ -12,22 +11,16 @@ const {
   delRedis
 } = require('../../utils');
 
-const {
-  registerSchema,
-  loginSchema,
-  changePasswordSchema
-} = require('./auth.schema');
+const { registerSchema, loginSchema, changePasswordSchema } = require('./auth.schema');
 
 const register = async (userDetails) => {
   const isValidSchema = await verifySchema(registerSchema, userDetails);
-  if (!isValidSchema)
-    throw new HttpError(StatusCodes.BAD_REQUEST, 'Schema not satisfied');
+  if (!isValidSchema) throw new HttpError(StatusCodes.BAD_REQUEST, 'Schema not satisfied');
 
   const { email, password } = userDetails;
 
   const isUser = await User.findOne({ email });
-  if (isUser)
-    throw new HttpError(StatusCodes.BAD_REQUEST, 'Email already taken');
+  if (isUser) throw new HttpError(StatusCodes.BAD_REQUEST, 'Email already taken');
 
   const newUser = new User(userDetails);
   await newUser.save();
@@ -48,12 +41,10 @@ const register = async (userDetails) => {
 const login = async (token, userDetails) => {
   const tokenExist = token ? await getRedis(token) : undefined;
   const isLogged = tokenExist ? await verifyToken(token) : undefined;
-  if (isLogged)
-    throw new HttpError(StatusCodes.BAD_REQUEST, 'Already logged in');
+  if (isLogged) throw new HttpError(StatusCodes.BAD_REQUEST, 'Already logged in');
 
   const isValidSchema = await verifySchema(loginSchema, userDetails);
-  if (!isValidSchema)
-    throw new HttpError(StatusCodes.BAD_REQUEST, 'Schema not satisfied');
+  if (!isValidSchema) throw new HttpError(StatusCodes.BAD_REQUEST, 'Schema not satisfied');
 
   const { email, password } = userDetails;
 
@@ -61,8 +52,7 @@ const login = async (token, userDetails) => {
   if (!user) throw new HttpError(StatusCodes.NOT_FOUND, 'User not found');
 
   const isPasswordMatch = await user.isPasswordMatch(password);
-  if (!isPasswordMatch)
-    throw new HttpError(StatusCodes.UNAUTHORIZED, 'Wrong password');
+  if (!isPasswordMatch) throw new HttpError(StatusCodes.UNAUTHORIZED, 'Wrong password');
 
   const newToken = await generateToken(user._id, user.role);
   await setRedis(newToken, newToken);
@@ -74,8 +64,9 @@ const login = async (token, userDetails) => {
   };
 };
 
-const logout = async (token) => {
-  await delRedis(token);
+const logout = async (session) => {
+  await delRedis(session.token);
+  session.destroy();
 
   return {
     status: StatusCodes.OK,
@@ -85,15 +76,13 @@ const logout = async (token) => {
 
 const changePassword = async (id, newUser) => {
   const isValidSchema = await verifySchema(changePasswordSchema, newUser);
-  if (!isValidSchema)
-    throw new HttpError(StatusCodes.BAD_REQUEST, 'Not valid schema');
+  if (!isValidSchema) throw new HttpError(StatusCodes.BAD_REQUEST, 'Not valid schema');
 
   const user = await User.findById(id).select('+password');
   if (!user) throw new HttpError(StatusCodes.NOT_FOUND, 'User not found');
 
   const isPasswordMatch = await user.isPasswordMatch(newUser.oldPassword);
-  if (!isPasswordMatch)
-    throw new HttpError(StatusCodes.UNAUTHORIZED, 'Wrong password');
+  if (!isPasswordMatch) throw new HttpError(StatusCodes.UNAUTHORIZED, 'Wrong password');
 
   user.password = newUser.newPassword;
   await user.save();

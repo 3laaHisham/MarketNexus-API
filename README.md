@@ -113,7 +113,7 @@ To get a local copy up and running follow these simple example steps.
   - [x] Authentication & Authorization.
   - [x] Protection against Cross-Origin attacks (XSS & CSRF).
   - [x] Encryption.
-- [ ] Caching & Tokens.
+- [x] Caching & Tokens.
 - [x] API Features (Filters, Sorting, Limit, Pagination & Full Text Search).
 - [x] CI/CD.
 - [ ] Documentation.

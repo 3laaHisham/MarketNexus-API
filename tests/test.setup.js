@@ -1,5 +1,3 @@
-require('dotenv').config();
-
 const mongoose = require('mongoose');
 const { MongoMemoryServer } = require('mongodb-memory-server');
 
@@ -39,7 +37,8 @@ const sellerDetails = {
 };
 
 let mongoServer;
-let customerToken, sellerToken;
+let customerToken;
+let sellerToken;
 
 const connectDB = async () => {
   mongoServer = await MongoMemoryServer.create();
@@ -65,7 +64,7 @@ const loginUsers = async () => {
     password: sellerDetails.password
   });
 
-  customerToken = customerRes.body.token;
+  customerToken = customerRes.headers['set-cookie'];
   sellerToken = sellerRes.body.token;
 };
 
@@ -82,7 +81,11 @@ afterAll(async () => {
   await mongoServer.stop();
 });
 
+// token must be dynamically inside of tests, as beforeAll will execute just before they run
+const getCustomerToken = () => customerToken;
+const getSellerToken = () => sellerToken;
+
 module.exports = {
-  customer: { token: customerToken, details: customerDetails },
-  seller: { token: sellerToken, details: sellerDetails }
+  customer: { getToken: getCustomerToken, details: customerDetails },
+  seller: { getToken: getSellerToken, details: sellerDetails }
 };

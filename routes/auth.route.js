@@ -8,10 +8,7 @@ const { register, login, logout, changePassword } = authService;
 
 const { isAuthenticated } = require('../middlewares');
 
-router.post('/register', (req, res) => {
-  // console.log('body', req.body);
-  controller(res)(register)(req.body);
-});
+router.post('/register', (req, res) => controller(res)(register)(req.body));
 
 router.post('/login', (req, res) =>
   controller(res, req.session)(login)((token = req.session.token), req.body)

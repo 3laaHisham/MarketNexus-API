@@ -40,7 +40,6 @@ describe('POST /register', () => {
     expect(res.body.result.email).to.equal(user.email);
 
     const userExist = await User.findById(res.body.result._id);
-    console.log(userExist);
     expect(userExist).to.exist;
   });
 
@@ -90,34 +89,6 @@ describe('POST /login', () => {
   });
 });
 
-describe('POST /logout', () => {
-  it('should fail: not authenticated', async () => {
-    const res = await myRequest.post('/auth/logout').send();
-
-    expect(res.statusCode).to.equal(StatusCodes.UNAUTHORIZED);
-  });
-
-  it.only('should succeed', async () => {
-    console.log(customer.token);
-    const res = await myRequest
-      .post('/auth/logout')
-      .set('Cookie', [`connect.sid=${customer.token}`])
-      .send();
-
-    // expect(authMiddleware).toHaveBeenCalled();
-    expect(res.statusCode).to.equal(StatusCodes.OK);
-  });
-
-  it('should fail: already logged out', async () => {
-    const res = await myRequest
-      .post('/auth/logout')
-      .set('Cookie', [`connect.sid=${customer.token}`])
-      .send();
-
-    expect(res.statusCode).to.equal(StatusCodes.UNAUTHORIZED);
-  });
-});
-
 describe('PUT /change-password', () => {
   it('should fail: not authenticated', async () => {
     const res = await myRequest.put('/auth/change-password').send();
@@ -128,7 +99,7 @@ describe('PUT /change-password', () => {
   it('should fail: not valid schema', async () => {
     const res = await myRequest
       .put('/auth/change-password')
-      .set('Cookie', [`connect.sid=${customer.token}`])
+      .set('Cookie', customer.getToken())
       .send({ oldPassword: 'password' });
 
     expect(res.statusCode).to.equal(StatusCodes.BAD_REQUEST);
@@ -137,7 +108,7 @@ describe('PUT /change-password', () => {
   it('should fail: wrong password', async () => {
     const res = await myRequest
       .put('/auth/change-password')
-      .set('Cookie', [`connect.sid=${customer.token}`])
+      .set('Cookie', customer.getToken())
       .send({
         oldPassword: 'wrong',
         newPassword: 'newPassword',
@@ -150,7 +121,7 @@ describe('PUT /change-password', () => {
   it('should succeed', async () => {
     const res = await myRequest
       .put('/auth/change-password')
-      .set('Cookie', [`connect.sid=${customer.token}`])
+      .set('Cookie', customer.getToken())
       .send({
         oldPassword: customer.details.password,
         newPassword: 'newPassword',
@@ -158,5 +129,26 @@ describe('PUT /change-password', () => {
       });
 
     expect(res.statusCode).to.equal(StatusCodes.OK);
+  });
+});
+
+describe('POST /logout', () => {
+  it('should fail: not authenticated', async () => {
+    const res = await myRequest.post('/auth/logout').send();
+
+    expect(res.statusCode).to.equal(StatusCodes.UNAUTHORIZED);
+  });
+
+  it('should succeed', async () => {
+    const res = await myRequest.post('/auth/logout').set('Cookie', customer.getToken()).send();
+
+    // expect(authMiddleware).toHaveBeenCalled();
+    expect(res.statusCode).to.equal(StatusCodes.OK);
+  });
+
+  it('should fail: already logged out', async () => {
+    const res = await myRequest.post('/auth/logout').set('Cookie', customer.getToken()).send();
+
+    expect(res.statusCode).to.equal(StatusCodes.UNAUTHORIZED);
   });
 });

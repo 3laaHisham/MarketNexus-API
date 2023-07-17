@@ -1,19 +1,25 @@
 const Joi = require('joi');
 const { buildSchema } = require('../../utils');
 
-const orderSchema = buildSchema({
+const cartSchema = buildSchema({
   userId: Joi.string().required(),
   products: Joi.array()
     .items(
       Joi.object({
-        id: Joi.string().required(),
+        id: Joi.object().required(),
         price: Joi.number().required(),
-        color: Joi.string().required(),
-        size: Joi.string().required(),
-        count: Joi.number().required()
+        count: Joi.number().required(),
+        color: Joi.string(),
+        size: Joi.string()
       })
     )
     .required()
 });
-
-module.exports = { orderSchema };
+const productSchema = buildSchema({
+  id: Joi.object().required(),
+  price: Joi.number().required(),
+  count: Joi.number().required(),
+  color: Joi.string(),
+  size: Joi.string()
+});
+module.exports = { cartSchema, productSchema };

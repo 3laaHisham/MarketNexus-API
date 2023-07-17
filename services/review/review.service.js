@@ -1,28 +1,17 @@
 const { StatusCodes } = require('http-status-codes');
 
-const {
-  createReviewSchema,
-  queryReviewsSchema,
-  updateReviewSchema
-} = require('./review.schema');
+const { createReviewSchema, queryReviewsSchema, updateReviewSchema } = require('./review.schema');
 
-const {
-  APIFeatures,
-  HttpError,
-  verifySchema,
-  setRedis
-} = require('../../utils');
+const { APIFeatures, HttpError, verifySchema, setRedis } = require('../../utils');
 const { Review, Product } = require('../../models');
 
 async function createNewReview(userId, productId, review) {
   const isReviewValid = await verifySchema(createReviewSchema, review);
-  if (!isReviewValid)
-    throw new HttpError(StatusCodes.BAD_REQUEST, 'Review schema is not valid');
+  if (!isReviewValid) throw new HttpError(StatusCodes.BAD_REQUEST, 'Review schema is not valid');
 
   // Check if user & product exist
   const existingProduct = await Product.findById(productId);
-  if (!existingProduct)
-    throw new HttpError(StatusCodes.NOT_FOUND, 'User was not found');
+  if (!existingProduct) throw new HttpError(StatusCodes.NOT_FOUND, 'User was not found');
 
   const newReview = new Review({
     userId,
@@ -41,8 +30,7 @@ async function createNewReview(userId, productId, review) {
 
 async function getReviews(query) {
   const isQueryValid = await verifySchema(queryReviewsSchema, query);
-  if (!isQueryValid)
-    throw new HttpError(StatusCodes.BAD_REQUEST, 'Review schema is not valid');
+  if (!isQueryValid) throw new HttpError(StatusCodes.BAD_REQUEST, 'Review schema is not valid');
 
   const apiFeatures = APIFeatures(Review, query);
 
@@ -61,14 +49,12 @@ async function getReviews(query) {
 
 async function updateReview(reviewID, newReview) {
   const isReviewValid = await verifySchema(updateReviewSchema, newReview);
-  if (!isReviewValid)
-    throw new HttpError(StatusCodes.BAD_REQUEST, 'Review schema is not valid');
+  if (!isReviewValid) throw new HttpError(StatusCodes.BAD_REQUEST, 'Review schema is not valid');
 
   const updatedReview = await Review.findByIdAndUpdate(reviewID, newReview, {
     new: true
   });
-  if (!updatedReview)
-    throw new HttpError(StatusCodes.NOT_FOUND, 'Review update failed');
+  if (!updatedReview) throw new HttpError(StatusCodes.NOT_FOUND, 'Review update failed');
 
   return {
     status: StatusCodes.OK,
@@ -79,10 +65,7 @@ async function updateReview(reviewID, newReview) {
 async function deleteReview(reviewID) {
   const deletedReview = await Review.findByIdAndDelete(reviewID);
   if (!deletedReview)
-    throw new HttpError(
-      StatusCodes.NOT_FOUND,
-      'Review was not found to be deleted'
-    );
+    throw new HttpError(StatusCodes.NOT_FOUND, 'Review was not found to be deleted');
 
   return {
     status: StatusCodes.OK,

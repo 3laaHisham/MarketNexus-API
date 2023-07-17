@@ -1,22 +1,12 @@
 const { StatusCodes } = require('http-status-codes');
 const { Product } = require('../../models');
-const {
-  APIFeatures,
-  HttpError,
-  verifySchema,
-  setRedis
-} = require('../../utils');
+const { APIFeatures, HttpError, verifySchema, setRedis } = require('../../utils');
 
-const {
-  queryProductsSchema,
-  updateProductSchema,
-  addProductSchema
-} = require('./product.schema');
+const { queryProductsSchema, updateProductSchema, addProductSchema } = require('./product.schema');
 
 const getProducts = async (query) => {
   const isValidSchema = await verifySchema(queryProductsSchema, query);
-  if (!isValidSchema)
-    throw new HttpError(StatusCodes.BAD_REQUEST, 'Not valid query');
+  if (!isValidSchema) throw new HttpError(StatusCodes.BAD_REQUEST, 'Not valid query');
 
   const apiFeatures = APIFeatures(Product, query);
 
@@ -24,8 +14,7 @@ const getProducts = async (query) => {
     .query()
     .populate('reviews', 'message numStars')
     .populate('sellerId', 'name email');
-  if (!products)
-    throw new HttpError(StatusCodes.NOT_FOUND, 'No products found');
+  if (!products) throw new HttpError(StatusCodes.NOT_FOUND, 'No products found');
 
   const key = Object.assign('product', query);
   await setRedis(key, products);
@@ -39,8 +28,7 @@ const getProducts = async (query) => {
 
 const addProduct = async (sellerId, product) => {
   const isValidSchema = await verifySchema(addProductSchema, product);
-  if (!isValidSchema)
-    throw new HttpError(StatusCodes.BAD_REQUEST, 'Schema not satisfied');
+  if (!isValidSchema) throw new HttpError(StatusCodes.BAD_REQUEST, 'Schema not satisfied');
 
   const newProduct = new Product({ sellerId, ...product });
   await newProduct.save();
@@ -54,15 +42,13 @@ const addProduct = async (sellerId, product) => {
 
 const updateProduct = async (id, product) => {
   const isValidSchema = await verifySchema(updateProductSchema, product);
-  if (!isValidSchema)
-    throw new HttpError(StatusCodes.BAD_REQUEST, 'Not valid schema');
+  if (!isValidSchema) throw new HttpError(StatusCodes.BAD_REQUEST, 'Not valid schema');
 
   const updatedProduct = await Product.findByIdAndUpdate(id, product, {
     new: true,
     runValidators: true
   });
-  if (!updatedProduct)
-    throw new HttpError(StatusCodes.NOT_FOUND, 'Product not found');
+  if (!updatedProduct) throw new HttpError(StatusCodes.NOT_FOUND, 'Product not found');
 
   return {
     status: StatusCodes.OK,

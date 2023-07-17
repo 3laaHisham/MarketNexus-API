@@ -1,9 +1,5 @@
 const Joi = require('joi');
-const {
-  buildSchema,
-  idRegex,
-  featuresFields
-} = require('../../utils/validator');
+const { buildSchema, idRegex, featuresFields } = require('../../utils/validator');
 
 const createReviewSchema = buildSchema({
   message: Joi.string().required(),

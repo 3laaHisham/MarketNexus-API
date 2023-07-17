@@ -1,17 +1,15 @@
 const { StatusCodes } = require('http-status-codes');
 
-const { cartSchema } = require('./cart.schema');
+const { productSchema } = require('./cart.schema');
 const { HttpError, verifySchema } = require('../../utils');
 const { Cart, Product } = require('../../models');
 
 async function addToCart(userId, newProduct) {
-  const isValidSchema = await verifySchema(cartSchema, newProduct);
-  if (!isValidSchema)
-    throw new HttpError(StatusCodes.BAD_REQUEST, 'product schema is not valid');
+  const isValidSchema = await verifySchema(productSchema, newProduct);
+  if (!isValidSchema) throw new HttpError(StatusCodes.BAD_REQUEST, 'product schema is not valid');
 
   const product = await Product.findById(newProduct._id);
-  if (!product)
-    throw new HttpError(StatusCodes.NOT_FOUND, 'product is not available');
+  if (!product) throw new HttpError(StatusCodes.NOT_FOUND, 'product is not available');
 
   const currentCart = await Cart.findOneAndUpdate(
     { userId },
@@ -32,13 +30,10 @@ async function changeCountOfProduct(productId, amount, userId) {
     { $inc: { 'products.$.count': amount } },
     { new: true }
   );
-  if (!cart)
-    throw new HttpError(StatusCodes.NOT_FOUND, 'No product found to update');
+  if (!cart) throw new HttpError(StatusCodes.NOT_FOUND, 'No product found to update');
 
   // Remove products if count = 0
-  cart.products.filter(
-    (product) => product.id == productId && product.count == 0
-  );
+  cart.products.filter((product) => product.id == productId && product.count == 0);
 
   return {
     status: StatusCodes.OK,
@@ -60,8 +55,7 @@ async function getCart(userId) {
 
 async function emptyCart(userId) {
   const cart = await Cart.findOneAndUpdate({ userId }, { products: [] });
-  if (!cart)
-    throw new HttpError(StatusCodes.NOT_FOUND, 'No carts found to be deleted');
+  if (!cart) throw new HttpError(StatusCodes.NOT_FOUND, 'No carts found to be deleted');
 
   return {
     status: StatusCodes.OK,

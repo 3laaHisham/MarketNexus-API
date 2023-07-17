@@ -5,15 +5,7 @@ const commonFields = {
   name: Joi.string(),
   description: Joi.string(),
   category: Joi.string()
-    .valid(
-      'Electronics',
-      'Beauty',
-      'Sports',
-      'Books',
-      'Toys',
-      'Furniture',
-      'Clothes'
-    )
+    .valid('Electronics', 'Beauty', 'Sports', 'Books', 'Toys', 'Furniture', 'Clothes')
     .required(),
   price: Joi.number(),
   avgRating: Joi.number(),

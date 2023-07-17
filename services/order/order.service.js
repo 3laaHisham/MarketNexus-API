@@ -1,10 +1,6 @@
 const { StatusCodes } = require('http-status-codes');
 
-const {
-  createOrderSchema,
-  updateOrderSchema,
-  queryOrdersSchema
-} = require('./order.schema');
+const { createOrderSchema, updateOrderSchema, queryOrdersSchema } = require('./order.schema');
 const { APIFeatures, HttpError, verifySchema } = require('../../utils');
 const { Order, Cart, Product, User } = require('../../models');
 
@@ -27,8 +23,7 @@ async function createNewOrder(userId, order) {
   };
 
   const isOrderValid = await verifySchema(createOrderSchema, order);
-  if (!isOrderValid)
-    throw new HttpError(StatusCodes.BAD_REQUEST, 'Order fields are not valid');
+  if (!isOrderValid) throw new HttpError(StatusCodes.BAD_REQUEST, 'Order fields are not valid');
 
   // Empty Cart
   await cart.update({ products: [] });
@@ -39,10 +34,7 @@ async function createNewOrder(userId, order) {
     let product = await Product.findById(productDetails.id);
 
     if (product.numStock == 0)
-      throw new HttpError(
-        StatusCodes.NOT_ACCEPTABLE,
-        `${product.id} is not available`
-      );
+      throw new HttpError(StatusCodes.NOT_ACCEPTABLE, `${product.id} is not available`);
     else
       await product.update({
         $inc: {
@@ -64,8 +56,7 @@ async function createNewOrder(userId, order) {
 
 async function getAllOrders(query) {
   const isOrderValid = await verifySchema(queryOrdersSchema, query);
-  if (!isOrderValid)
-    throw new HttpError(StatusCodes.BAD_REQUEST, 'Order fields are not valid');
+  if (!isOrderValid) throw new HttpError(StatusCodes.BAD_REQUEST, 'Order fields are not valid');
 
   const apiFeatures = APIFeatures(Order, query);
 
@@ -84,23 +75,17 @@ async function getAllOrders(query) {
 
 async function updateOrder(id, newOrder) {
   const isOrderValid = await verifySchema(updateOrderSchema, newOrder);
-  if (!isOrderValid)
-    throw new HttpError(StatusCodes.BAD_REQUEST, 'Order fields are not valid');
+  if (!isOrderValid) throw new HttpError(StatusCodes.BAD_REQUEST, 'Order fields are not valid');
 
-  if (newOrder.status && newOrder.status == 'Delivered')
-    newOrder.deliveredAt = Date.now();
+  if (newOrder.status && newOrder.status == 'Delivered') newOrder.deliveredAt = Date.now();
 
   const order = await Order.findById(id);
 
-  if (!order)
-    throw new HttpError(StatusCodes.NOT_FOUND, 'Status update failed');
+  if (!order) throw new HttpError(StatusCodes.NOT_FOUND, 'Status update failed');
 
   if (order.status) {
     if (newOrder.status == 'Cancelled' && order.status == 'Delivered')
-      throw new HttpError(
-        StatusCodes.BAD_REQUEST,
-        'Order is already delivered, can not cancel'
-      );
+      throw new HttpError(StatusCodes.BAD_REQUEST, 'Order is already delivered, can not cancel');
     if (newOrder.status == 'Cancelled' && order.status == 'Cancelled')
       throw new HttpError(
         StatusCodes.BAD_REQUEST,

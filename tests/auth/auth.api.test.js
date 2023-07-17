@@ -89,6 +89,12 @@ describe('POST /login', () => {
   });
 });
 
+// Login as customer
+let customerSession;
+beforeAll(async () => {
+  customerSession = await customer.getSession();
+});
+
 describe('PUT /change-password', () => {
   it('should fail: not authenticated', async () => {
     const res = await myRequest.put('/auth/change-password').send();
@@ -99,34 +105,28 @@ describe('PUT /change-password', () => {
   it('should fail: not valid schema', async () => {
     const res = await myRequest
       .put('/auth/change-password')
-      .set('Cookie', customer.getToken())
+      .set('Cookie', customerSession)
       .send({ oldPassword: 'password' });
 
     expect(res.statusCode).to.equal(StatusCodes.BAD_REQUEST);
   });
 
   it('should fail: wrong password', async () => {
-    const res = await myRequest
-      .put('/auth/change-password')
-      .set('Cookie', customer.getToken())
-      .send({
-        oldPassword: 'wrong',
-        newPassword: 'newPassword',
-        newPasswordConfirm: 'newPassword'
-      });
+    const res = await myRequest.put('/auth/change-password').set('Cookie', customerSession).send({
+      oldPassword: 'wrong',
+      newPassword: 'newPassword',
+      newPasswordConfirm: 'newPassword'
+    });
 
     expect(res.statusCode).to.equal(StatusCodes.UNAUTHORIZED);
   });
 
   it('should succeed', async () => {
-    const res = await myRequest
-      .put('/auth/change-password')
-      .set('Cookie', customer.getToken())
-      .send({
-        oldPassword: customer.details.password,
-        newPassword: 'newPassword',
-        newPasswordConfirm: 'newPassword'
-      });
+    const res = await myRequest.put('/auth/change-password').set('Cookie', customerSession).send({
+      oldPassword: customer.details.password,
+      newPassword: 'newPassword',
+      newPasswordConfirm: 'newPassword'
+    });
 
     expect(res.statusCode).to.equal(StatusCodes.OK);
   });
@@ -140,14 +140,14 @@ describe('POST /logout', () => {
   });
 
   it('should succeed', async () => {
-    const res = await myRequest.post('/auth/logout').set('Cookie', customer.getToken()).send();
+    const res = await myRequest.post('/auth/logout').set('Cookie', customerSession).send();
 
     // expect(authMiddleware).toHaveBeenCalled();
     expect(res.statusCode).to.equal(StatusCodes.OK);
   });
 
   it('should fail: already logged out', async () => {
-    const res = await myRequest.post('/auth/logout').set('Cookie', customer.getToken()).send();
+    const res = await myRequest.post('/auth/logout').set('Cookie', customerSession).send();
 
     expect(res.statusCode).to.equal(StatusCodes.UNAUTHORIZED);
   });

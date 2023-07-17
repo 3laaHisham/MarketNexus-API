@@ -5,40 +5,13 @@ const request = require('supertest');
 const app = require('../app');
 const myRequest = request(app);
 
+const { customerDetails, sellerDetails, adminDetails } = require('./users.json');
+
 jest.setTimeout(600000); // Increase the timeout for the tests
 
-const customerDetails = {
-  name: 'Test Customer',
-  email: 'customer@example.com',
-  password: 'password',
-  address: {
-    country: 'egy',
-    city: 'zeft',
-    street: 'sakha',
-    flatNumber: '3'
-  },
-  phone: 10000000000,
-  role: 'customer'
-};
-
-const sellerDetails = {
-  name: 'Test Seller',
-  email: 'seller@example.com',
-  password: 'password',
-  address: {
-    country: 'egy',
-    city: 'zeft',
-    street: 'sakha',
-    flatNumber: '3'
-  },
-  phone: 11000000000,
-  role: 'seller',
-  isCompany: false
-};
-
 let mongoServer;
-let customerToken;
-let sellerToken;
+let customerId, sellerId, adminId;
+let lastSession = '';
 
 const connectDB = async () => {
   mongoServer = await MongoMemoryServer.create();
@@ -50,22 +23,13 @@ const connectDB = async () => {
 };
 
 const registerUsers = async () => {
-  await myRequest.post('/auth/register').send(customerDetails);
-  await myRequest.post('/auth/register').send(sellerDetails);
-};
+  const customerRes = await myRequest.post('/auth/register').send(customerDetails);
+  const sellerRes = await myRequest.post('/auth/register').send(sellerDetails);
+  const adminRes = await myRequest.post('/auth/register').send(adminDetails);
 
-const loginUsers = async () => {
-  const customerRes = await myRequest.post('/auth/login').send({
-    email: customerDetails.email,
-    password: customerDetails.password
-  });
-  const sellerRes = await myRequest.post('/auth/login').send({
-    email: sellerDetails.email,
-    password: sellerDetails.password
-  });
-
-  customerToken = customerRes.headers['set-cookie'];
-  sellerToken = sellerRes.body.token;
+  customerId = customerRes.body.result._id;
+  sellerId = sellerRes.body.result._id;
+  adminId = adminRes.body.result._id;
 };
 
 beforeAll(async () => {
@@ -73,7 +37,6 @@ beforeAll(async () => {
   await connectDB();
 
   await registerUsers();
-  await loginUsers();
 });
 
 afterAll(async () => {
@@ -81,11 +44,24 @@ afterAll(async () => {
   await mongoServer.stop();
 });
 
-// token must be dynamically inside of tests, as beforeAll will execute just before they run
-const getCustomerToken = () => customerToken;
-const getSellerToken = () => sellerToken;
+const loginUser = async (email, password) => {
+  await myRequest.post('/auth/logout').set('Cookie', lastSession).send();
+
+  const res = await myRequest.post('/auth/login').send({
+    email,
+    password
+  });
+
+  return (lastSession = res.headers['set-cookie']);
+};
+
+// token must be dynamically retrieved inside tests, as beforeAll will execute just before they run
+const getCustomerSession = async () => loginUser(customerDetails.email, customerDetails.password);
+const getSellerSession = async () => loginUser(sellerDetails.email, sellerDetails.password);
+const getAdminSession = async () => loginUser(adminDetails.email, adminDetails.password);
 
 module.exports = {
-  customer: { getToken: getCustomerToken, details: customerDetails },
-  seller: { getToken: getSellerToken, details: sellerDetails }
+  customer: { id: customerId, details: customerDetails, getSession: getCustomerSession },
+  seller: { id: sellerId, details: sellerDetails, getSession: getSellerSession },
+  admin: { id: adminId, details: adminDetails, getSession: getAdminSession }
 };

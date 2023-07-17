@@ -1,12 +1,7 @@
 const { hashPassword, comparePasswords } = require('./hash');
 const HttpError = require('./HttpError');
 const { generateToken, verifyToken } = require('./jwt');
-const {
-  verifySchema,
-  buildSchema,
-  idRegex,
-  featuresFields
-} = require('./validator');
+const { verifySchema, buildSchema, idRegex, featuresFields } = require('./validator');
 const { setRedis, getRedis, delRedis } = require('./redis');
 const { addressObject, addressJoi } = require('./commonObjects');
 const APIFeatures = require('./apiFeatures');

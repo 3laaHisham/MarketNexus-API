@@ -42,13 +42,7 @@ const orderSchema = mongoose.Schema(
     },
     status: {
       type: String,
-      enum: [
-        'Not Processed',
-        'Processing',
-        'Shipped',
-        'Delivered',
-        'Cancelled'
-      ],
+      enum: ['Not Processed', 'Processing', 'Shipped', 'Delivered', 'Cancelled'],
       default: 'Not Processed'
     },
     taxPrice: {
@@ -95,10 +89,7 @@ orderSchema.virtual('productsPrice').get(function () {
 orderSchema.virtual('total').get(function () {
   let total = 0;
 
-  total += this.products.reduce(
-    (acc, product) => acc + product.price * product.quantity,
-    0
-  );
+  total += this.products.reduce((acc, product) => acc + product.price * product.quantity, 0);
   total += this.taxPrice;
   total += this.deliveryPrice;
 

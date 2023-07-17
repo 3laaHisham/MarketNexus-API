@@ -26,15 +26,7 @@ const productSchema = Schema(
     category: {
       type: String,
       required: true,
-      enum: [
-        'Electronics',
-        'Beauty',
-        'Sports',
-        'Books',
-        'Toys',
-        'Furniture',
-        'Clothes'
-      ]
+      enum: ['Electronics', 'Beauty', 'Sports', 'Books', 'Toys', 'Furniture', 'Clothes']
     },
     price: {
       type: Number,
@@ -86,10 +78,9 @@ productSchema.index(
 
 // Full test search using index
 productSchema.statics.search = async function (query) {
-  return await this.find(
-    { $text: { $search: query } },
-    { score: { $meta: 'textScore' } }
-  ).sort({ score: { $meta: 'textScore' } });
+  return await this.find({ $text: { $search: query } }, { score: { $meta: 'textScore' } }).sort({
+    score: { $meta: 'textScore' }
+  });
 };
 
 productSchema.virtual('reviews', {

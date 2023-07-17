@@ -11,18 +11,16 @@ const isAuthorized = (authorizedRole) => (req, res, next) => {
   }
 };
 
-const isResourceOwner =
-  (resourceModel, resourceId, userId) => (req, res, next) => {
-    try {
-      const resource = resourceModel.findById(resourceId);
-      const ownerId =
-        resource.modelName === 'Product' ? resource.sellerId : resource.userId;
+const isResourceOwner = (resourceModel, resourceId, userId) => (req, res, next) => {
+  try {
+    const resource = resourceModel.findById(resourceId);
+    const ownerId = resource.modelName === 'Product' ? resource.sellerId : resource.userId;
 
-      if (ownerId == userId) next();
+    if (ownerId == userId) next();
 
-      res.status(StatusCodes.FORBIDDEN).json('Unauthorized');
-    } catch (e) {
-      res.status(StatusCodes.INTERNAL_SERVER_ERROR).json('Error');
-    }
-  };
+    res.status(StatusCodes.FORBIDDEN).json('Unauthorized');
+  } catch (e) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json('Error');
+  }
+};
 module.exports = { isAuthorized, isResourceOwner };

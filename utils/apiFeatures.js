@@ -23,10 +23,7 @@ class APIFeatures {
   // field.(eq|ne|gte|gt|lte|lt)=value
   filter() {
     const filterStr = JSON.stringify(this.filterQuery);
-    filterStr = filterStr.replace(
-      /\b(eq|ne|gte|gt|lte|lt)\b/g,
-      (match) => `$${match}`
-    );
+    filterStr = filterStr.replace(/\b(eq|ne|gte|gt|lte|lt)\b/g, (match) => `$${match}`);
 
     this.query = this.query.find(JSON.parse(filterStr));
   }

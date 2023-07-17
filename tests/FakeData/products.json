@@ -1,0 +1,30 @@
+{
+  "productDetails": {
+    "seller": "seller_id",
+    "name": "Product 1",
+    "description": "This is the description of Product 1.",
+    "specification": {
+      "color": "Red",
+      "size": "M"
+    },
+    "category": "Electronics",
+    "price": 20,
+    "colors": ["Red", "Blue", "Green"],
+    "sizes": ["S", "M", "L"],
+    "numStock": 50
+  },
+  "product2": {
+    "seller": "seller_id",
+    "name": "Product 2",
+    "description": "This is the description of Product 2.",
+    "specification": {
+      "color": "Blue",
+      "size": "L"
+    },
+    "category": "Beauty",
+    "price": 15,
+    "colors": ["Blue", "Pink", "Purple"],
+    "sizes": ["S", "M", "L"],
+    "numStock": 30
+  }
+}

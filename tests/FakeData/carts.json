@@ -1,0 +1,14 @@
+{
+  "cartDetails": {
+    "userId": "user_id_1",
+    "products": [
+      {
+        "id": "product_id_1",
+        "price": 20,
+        "count": 2,
+        "color": "Red",
+        "size": "M"
+      }
+    ]
+  }
+}

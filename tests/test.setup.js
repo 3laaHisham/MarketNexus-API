@@ -60,11 +60,11 @@ const registerUsers = async () => {
 };
 
 beforeAll(async () => {
+  await clearRedis();
   await mongoose.disconnect();
   await connectDB();
 
   await registerUsers();
-  // await clearRedis();
 });
 
 afterAll(async () => {

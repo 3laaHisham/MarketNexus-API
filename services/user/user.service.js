@@ -5,10 +5,10 @@ const { APIFeatures, HttpError, verifySchema, setRedis, keyGenerator } = require
 const { queryUsersSchema, updateUserSchema } = require('./user.schema');
 
 const getUsers = async (query) => {
+  console.log('HEEEERRRRREEEE');
   const isValidSchema = await verifySchema(queryUsersSchema, query);
   if (!isValidSchema) throw new HttpError(StatusCodes.BAD_REQUEST, 'Not valid query');
 
-  console.log(query); // no output!!
   const apiFeatures = new APIFeatures(User, query);
 
   let users = await apiFeatures.getQueryObj();

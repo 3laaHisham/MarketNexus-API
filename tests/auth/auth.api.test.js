@@ -121,7 +121,7 @@ describe('PUT /change-password', () => {
     expect(res.statusCode).to.equal(StatusCodes.UNAUTHORIZED);
   });
 
-  it('should succeed', async () => {
+  it.only('should succeed', async () => {
     const res = await myRequest.put('/auth/change-password').set('Cookie', customerSession).send({
       oldPassword: customer.details.password,
       newPassword: 'newPassword',

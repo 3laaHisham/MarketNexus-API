@@ -28,9 +28,15 @@ const getRedis = async (key) => redisClient.get(JSON.stringify(key));
 
 const delRedis = async (key) => redisClient.del(JSON.stringify(key));
 
-const clearRedis = async () => redisClient.sendCommand('FLUSHDB');
+const clearRedis = async () => {
+  try {
+    await redisClient.sendCommand(['FLUSHALL']);
+  } catch (error) {
+    console.error(error.message);
+  }
+};
 
-const keyGenerator = async (reqKey) => {
+const keyGenerator = (reqKey) => {
   const sortedKeys = Object.keys(reqKey).sort();
   const sortedKey = {};
   for (const key of sortedKeys) sortedKey[key] = reqKey[key];

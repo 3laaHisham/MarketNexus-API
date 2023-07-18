@@ -1,7 +1,7 @@
 const { StatusCodes } = require('http-status-codes');
 const { getRedis, keyGenerator } = require('../utils');
 
-const getCached = (route, query) => async (req, res, next) => {
+const getCached = (res, next) => async (route, query) => {
   const reqKey = { route, ...query };
   const sortedKey = keyGenerator(reqKey);
 

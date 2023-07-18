@@ -9,9 +9,8 @@ const { customer, seller, admin } = require('../test.setup');
 const { User } = require('../../models');
 
 describe('GET /users/:id', () => {
-  it.only('should succeed', async () => {
+  it('should succeed', async () => {
     const res = await myRequest.get(`/users/${customer.id()}`).send();
-    console.log(res.body);
 
     expect(res.statusCode).to.equal(StatusCodes.OK);
     expect(res.body).to.have.property('result');
@@ -22,9 +21,8 @@ describe('GET /users/:id', () => {
     expect(res.body.result.email).to.equal(customer.details.email);
   });
 
-  it.skip('should succeed: fromCache', async () => {
+  it('should succeed: fromCache', async () => {
     const res = await myRequest.get(`/users/${customer.id()}`).send();
-    console.log(res.body);
 
     expect(res.statusCode).to.equal(StatusCodes.OK);
     expect(res.body).to.have.property('result');
@@ -103,7 +101,8 @@ describe('GET /users/me', () => {
     expect(res.statusCode).to.equal(StatusCodes.UNAUTHORIZED);
   });
 
-  it('should succeed: authenticated as customer', async () => {
+  it.only('should succeed: authenticated as customer', async () => {
+    console.log('here', customerSession);
     const res = await myRequest.get('/users/me').set('Cookie', customerSession).send();
 
     expect(res.statusCode).to.equal(StatusCodes.OK);

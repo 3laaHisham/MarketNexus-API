@@ -13,8 +13,8 @@ const controller =
     } catch (error) {
       console.log(error);
 
-      if (error instanceof HttpError) res.status(error.statusCode).json(error.message);
-      else res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error.message);
+      if (error instanceof HttpError) res.status(error.statusCode).send(error.message);
+      else res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error.message);
     }
   };
 

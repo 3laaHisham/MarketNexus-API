@@ -10,32 +10,64 @@ const { Product } = require('../models');
 
 const { isAuthenticated, isAuthorized, isResourceOwner, getCached } = require('../middlewares');
 
-router.get('/:id', getCached('product'), (req, res) => controller(res)(getProducts)({ _id: id }));
-
-router.get('/search', getCached('product'), (req, res) => controller(res)(getProducts)(req.query));
-
-router.get('/top10-cheapest', getCached('product'), (req, res) =>
-  controller(res)(getProducts)({
-    limit: 10,
-    sort: 'price',
-    category: req.query.category
-  })
+router.get(
+  '/:id',
+  (req, res, next) => getCached(res, next)('product', { _id: id }),
+  (req, res) => controller(res)(getProducts)({ _id: id })
 );
 
-router.get('/top10-rated', getCached('product'), (req, res) =>
-  controller(res)(getProducts)({
-    limit: 10,
-    sort: '-avgRating',
-    category: req.query.category
-  })
+router.get(
+  '/search',
+  (req, res, next) => getCached(res, next)('product', req.query),
+  (req, res) => controller(res)(getProducts)(req.query)
 );
 
-router.get('/most10-sold', getCached('product'), (req, res) =>
-  controller(res)(getProducts)({
-    limit: 10,
-    sort: '-numSold',
-    category: req.query.category
-  })
+router.get(
+  '/top10-cheapest',
+  (req, res, next) =>
+    getCached(res, next)('product', {
+      limit: 10,
+      category: req.query.category,
+      sort: 'price'
+    }),
+  (req, res) =>
+    controller(res)(getProducts)({
+      limit: 10,
+      category: req.query.category,
+      sort: 'price'
+    })
+);
+
+router.get(
+  '/top10-rated',
+  (req, res, next) =>
+    getCached(res, next)('product', {
+      limit: 10,
+      category: req.query.category,
+      sort: '-avgRating'
+    }),
+  (req, res) =>
+    controller(res)(getProducts)({
+      limit: 10,
+      category: req.query.category,
+      sort: '-avgRating'
+    })
+);
+
+router.get(
+  '/most10-sold',
+  (req, res, next) =>
+    getCached(res, next)('product', {
+      limit: 10,
+      category: req.query.category,
+      sort: '-numSold'
+    }),
+  (req, res) =>
+    controller(res)(getProducts)({
+      limit: 10,
+      category: req.query.category,
+      sort: '-numSold'
+    })
 );
 
 router.use(isAuthenticated, isAuthorized('seller'));

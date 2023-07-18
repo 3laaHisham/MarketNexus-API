@@ -1,14 +1,11 @@
 const { StatusCodes } = require('http-status-codes');
-const { setRedis, getRedis } = require('../utils');
+const { getRedis, keyGenerator } = require('../utils');
 
-const cache = async (key, data) => {
-  await setRedis(key, data);
-};
+const getCached = (route, query) => async (req, res, next) => {
+  const reqKey = { route, ...query };
+  const sortedKey = keyGenerator(reqKey);
 
-const getCached = (route) => async (req, res, next) => {
-  const key = Object.assign(route, req.query);
-
-  const cachedResults = await getRedis(key);
+  const cachedResults = await getRedis(sortedKey);
   if (cachedResults)
     res.send({
       status: StatusCodes.OK,
@@ -18,4 +15,4 @@ const getCached = (route) => async (req, res, next) => {
   else next();
 };
 
-module.exports = { cache, getCached };
+module.exports = { getCached };

@@ -1,4 +1,5 @@
 const { createClient } = require('redis');
+const { StatusCodes } = require('http-status-codes');
 
 // self invoked
 let redisClient;
@@ -11,7 +12,9 @@ let redisClient;
     }
   });
 
-  redisClient.on('error', (error) => console.error(`Error : ${error}`));
+  redisClient.on('error', (error) => {
+    console.log(`Redis error: ${error}`);
+  });
 
   await redisClient.connect();
 })();
@@ -25,4 +28,14 @@ const getRedis = async (key) => redisClient.get(JSON.stringify(key));
 
 const delRedis = async (key) => redisClient.del(JSON.stringify(key));
 
-module.exports = { setRedis, getRedis, delRedis };
+const clearRedis = async () => redisClient.sendCommand('FLUSHDB');
+
+const keyGenerator = async (reqKey) => {
+  const sortedKeys = Object.keys(reqKey).sort();
+  const sortedKey = {};
+  for (const key of sortedKeys) sortedKey[key] = reqKey[key];
+
+  return sortedKey;
+};
+
+module.exports = { setRedis, getRedis, delRedis, clearRedis, keyGenerator };

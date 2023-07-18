@@ -6,6 +6,5 @@ module.exports = {
   isAuthenticated,
   isAuthorized,
   isResourceOwner,
-  cache,
   getCached
 };

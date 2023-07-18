@@ -58,10 +58,10 @@ async function getAllOrders(query) {
   const isOrderValid = await verifySchema(queryOrdersSchema, query);
   if (!isOrderValid) throw new HttpError(StatusCodes.BAD_REQUEST, 'Order fields are not valid');
 
-  const apiFeatures = APIFeatures(Order, query);
+  const apiFeatures = new APIFeatures(Order, query);
 
   const orders = await apiFeatures
-    .query()
+    .getQueryObj()
     .populate('userId', 'name email')
     .populate('products.id', 'name numStock');
   if (!orders) throw new HttpError(StatusCodes.NOT_FOUND, 'No orders found');

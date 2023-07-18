@@ -1,6 +1,6 @@
 const { StatusCodes } = require('http-status-codes');
 const { Product } = require('../../models');
-const { APIFeatures, HttpError, verifySchema, setRedis } = require('../../utils');
+const { APIFeatures, HttpError, verifySchema, setRedis, keyGenerator } = require('../../utils');
 
 const { queryProductsSchema, updateProductSchema, addProductSchema } = require('./product.schema');
 
@@ -8,16 +8,18 @@ const getProducts = async (query) => {
   const isValidSchema = await verifySchema(queryProductsSchema, query);
   if (!isValidSchema) throw new HttpError(StatusCodes.BAD_REQUEST, 'Not valid query');
 
-  const apiFeatures = APIFeatures(Product, query);
+  const apiFeatures = new APIFeatures(Product, query);
 
-  const products = await apiFeatures
-    .query()
+  let products = await apiFeatures
+    .getQueryObj()
     .populate('reviews', 'message numStars')
     .populate('sellerId', 'name email');
   if (!products) throw new HttpError(StatusCodes.NOT_FOUND, 'No products found');
+  if (products.length == 1) products = products[0];
 
-  const key = Object.assign('product', query);
-  await setRedis(key, products);
+  const key = { route: 'product', ...query };
+  const sortedKey = keyGenerator(key);
+  await setRedis(sortedKey, products);
 
   return {
     status: StatusCodes.OK,

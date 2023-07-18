@@ -8,16 +8,27 @@ const { getUsers, updateUser, deleteUser } = userService;
 
 const { isAuthenticated, isAuthorized, getCached } = require('../middlewares');
 
-router.get('/:id', (req, res) => controller(res)(getUsers)({ _id: req.params.id }));
+router.get(
+  '/search',
+  (req, res, next) => getCached(res, next)('user', req.query),
+  (req, res) => controller(res)(getUsers)(req.query)
+);
 
-router.get('/search', (req, res) => controller(res)(getUsers)(req.query));
+router.get(
+  '/me',
+  isAuthenticated,
+  (req, res, next) => getCached(res, next)('user', { _id: req.session.user.id }),
+  (req, res) => controller(res)(getUsers)({ _id: req.session.user.id })
+);
+
+router.get(
+  '/:id',
+  (req, res, next) => getCached(res, next)('user', { _id: req.params.id }),
+  (req, res) => controller(res)(getUsers)({ _id: req.params.id })
+);
 
 // The following routes needs authentication.
 router.use(isAuthenticated);
-
-router.get('/me', getCached('user'), (req, res) =>
-  controller(res)(getUsers)({ _id: req.session.user.id })
-);
 
 router.put('/me', (req, res) => controller(res)(updateUser)(req.session.user.id, req.body));
 

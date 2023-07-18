@@ -5,6 +5,8 @@ const request = require('supertest');
 const app = require('../app');
 const myRequest = request(app);
 
+const { clearRedis } = require('../utils');
+
 const { customerDetails, sellerDetails, adminDetails } = require('./FakeData/users.json');
 const { productDetails } = require('./FakeData/products.json');
 const { cartDetails } = require('./FakeData/carts.json');
@@ -22,30 +24,30 @@ const connectDB = async () => {
     useUnifiedTopology: true
   });
 };
-const addProduct = async () => {
-  getSellerSession();
-  productDetails.seller = sellerId;
-  const res = await myRequest.post('/products/').send(productDetails);
-  productID = res.body.result._id;
-  return productID;
-};
+// const addProduct = async () => {
+//   getSellerSession();
+//   productDetails.seller = sellerId;
+//   const res = await myRequest.post('/products/').send(productDetails);
+//   productID = res.body.result._id;
+//   return productID;
+// };
 
-const addCart = async () => {
-  if (!productID) addProduct();
-  getCustomerSession();
-  let cartProduct = {
-    id: productDetails._id,
-    price: productDetails.price,
-    count: 1,
-    color: 'Red',
-    size: 'L'
-  }
-  cartDetails.userId = customerId;
-  cartDetails.products[0] = cartProduct;
-  const res = await myRequest.post('cart/products').send(cartProduct);
-  cartID = res.body.result._id;
-  return cartID;
-};
+// const addCart = async () => {
+//   if (!productID) addProduct();
+//   getCustomerSession();
+//   let cartProduct = {
+//     id: productDetails._id,
+//     price: productDetails.price,
+//     count: 1,
+//     color: 'Red',
+//     size: 'L'
+//   };
+//   cartDetails.userId = customerId;
+//   cartDetails.products[0] = cartProduct;
+//   const res = await myRequest.post('cart/products').send(cartProduct);
+//   cartID = res.body.result._id;
+//   return cartID;
+// };
 
 const registerUsers = async () => {
   const customerRes = await myRequest.post('/auth/register').send(customerDetails);
@@ -62,6 +64,7 @@ beforeAll(async () => {
   await connectDB();
 
   await registerUsers();
+  // await clearRedis();
 });
 
 afterAll(async () => {
@@ -84,12 +87,17 @@ const loginUser = async (email, password) => {
 const getCustomerSession = async () => loginUser(customerDetails.email, customerDetails.password);
 const getSellerSession = async () => loginUser(sellerDetails.email, sellerDetails.password);
 const getAdminSession = async () => loginUser(adminDetails.email, adminDetails.password);
-const getProductID = async () => addProduct();
-const getCartId = async () => addCart();
+const getCustomerId = () => customerId;
+const getSellerId = () => sellerId;
+const getAdminId = () => adminId;
+// const getProductID = async () => addProduct();
+// const getCartId = async () => addCart();
+
 module.exports = {
-  customer: { id: customerId, details: customerDetails, getSession: getCustomerSession },
-  seller: { id: sellerId, details: sellerDetails, getSession: getSellerSession },
-  admin: { id: adminId, details: adminDetails, getSession: getAdminSession },
-  product: { id: getProductID(), details: productDetails },
-  cart: { id: getCartId(), details: cartDetails }
+  customer: { id: getCustomerId, details: customerDetails, getSession: getCustomerSession },
+  seller: { id: getSellerId, details: sellerDetails, getSession: getSellerSession },
+  admin: { id: getAdminId, details: adminDetails, getSession: getAdminSession }
+  // ,
+  // product: { id: getProductID(), details: productDetails },
+  // cart: { id: getCartId(), details: cartDetails }
 };

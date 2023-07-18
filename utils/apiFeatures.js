@@ -2,27 +2,28 @@ class APIFeatures {
   features = ['page', 'sort', 'limit', 'select', 'txtSearch'];
 
   constructor(model, reqQuery) {
+    this.modelName = model.modelName;
     this.query = model;
     this.reqQuery = reqQuery;
 
     this.filterQuery = { ...reqQuery };
-    this.filterQuery.filter((e) => !features.includes(e));
+    this.features.forEach((key) => delete this.filterQuery[key]);
   }
 
-  query() {
+  async getQueryObj() {
     this.filter();
 
     if (this.reqQuery.sort) this.sort();
     if (this.reqQuery.select) this.select();
     if (this.reqQuery.page) this.paginate();
-    if (this.reqQuery.txtSearch && model.modelName === 'Product') this.search();
+    if (this.reqQuery.txtSearch && this.modelName === 'Product') this.search();
 
     return this.query;
   }
 
   // field.(eq|ne|gte|gt|lte|lt)=value
   filter() {
-    const filterStr = JSON.stringify(this.filterQuery);
+    let filterStr = JSON.stringify(this.filterQuery);
     filterStr = filterStr.replace(/\b(eq|ne|gte|gt|lte|lt)\b/g, (match) => `$${match}`);
 
     this.query = this.query.find(JSON.parse(filterStr));

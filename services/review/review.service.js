@@ -2,7 +2,7 @@ const { StatusCodes } = require('http-status-codes');
 
 const { createReviewSchema, queryReviewsSchema, updateReviewSchema } = require('./review.schema');
 
-const { APIFeatures, HttpError, verifySchema, setRedis } = require('../../utils');
+const { APIFeatures, HttpError, verifySchema, setRedis, keyGenerator } = require('../../utils');
 const { Review, Product } = require('../../models');
 
 async function createNewReview(userId, productId, review) {
@@ -32,13 +32,14 @@ async function getReviews(query) {
   const isQueryValid = await verifySchema(queryReviewsSchema, query);
   if (!isQueryValid) throw new HttpError(StatusCodes.BAD_REQUEST, 'Review schema is not valid');
 
-  const apiFeatures = APIFeatures(Review, query);
+  const apiFeatures = new APIFeatures(Review, query);
 
-  const reviews = await apiFeatures.query().populate('userId', 'name email');
+  const reviews = await apiFeatures.getQueryObj().populate('userId', 'name email');
   if (!reviews) throw new HttpError(StatusCodes.NOT_FOUND, 'No reviews found');
 
-  const key = Object.assign('review', query);
-  await setRedis(key, reviews);
+  const key = { route: 'review', ...query };
+  const sortedKey = keyGenerator(key);
+  await setRedis(sortedKey, reviews);
 
   return {
     status: StatusCodes.OK,

@@ -1,6 +1,6 @@
 const { StatusCodes } = require('http-status-codes');
 const { User } = require('../../models');
-const { APIFeatures, HttpError, verifySchema } = require('../../utils');
+const { APIFeatures, HttpError, verifySchema, setRedis, keyGenerator } = require('../../utils');
 
 const { queryUsersSchema, updateUserSchema } = require('./user.schema');
 
@@ -8,13 +8,16 @@ const getUsers = async (query) => {
   const isValidSchema = await verifySchema(queryUsersSchema, query);
   if (!isValidSchema) throw new HttpError(StatusCodes.BAD_REQUEST, 'Not valid query');
 
-  const apiFeatures = APIFeatures(User, query);
+  console.log(query); // no output!!
+  const apiFeatures = new APIFeatures(User, query);
 
-  const users = await apiFeatures.query().populate('reviews');
+  let users = await apiFeatures.getQueryObj();
   if (!users) throw new HttpError(StatusCodes.NOT_FOUND, 'No users for given filters');
+  if (users.length == 1) users = users[0];
 
-  const key = Object.assign('user', query);
-  await setRedis(key, users);
+  const key = { route: 'user', ...query };
+  const sortedKey = keyGenerator(key);
+  await setRedis(sortedKey, users);
 
   return {
     status: StatusCodes.OK,

@@ -14,9 +14,9 @@ router.use(isAuthenticated);
 
 router.post('/', (req, res) => controller(res)(createNewOrder)(req.session.user.id, req.body));
 
-router.get('/:id', (req, res) => controller(res)(getAllOrders)({ _id: req.params.id }));
-
 router.get('/search', (req, res) => controller(res)(getAllOrders)(req.query));
+
+router.get('/:id', (req, res) => controller(res)(getAllOrders)({ _id: req.params.id }));
 
 router.use((req, res) => isResourceOwner(Order, req.params.id, req.session.user.id));
 

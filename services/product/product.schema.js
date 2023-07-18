@@ -14,14 +14,16 @@ const commonFields = {
 };
 
 const updateProductSchema = buildSchema({
-  ...commonFields,
-  color: Joi.string(),
-  size: Joi.string()
+  color: Joi.array(),
+  size: Joi.array(),
+  ...commonFields
 });
 
 const queryProductsSchema = buildSchema({
   _id: Joi.string().regex(idRegex),
-  ...updateProductSchema._inner.children,
+  color: Joi.array(),
+  size: Joi.array(),
+  ...commonFields,
   ...featuresFields
 });
 

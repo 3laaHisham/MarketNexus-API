@@ -11,8 +11,10 @@ const { Review } = require('../models');
 
 router.use(isAuthenticated);
 
-router.get('/:id', getCached('review'), (req, res) =>
-  controller(res)(getReviews)({ _id: req.params.id })
+router.get(
+  '/:id',
+  (req, res, next) => getCached(res, next)('review', { _id: req.params.id }),
+  (req, res) => controller(res)(getReviews)({ _id: req.params.id })
 );
 
 router.post('/:productId', (req, res) =>

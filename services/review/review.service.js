@@ -35,7 +35,8 @@ async function getReviews(query) {
   const apiFeatures = new APIFeatures(Review, query);
 
   const reviews = await apiFeatures.getQueryObj().populate('userId', 'name email');
-  if (!reviews) throw new HttpError(StatusCodes.NOT_FOUND, 'No reviews found');
+  if (reviews.length == 0) throw new HttpError(StatusCodes.NOT_FOUND, 'No reviews found');
+  if (reviews.length == 1) reviews = reviews[0];
 
   const key = { route: 'review', ...query };
   const sortedKey = keyGenerator(key);

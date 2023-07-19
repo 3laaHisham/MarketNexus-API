@@ -64,7 +64,8 @@ async function getAllOrders(query) {
     .getQueryObj()
     .populate('userId', 'name email')
     .populate('products.id', 'name numStock');
-  if (!orders) throw new HttpError(StatusCodes.NOT_FOUND, 'No orders found');
+  if (orders.length == 0) throw new HttpError(StatusCodes.NOT_FOUND, 'No orders found');
+  if (orders.length == 1) orders = orders[0];
 
   return {
     status: StatusCodes.OK,

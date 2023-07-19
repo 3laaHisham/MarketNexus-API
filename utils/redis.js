@@ -1,5 +1,6 @@
 const { createClient } = require('redis');
 const { StatusCodes } = require('http-status-codes');
+const HttpError = require('./HttpError');
 
 // self invoked
 let redisClient;
@@ -14,9 +15,11 @@ let redisClient;
 
   redisClient.on('error', (error) => {
     console.log(`Redis error: ${error}`);
+    throw new HttpError(StatusCodes.INTERNAL_SERVER_ERROR, 'Redis Error');
   });
 
   await redisClient.connect();
+  await redisClient.ping();
 })();
 
 const setRedis = async (key, data) =>
@@ -28,13 +31,7 @@ const getRedis = async (key) => redisClient.get(JSON.stringify(key));
 
 const delRedis = async (key) => redisClient.del(JSON.stringify(key));
 
-const clearRedis = async () => {
-  try {
-    await redisClient.sendCommand(['FLUSHALL']);
-  } catch (error) {
-    console.error(error.message);
-  }
-};
+const clearRedis = async () => await redisClient.sendCommand(['FLUSHALL']);
 
 const keyGenerator = (reqKey) => {
   const sortedKeys = Object.keys(reqKey).sort();

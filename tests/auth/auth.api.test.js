@@ -79,6 +79,7 @@ describe('POST /login', () => {
     expect(res.statusCode).to.equal(StatusCodes.UNAUTHORIZED);
   });
 
+  let lastSession;
   it('should succeed', async () => {
     const { email, password } = { ...customer.details };
     const res = await myRequest.post('/auth/login').send({ email, password });
@@ -86,16 +87,30 @@ describe('POST /login', () => {
     expect(res.statusCode).to.equal(StatusCodes.OK);
     expect(res.body).to.have.property('token');
     expect(res.body.token).to.exist;
+
+    lastSession = res.headers['set-cookie'];
+  });
+
+  it('should fail: already logged in', async () => {
+    const { email, password } = { ...customer.details };
+    const res = await myRequest
+      .post('/auth/login')
+      .set('Cookie', lastSession)
+      .send({ email, password });
+
+    expect(res.statusCode).to.equal(StatusCodes.BAD_REQUEST);
+    expect(res.body).not.to.have.property('token');
   });
 });
 
-// Login as customer
 let customerSession;
-beforeAll(async () => {
-  customerSession = await customer.getSession();
-});
 
 describe('PUT /change-password', () => {
+  // Login as customer
+  beforeAll(async () => {
+    customerSession = await customer.getSession();
+  });
+
   it('should fail: not authenticated', async () => {
     const res = await myRequest.put('/auth/change-password').send();
 
@@ -121,7 +136,7 @@ describe('PUT /change-password', () => {
     expect(res.statusCode).to.equal(StatusCodes.UNAUTHORIZED);
   });
 
-  it.only('should succeed', async () => {
+  it('should succeed', async () => {
     const res = await myRequest.put('/auth/change-password').set('Cookie', customerSession).send({
       oldPassword: customer.details.password,
       newPassword: 'newPassword',

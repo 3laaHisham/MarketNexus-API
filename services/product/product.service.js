@@ -14,7 +14,7 @@ const getProducts = async (query) => {
     .getQueryObj()
     .populate('reviews', 'message numStars')
     .populate('sellerId', 'name email');
-  if (!products) throw new HttpError(StatusCodes.NOT_FOUND, 'No products found');
+  if (products.length == 0) throw new HttpError(StatusCodes.NOT_FOUND, 'No products found');
   if (products.length == 1) products = products[0];
 
   const key = { route: 'product', ...query };

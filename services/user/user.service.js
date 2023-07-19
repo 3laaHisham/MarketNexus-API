@@ -5,14 +5,13 @@ const { APIFeatures, HttpError, verifySchema, setRedis, keyGenerator } = require
 const { queryUsersSchema, updateUserSchema } = require('./user.schema');
 
 const getUsers = async (query) => {
-  console.log('HEEEERRRRREEEE');
   const isValidSchema = await verifySchema(queryUsersSchema, query);
   if (!isValidSchema) throw new HttpError(StatusCodes.BAD_REQUEST, 'Not valid query');
 
   const apiFeatures = new APIFeatures(User, query);
 
   let users = await apiFeatures.getQueryObj();
-  if (!users) throw new HttpError(StatusCodes.NOT_FOUND, 'No users for given filters');
+  if (users.length == 0) throw new HttpError(StatusCodes.NOT_FOUND, 'No users for given filters');
   if (users.length == 1) users = users[0];
 
   const key = { route: 'user', ...query };

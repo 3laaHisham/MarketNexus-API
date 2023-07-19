@@ -9,6 +9,13 @@ const { customer, seller, admin } = require('../test.setup');
 const { User } = require('../../models');
 
 describe('GET /users/:id', () => {
+  it('should fail: not found', async () => {
+    const res = await myRequest.get(`/users/000000000000000000000000`).send();
+
+    expect(res.statusCode).to.equal(StatusCodes.NOT_FOUND);
+    expect(res.body).not.to.have.property('result');
+  });
+
   it('should succeed', async () => {
     const res = await myRequest.get(`/users/${customer.id()}`).send();
 
@@ -88,21 +95,21 @@ describe('GET /users/search', () => {
   });
 });
 
-// Login as customer
 let customerSession;
-beforeAll(async () => {
-  customerSession = await customer.getSession();
-});
 
 describe('GET /users/me', () => {
+  // Login as customer
+  beforeAll(async () => {
+    customerSession = await customer.getSession();
+  });
+
   it('should fail: not authenticated', async () => {
     const res = await myRequest.get('/users/me').send();
 
     expect(res.statusCode).to.equal(StatusCodes.UNAUTHORIZED);
   });
 
-  it.only('should succeed: authenticated as customer', async () => {
-    console.log('here', customerSession);
+  it('should succeed: authenticated as customer', async () => {
     const res = await myRequest.get('/users/me').set('Cookie', customerSession).send();
 
     expect(res.statusCode).to.equal(StatusCodes.OK);
@@ -168,13 +175,13 @@ describe('DELETE /users/me', () => {
   });
 });
 
-// Login as admin
-let adminSession;
-beforeAll(async () => {
-  adminSession = await admin.getSession();
-});
-
 describe('DELETE /users/:id', () => {
+  // Login as admin
+  let adminSession;
+  beforeAll(async () => {
+    adminSession = await admin.getSession();
+  });
+
   it('should fail: not authenticated', async () => {
     const res = await myRequest.delete(`/users/${customer.id()}`).send();
 

@@ -8,7 +8,7 @@ async function addToCart(userId, newProduct) {
   const isValidSchema = await verifySchema(productSchema, newProduct);
   if (!isValidSchema) throw new HttpError(StatusCodes.BAD_REQUEST, 'product schema is not valid');
 
-  const product = await Product.findById(newProduct._id);
+  const product = await Product.findById(newProduct.id);
   if (!product) throw new HttpError(StatusCodes.NOT_FOUND, 'product is not available');
 
   const currentCart = await Cart.findOneAndUpdate(
@@ -33,8 +33,8 @@ async function changeCountOfProduct(productId, amount, userId) {
   if (!cart) throw new HttpError(StatusCodes.NOT_FOUND, 'No product found to update');
 
   // Remove products if count = 0
-  cart.products.filter((product) => product.id == productId && product.count == 0);
-
+  cart.products.filter((product) => product.id == productId && product.count != 0);
+  //TODO
   return {
     status: StatusCodes.OK,
     message: 'product count is updated successfully',

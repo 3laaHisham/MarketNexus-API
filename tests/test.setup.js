@@ -50,7 +50,8 @@ afterAll(async () => {
 });
 
 const loginUser = async (email, password) => {
-  if (lastSession) await myRequest.post('/auth/logout').set('Cookie', lastSession).send();
+  if (lastSession)
+    await myRequest.post('/auth/logout').set('Cookie', lastSession).send();
 
   const res = await myRequest.post('/auth/login').send({
     email,

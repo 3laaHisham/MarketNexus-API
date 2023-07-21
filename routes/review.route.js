@@ -21,10 +21,16 @@ router.post('/:productId', (req, res) =>
   controller(res)(createNewReview)(req.session.user.id, req.params.productId, req.body)
 );
 
-router.use((req, res) => isResourceOwner(Review, req.params.id, req.session.user.id));
+router.put(
+  ':/id',
+  (req, res, next) => isResourceOwner(res, next)(Review, req.params.id, req.session.user.id),
+  (req, res) => controller(res)(updateReview)(req.params.id, req.body)
+);
 
-router.put(':/id', (req, res) => controller(res)(updateReview)(req.params.id, req.body));
-
-router.delete('/:id', (req, res) => controller(res)(deleteReview)(req.params.id));
+router.delete(
+  '/:id',
+  (req, res, next) => isResourceOwner(res, next)(Review, req.params.id, req.session.user.id),
+  (req, res) => controller(res)(deleteReview)(req.params.id)
+);
 
 module.exports = router;

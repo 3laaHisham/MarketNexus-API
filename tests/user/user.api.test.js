@@ -176,12 +176,6 @@ describe('DELETE /users/me', () => {
 });
 
 describe('DELETE /users/:id', () => {
-  // Login as admin
-  let adminSession;
-  beforeAll(async () => {
-    adminSession = await admin.getSession();
-  });
-
   it('should fail: not authenticated', async () => {
     const res = await myRequest.delete(`/users/${customer.id()}`).send();
 

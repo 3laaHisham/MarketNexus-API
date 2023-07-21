@@ -25,16 +25,31 @@ const productSchema = Schema(
     },
     category: {
       type: String,
-      required: true,
-      enum: ['Electronics', 'Beauty', 'Sports', 'Books', 'Toys', 'Furniture', 'Clothes']
+      enum: ['Electronics', 'Beauty', 'Sports', 'Books', 'Toys', 'Furniture', 'Clothes'],
+      required: true
     },
     price: {
       type: Number,
       required: true,
       min: 0
     },
-    colors: Array,
-    sizes: Array,
+    colors: {
+      type: Array,
+      validate(value) {
+        const categories = ['Electronics', 'Toys', 'Furniture', 'Clothes'];
+        const inCategories = categories.includes(this.category);
+
+        return value.length == 0 ? !inCategories : inCategories; // both exist or none
+      }
+    },
+    sizes: {
+      type: Array,
+      validate(value) {
+        const inCategories = this.category === 'Clothes';
+
+        return value.length == 0 ? !inCategories : inCategories; // both exist or none
+      }
+    },
     avgRating: {
       type: Number,
       min: 0,
@@ -51,6 +66,10 @@ const productSchema = Schema(
       default: 0
     },
     numViews: {
+      type: Number,
+      default: 0
+    },
+    numReviews: {
       type: Number,
       default: 0
     },

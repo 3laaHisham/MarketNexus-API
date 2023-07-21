@@ -1,30 +1,135 @@
 {
-  "productDetails": {
-    "seller": "seller_id",
-    "name": "Product 1",
-    "description": "This is the description of Product 1.",
-    "specification": {
-      "color": "Red",
-      "size": "M"
-    },
+  "Product 1": {
+    "name": "Lenovo Laptop",
+    "description": "High-performance laptop for all your computing needs.",
+    "specification": { "Processor": "Intel Core i7", "RAM": "16GB", "Storage": "512GB SSD" },
     "category": "Electronics",
-    "price": 20,
-    "colors": ["Red", "Blue", "Green"],
-    "sizes": ["S", "M", "L"],
+    "price": 1200,
+    "colors": ["Silver", "Black"],
     "numStock": 50
   },
-  "product2": {
-    "seller": "seller_id",
-    "name": "Product 2",
-    "description": "This is the description of Product 2.",
-    "specification": {
-      "color": "Blue",
-      "size": "L"
-    },
+  "Product 2": {
+    "name": "Perfume",
+    "description": "A refreshing lenovo scent that lasts all day.",
+    "specification": { "Fragrance": "Citrus", "Volume": "100ml" },
     "category": "Beauty",
+    "price": 40,
+    "numStock": 90
+  },
+  "Product 3": {
+    "name": "Running Shoes",
+    "description": "Comfortable shoes designed for running and sports.",
+    "specification": { "Material": "Mesh", "Sole": "Rubber" },
+    "category": "Clothes",
+    "price": 80,
+    "colors": ["Black", "White"],
+    "sizes": ["US 8", "US 9", "US 10"],
+    "numStock": 60
+  },
+  "Product 4": {
+    "name": "Novel",
+    "description": "An engaging novel that keeps you hooked until the end.",
+    "specification": { "Author": "John Doe", "Genre": "Mystery" },
+    "category": "Books",
     "price": 15,
-    "colors": ["Blue", "Pink", "Purple"],
-    "sizes": ["S", "M", "L"],
+    "numStock": 120
+  },
+  "Product 5": {
+    "name": "RC Car",
+    "description": "Remote-controlled car for hours of fun.",
+    "specification": { "Scale": "1:16", "Battery": "Rechargeable" },
+    "category": "Toys",
+    "price": 50,
+    "colors": ["Red", "Blue"],
+    "numStock": 40
+  },
+  "Product 6": {
+    "name": "Sofa",
+    "description": "Elegant and comfortable sofa for your living room.",
+    "specification": { "Material": "Leather", "Color": "Brown" },
+    "category": "Furniture",
+    "price": 800,
+    "colors": ["Brown", "Gold"],
+    "numStock": 20
+  },
+  "Product 7": {
+    "name": "T-Shirt",
+    "description": "Casual cotton t-shirt for everyday wear.",
+    "specification": { "Material": "Cotton", "Color": "Black" },
+    "category": "Clothes",
+    "price": 20,
+    "colors": ["Blue", "White"],
+    "sizes": ["S", "M", "L", "XL"],
+    "numStock": 100
+  },
+  "Product 8": {
+    "name": "Bluetooth Speaker",
+    "description": "Portable speaker with high-quality sound.",
+    "specification": { "Connectivity": "Bluetooth", "Battery Life": "10 hours" },
+    "category": "Electronics",
+    "price": 60,
+    "colors": ["Black", "Blue"],
     "numStock": 30
+  },
+  "Product 9": {
+    "name": "Hair Dryer",
+    "description": "Professional hair dryer for quick and efficient drying.",
+    "specification": { "Wattage": "2000W", "Heat Settings": "3", "Color": "Pink" },
+    "category": "Beauty",
+    "price": 35,
+    "numStock": 50
+  },
+  "Product 10": {
+    "name": "Dumbbell Set",
+    "description": "Set of dumbbells for strength training at home.",
+    "specification": { "Weight Range": "5-25 lbs", "Material": "Cast Iron" },
+    "category": "Sports",
+    "price": 100,
+    "numStock": 25
+  },
+  "Product 11": {
+    "name": "Cookbook",
+    "description": "Collection of delicious recipes from around the world.",
+    "specification": { "Author": "Jane Smith", "Cuisine": "International" },
+    "category": "Books",
+    "price": 25,
+    "numStock": 80
+  },
+  "Product 12": {
+    "name": "Board Game",
+    "description": "Fun board game for family game nights.",
+    "specification": { "Players": "2-6", "Age Group": "8 and above" },
+    "category": "Toys",
+    "colors": ["Orange", "Cyan"],
+    "price": 30,
+    "numStock": 45
+  },
+  "Product 13": {
+    "name": "Desk",
+    "description": "Modern and functional desk for your home office.",
+    "specification": { "Material": "Wood", "Color": "White" },
+    "category": "Furniture",
+    "price": 250,
+    "colors": ["Brown", "Gold"],
+    "numStock": 15
+  },
+  "Product 14": {
+    "name": "Sunglasses",
+    "description": "Stylish sunglasses with UV protection.",
+    "specification": { "Frame Material": "Acetate", "Lens Color": "Gradient Brown" },
+    "category": "Clothes",
+    "price": 50,
+    "colors": ["Black", "Tortoise"],
+    "sizes": ["S", "M"],
+    "numStock": 60
+  },
+  "Product 15": {
+    "name": "Smartwatch",
+    "description": "Smartwatch with fitness tracking and notification features.",
+    "specification": { "Display": "AMOLED", "Compatibility": "iOS, Android" },
+    "category": "Electronics",
+    "price": 150,
+    "colors": ["Black", "Silver"],
+    "numStock": 35
   }
 }

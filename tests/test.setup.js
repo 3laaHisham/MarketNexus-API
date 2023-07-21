@@ -8,10 +8,6 @@ const myRequest = request(app);
 const { clearRedis } = require('../utils');
 
 const { customerDetails, sellerDetails, adminDetails } = require('./FakeData/users.json');
-const { productDetails } = require('./FakeData/products.json');
-const { cartDetails } = require('./FakeData/carts.json');
-
-jest.setTimeout(600000); // Increase the timeout for the tests
 
 let mongoServer;
 let customerId, sellerId, adminId, productID, cartID;
@@ -36,19 +32,6 @@ const registerUsers = async () => {
   adminId = adminRes.body.result._id;
 };
 
-beforeAll(async () => {
-  await clearRedis();
-  await mongoose.disconnect();
-  await connectDB();
-
-  await registerUsers();
-});
-
-afterAll(async () => {
-  await mongoose.disconnect();
-  await mongoServer.stop();
-});
-
 const loginUser = async (email, password) => {
   if (lastSession) await myRequest.post('/auth/logout').set('Cookie', lastSession).send();
 
@@ -68,8 +51,22 @@ const getCustomerId = () => customerId;
 const getSellerId = () => sellerId;
 const getAdminId = () => adminId;
 
+beforeAll(async () => {
+  await clearRedis();
+  await mongoose.disconnect();
+  await connectDB();
+
+  await registerUsers();
+});
+
+afterAll(async () => {
+  await mongoose.disconnect();
+  await mongoServer.stop();
+});
+
 module.exports = {
   customer: { id: getCustomerId, details: customerDetails, getSession: getCustomerSession },
   seller: { id: getSellerId, details: sellerDetails, getSession: getSellerSession },
-  admin: { id: getAdminId, details: adminDetails, getSession: getAdminSession }
+  admin: { id: getAdminId, details: adminDetails, getSession: getAdminSession },
+  loginUser
 };

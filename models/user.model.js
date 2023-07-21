@@ -17,7 +17,7 @@ const userSchema = Schema(
       unique: true,
       trim: true,
       validate(value) {
-        isEmail(value);
+        return isEmail(value);
       }
     },
     password: {
@@ -32,7 +32,7 @@ const userSchema = Schema(
       required: true
     },
     phone: {
-      type: String,
+      type: Number,
       required: true,
       unique: true,
       trim: true,
@@ -47,9 +47,7 @@ const userSchema = Schema(
     isCompany: {
       type: Boolean,
       trim: true,
-      required: () => {
-        this.role === 'seller';
-      }
+      required: () => this.role === 'seller'
     }
   },
   { timestamps: true }

@@ -6,7 +6,9 @@ const controller = require('../controllers');
 const { userService } = require('../services');
 const { getUsers, updateUser, deleteUser } = userService;
 
-const { isAuthenticated, isAuthorized, getCached } = require('../middlewares');
+const { isAuthenticated, isAuthorized, getCached, queryParser } = require('../middlewares');
+
+router.use(queryParser);
 
 router.get(
   '/search',

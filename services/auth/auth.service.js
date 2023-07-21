@@ -54,7 +54,7 @@ const login = async (token, userDetails) => {
   const isPasswordMatch = await user.isPasswordMatch(password);
   if (!isPasswordMatch) throw new HttpError(StatusCodes.UNAUTHORIZED, 'Wrong password');
 
-  const newToken = await generateToken(user._id, user.role);
+  const newToken = await generateToken(user.id, user.role);
   await setRedis(newToken, newToken);
 
   return {

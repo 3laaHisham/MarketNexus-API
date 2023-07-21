@@ -26,7 +26,7 @@ async function createNewOrder(userId, order) {
   if (!isOrderValid) throw new HttpError(StatusCodes.BAD_REQUEST, 'Order fields are not valid');
 
   // Empty Cart
-  await cart.update({ products: [] });
+  await cart.updateOne({ products: [] });
 
   // Check if product is available & update its stock
   for (let i = 0; i < order.products.length; i++) {
@@ -36,7 +36,7 @@ async function createNewOrder(userId, order) {
     if (product.numStock == 0)
       throw new HttpError(StatusCodes.NOT_ACCEPTABLE, `${product.id} is not available`);
     else
-      await product.update({
+      await product.updateOne({
         $inc: {
           numSold: productDetails.count,
           numStock: -productDetails.count

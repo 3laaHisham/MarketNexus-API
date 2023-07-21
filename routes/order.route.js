@@ -6,26 +6,30 @@ const controller = require('../controllers');
 const { orderService } = require('../services');
 const { createNewOrder, getAllOrders, updateOrder } = orderService;
 
-const { isAuthenticated, isAuthorized, isResourceOwner } = require('../middlewares');
+const { isAuthenticated, isAuthorized, isResourceOwner, queryParser } = require('../middlewares');
 
 const { Order } = require('../models');
 
-router.use(isAuthenticated);
+router.use(queryParser, isAuthenticated);
 
 router.post('/', (req, res) => controller(res)(createNewOrder)(req.session.user.id, req.body));
 
-router.get('/search', (req, res) => controller(res)(getAllOrders)(req.query));
+router.get(
+  '/search',
+  (req, res, next) => getCached(res, next)('order', req.query),
+  (req, res) => controller(res)(getAllOrders)(req.query)
+);
 
 router.get('/:id', (req, res) => controller(res)(getAllOrders)({ _id: req.params.id }));
 
-router.use((req, res) => isResourceOwner(Order, req.params.id, req.session.user.id));
-
-router.put('/:id/cancel', (req, res) =>
-  controller(res)(updateOrder)(req.params.id, { status: 'Cancelled' })
-);
-
 router.put('/:id/status', isAuthorized('admin'), (req, res) =>
   controller(res)(updateOrder)(req.params.id, req.body)
+);
+
+router.put(
+  '/:id/cancel',
+  (req, res, next) => isResourceOwner(res, next)(Order, req.params.id, req.session.user.id),
+  (req, res) => controller(res)(updateOrder)(req.params.id, { status: 'Cancelled' })
 );
 
 module.exports = router;

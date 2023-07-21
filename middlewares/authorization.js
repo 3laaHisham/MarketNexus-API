@@ -7,20 +7,23 @@ const isAuthorized = (authorizedRole) => (req, res, next) => {
 
     res.status(StatusCodes.FORBIDDEN).json('Unauthorized');
   } catch (e) {
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json('Error');
+    console.log(e.message);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e.message);
   }
 };
 
-const isResourceOwner = (resourceModel, resourceId, userId) => (req, res, next) => {
+const isResourceOwner = (res, next) => async (resourceModel, resourceId, userId) => {
   try {
-    const resource = resourceModel.findById(resourceId);
-    const ownerId = resource.modelName === 'Product' ? resource.sellerId : resource.userId;
+    const resource = await resourceModel.findById(resourceId);
+    if (!resource) return res.status(StatusCodes.NOT_FOUND).json('Resource not found');
 
-    if (ownerId == userId) next();
+    const ownerId = resourceModel.modelName === 'Product' ? resource.seller : resource.userId;
 
+    if (ownerId == userId) return next();
     res.status(StatusCodes.FORBIDDEN).json('Unauthorized');
   } catch (e) {
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json('Error');
+    console.log(e.message);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e.message);
   }
 };
 module.exports = { isAuthorized, isResourceOwner };

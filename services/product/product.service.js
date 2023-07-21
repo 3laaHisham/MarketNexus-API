@@ -8,13 +8,21 @@ const getProducts = async (query) => {
   const isValidSchema = await verifySchema(queryProductsSchema, query);
   if (!isValidSchema) throw new HttpError(StatusCodes.BAD_REQUEST, 'Not valid query');
 
+  if (query.colors) query.colors = { $in: [].concat(query.colors) };
+  if (query.sizes) query.sizes = { $in: [].concat(query.sizes) };
+
   const apiFeatures = new APIFeatures(Product, query);
 
   let products = await apiFeatures
     .getQueryObj()
     .populate('reviews', 'message numStars')
-    .populate('sellerId', 'name email');
+    .populate('seller', 'name email');
   if (products.length == 0) throw new HttpError(StatusCodes.NOT_FOUND, 'No products found');
+
+  for (let product of products) {
+    product.numViews += 1;
+    await product.save();
+  }
   if (products.length == 1) products = products[0];
 
   const key = { route: 'product', ...query };

@@ -8,13 +8,15 @@ const { getProducts, addProduct, updateProduct, deleteProduct } = productService
 
 const { Product } = require('../models');
 
-const { isAuthenticated, isAuthorized, isResourceOwner, getCached } = require('../middlewares');
+const {
+  isAuthenticated,
+  isAuthorized,
+  isResourceOwner,
+  getCached,
+  queryParser
+} = require('../middlewares');
 
-router.get(
-  '/:id',
-  (req, res, next) => getCached(res, next)('product', { _id: id }),
-  (req, res) => controller(res)(getProducts)({ _id: id })
-);
+router.use(queryParser);
 
 router.get(
   '/search',
@@ -70,14 +72,26 @@ router.get(
     })
 );
 
+router.get(
+  '/:id',
+  (req, res, next) => getCached(res, next)('product', { _id: req.params.id }),
+  (req, res) => controller(res)(getProducts)({ _id: req.params.id })
+);
+
 router.use(isAuthenticated, isAuthorized('seller'));
 
 router.post('/', (req, res) => controller(res)(addProduct)(req.session.user.id, req.body));
 
-router.use((req, res) => isResourceOwner(Product, req.params.id, req.session.user.id));
+router.put(
+  '/:id',
+  (req, res, next) => isResourceOwner(res, next)(Product, req.params.id, req.session.user.id),
+  (req, res) => controller(res)(updateProduct)(req.params.id, req.body)
+);
 
-router.put('/:id', (req, res) => controller(res)(updateProduct)(req.params.id, req.body));
-
-router.delete('/:id', (req, res) => controller(res)(deleteProduct)(req.params.id));
+router.delete(
+  '/:id',
+  (req, res, next) => isResourceOwner(res, next)(Product, req.params.id, req.session.user.id),
+  (req, res) => controller(res)(deleteProduct)(req.params.id)
+);
 
 module.exports = router;

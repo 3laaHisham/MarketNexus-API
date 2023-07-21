@@ -1,7 +1,7 @@
 class APIFeatures {
   features = ['page', 'sort', 'limit', 'select', 'txtSearch'];
 
-  constructor(model, reqQuery) {
+  constructor(model, reqQuery, populate) {
     this.modelName = model.modelName;
     this.query = model;
     this.reqQuery = reqQuery;
@@ -10,11 +10,12 @@ class APIFeatures {
     this.features.forEach((key) => delete this.filterQuery[key]);
   }
 
-  async getQueryObj() {
+  getQueryObj() {
     this.filter();
 
     if (this.reqQuery.sort) this.sort();
     if (this.reqQuery.select) this.select();
+    if (this.reqQuery.limit) this.limit();
     if (this.reqQuery.page) this.paginate();
     if (this.reqQuery.txtSearch && this.modelName === 'Product') this.search();
 
@@ -49,6 +50,11 @@ class APIFeatures {
     const selected = this.reqQuery.select.split(',').join(' ');
 
     this.query = this.query.select(selected);
+  }
+
+  limit() {
+    const limit = this.reqQuery.limit * 1 || 40;
+    this.query = this.query.limit(limit);
   }
 
   // page=value

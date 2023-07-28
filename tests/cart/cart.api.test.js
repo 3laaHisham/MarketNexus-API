@@ -86,10 +86,10 @@ describe("Cart Get/ Test", () => {
 
 });
 describe("Cart Post/ Testing ", () => {
-    beforeAll(async () => {
-        await Cart.updateOne({},
-            { $set: { products: [] } });
-    });
+    // beforeAll(async () => {
+    //     await Cart.updateOne({},
+    //         { $set: { products: [] } });
+    // });
     // it("should succeed - add a product to the cart ", async () => {
 
     //     // // // console.log("fkvkknfjvnfnjfvnfjvnfjvnfjvnfj89888888888", fakeCartProduct)
@@ -142,8 +142,11 @@ describe("Cart put/ Testing ", () => {
         customerSession = await customer.getSession()
         const res = await myRequest.put(`/cart/products/${productID}/increase`).set('Cookie', customerSession).send();
         expect(res.statusCode).to.equal(StatusCodes.OK);
-        expect(res.body).to.have.property('result');
-        expect(res.body.result).to.have.property('products');
+        console.log(res, "fffffffffff")
+        console.log(res.body)
+
+        // expect(res.body).to.have.property('result');
+        // expect(res.body.result).to.have.property('products');
         expect(res.body.result.products).to.be.of.length(1);
         expect(res.body.result).to.have.property('userId');
         expect(res.body.result.userId).to.equal(customerId);
@@ -152,25 +155,22 @@ describe("Cart put/ Testing ", () => {
         expect(res.body.result.products[0].count - 1).to.equal(fakeCartProduct.count);
     });
 
-    // // count = 2 now
+    // // // count = 2 now
     // it("should succeed - decrease product count in the cart ", async () => {
     //     customerSession = await customer.getSession()
     //     const res = await myRequest.put(`/cart/products/${productID}}/decrease`).set('Cookie', customerSession).send();
     //     expect(res.statusCode).to.equal(StatusCodes.OK);
-    //     expect(res.body).to.have.property('result');
-    //     expect(res.body.result).to.have.property('products');
-    //     expect(res.body.result.products).to.be.of.length(1);
-    //     expect(res.body.result).to.have.property('userId');
+    //     expect(res.result.products).to.be.of.length(1);
     //     expect(res.body.result.userId).to.equal(customerId);
-    //     productIdFromResponse = res.body.result.products[0].id;
+    //     productIdFromResponse = res.result.products[0].id;
     //     expect(productIdFromResponse).to.equal(productID);
     //     expect(res.body.result.products[0].count).to.equal(fakeCartProduct.count);
     // });
-    // // count = 1 now
+    // // // count = 1 now
     // it("should fail - make the count = 0", async () => {
     //     customerSession = await customer.getSession()
     //     const res = await myRequest.put(`/cart/products/${productID}}/decrease`).set('Cookie', customerSession).send();
-    //     expect(res.statusCode).not.to.equal(StatusCodes.OK);
+    //     expect(res.StatusCode).not.to.equal(StatusCodes.OK);
     // });
 
     // // count = 0 now

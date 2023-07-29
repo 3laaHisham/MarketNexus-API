@@ -16,7 +16,7 @@ const cartSchema = buildSchema({
     .required()
 });
 const productSchema = buildSchema({
-  id: Joi.object().required(),
+  id: Joi.string().required(),
   price: Joi.number().required(),
   count: Joi.number().required(),
   color: Joi.string(),

@@ -8,7 +8,7 @@ const myRequest = request(app);
 const { clearRedis } = require('../utils');
 
 const { customerDetails, sellerDetails, adminDetails } = require('./FakeData/users.json');
-
+// jest.setTimeout(10000);
 let mongoServer;
 let customerId, sellerId, adminId, productID, cartID;
 let lastSession = '';
@@ -33,8 +33,7 @@ const registerUsers = async () => {
 };
 
 const loginUser = async (email, password) => {
-  if (lastSession)
-    await myRequest.post('/auth/logout').set('Cookie', lastSession).send();
+  if (lastSession) await myRequest.post('/auth/logout').set('Cookie', lastSession).send();
 
   const res = await myRequest.post('/auth/login').send({
     email,

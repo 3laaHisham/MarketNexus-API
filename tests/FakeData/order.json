@@ -1,0 +1,25 @@
+{
+  "orderDetails": {
+    "userID": "d"
+  },
+  "products": [
+    {
+      "id": "d",
+      "price": 20,
+      "count": 4,
+      "color": "Red",
+      "size": "L"
+    }
+  ],
+  "discount": 0,
+  "address": {
+    "country": "egy",
+    "city": "AAA",
+    "street": "BBBB",
+    "flatNumber": "3"
+  },
+  "status": "Not Processed",
+  "taxPrice": 4,
+  "deliveryPrice": 4,
+  "paymentType": "cash"
+}

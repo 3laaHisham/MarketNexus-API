@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js",
-    "test": "jest tests/product/product.api.test --forceExit",
+    "test": "jest tests/cart/cart.api.test --forceExit",
     "prettier": "prettier --check **/*.js",
     "prettier:fix": "prettier --write \"./**/*.{js,jsx,json}\""
   },

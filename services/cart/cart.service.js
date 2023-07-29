@@ -31,9 +31,9 @@ async function changeCountOfProduct(productId, amount, userId) {
     { new: true }
   );
   if (!cart) throw new HttpError(StatusCodes.NOT_FOUND, 'No product found to update');
-
   // Remove products if count = 0
   cart.products.filter((product) => product.id == productId && product.count != 0);
+  console.log(cart, '-----------sssssssssssssss----------');
   //TODO
   return {
     status: StatusCodes.OK,
@@ -45,7 +45,6 @@ async function changeCountOfProduct(productId, amount, userId) {
 async function getCart(userId) {
   const cart = await Cart.find({ userId });
   if (!cart) throw new HttpError(StatusCodes.NOT_FOUND, 'No carts found');
-
   return {
     status: StatusCodes.OK,
     message: 'cart is retrieved successfully',

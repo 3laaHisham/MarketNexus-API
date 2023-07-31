@@ -8,7 +8,7 @@ const myRequest = request(app);
 const { clearRedis } = require('../utils');
 
 const { customerDetails, sellerDetails, adminDetails } = require('./FakeData/users.json');
-// jest.setTimeout(10000);
+jest.setTimeout(10000);
 let mongoServer;
 let customerId, sellerId, adminId, productID, cartID;
 let lastSession = '';

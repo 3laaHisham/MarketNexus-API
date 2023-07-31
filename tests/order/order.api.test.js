@@ -6,158 +6,127 @@ const app = require('../../app');
 const myRequest = request(app);
 
 const { customer, seller, admin } = require('../test.setup');
-const { Order } = require('../../models');
+const { Product, Order } = require('../../models');
+const fakeOrders = require('../FakeData/orders.json');
+const fakeProducts = require('../FakeData/products.json');
 
-describe('POST /orders', () => {
-  let customerSession;
-  beforeAll(async () => {
-    customerSession = await customer.getSession();
-  });
+let sellerId, customerId, adminSession, customerSession, productID, orderID;
+var product, orders, order, products, orderProduct;
+sellerId = seller.id();
+customerId = customer.id();
 
-  it('should create a new order', async () => {
-    const order = {
-      userId: customer.id,
-      products: [
-        {
-          id: 'product_id',
-          price: 10,
-          count: 2,
-          color: 'red',
-          size: 'M'
-        }
-      ],
-      discount: 0,
-      address: {
-        street: '123 Main St',
-        city: 'Example City',
-        country: 'Example Country',
-        flatNumber: '44'
-      },
-      status: 'Not Processed',
-      taxPrice: 0,
-      deliveryPrice: 0,
-      paymentType: 'card',
-      StripePaymentId: 12345
-    };
+const addProduct = async () => {
+  sellerId = seller.id()
+  const fakeProductsArray = Object.values(fakeProducts);
+  products = fakeProductsArray.map((product) => ({ ...product, seller: sellerId }));
+  products = await Product.insertMany(products);
+  product = products[14];
+  productID = product._id;
+  orderProduct = {
+    id: productID,
+    price: product.price,
+    count: 1,
+    color: product.colors[0],
+    size: product.sizes[0]
+  };
+  return productID;
+};
+function print(x) {
+  console.log(x);
+}
+const addOrder = async () => {
+  if (!productID)
+    addProduct();
+  customerId = customer.id();
+  const ordersArray = Object.values(fakeOrders);
+  order = ordersArray[0]
+  order.userId = customerId;
+  order.products[0] = orderProduct;
+  newOrder = new Order(order)
+  order = newOrder;
+  await newOrder.save();
+  orderID = order._id;
+  return orderID;
+};
+function str(obj) {
+  return new String(obj).toString();
+}
 
-    const res = await myRequest.post('/orders').set('Cookie', customerSession).send(order);
+beforeAll(async () => {
+  if (!productID) await addProduct();
+  if (!orderID) await addOrder();
 
-    expect(res.statusCode).to.equal(StatusCodes.OK);
-    expect(res.body).to.have.property('result');
-    expect(res.body.result).to.have.property('_id');
-
-    const createdOrder = await Order.findById(res.body.result._id);
-    expect(createdOrder).to.exist;
-  });
-
-  it('should fail if not authenticated', async () => {
-    const order = {
-      userId: customer.id,
-      products: [
-        {
-          id: 'product_id',
-          price: 10,
-          count: 2,
-          color: 'red',
-          size: 'M'
-        }
-      ]
-      // Rest of the order data...
-    };
-
-    const res = await myRequest.post('/orders').send(order);
-
-    expect(res.statusCode).to.equal(StatusCodes.UNAUTHORIZED);
-  });
-
-  // Add more test cases for edge cases and validation checks
 });
 
-// describe('GET /orders/:id', () => {
-//     let adminSession;
-//     beforeAll(async () => {
-//         adminSession = await admin.getSession();
-//     });
+describe('Order API Tests', () => {
 
-//     it('should get a specific order', async () => {
-//         const orderId = 'order_id';
+  it('should succeed - get the order', async () => {
+    customerSession = await customer.getSession();
+    const res = await myRequest.get(`/orders/${orderID}`).set('Cookie', customerSession).send();
+    expect(res.statusCode).to.equal(StatusCodes.OK);
+    expect(res.body).to.have.property('result');
+    expect(res.body.result).to.have.property('userId');
+    expect(res.body.result.userId).to.equal(customerId);
+    expect(res.body.result.products).to.be.of.length(1);
+    expect(str(res.body.result.products[0].id)).to.equal(str(productID));
+  });
 
-//         const res = await myRequest.get(`/orders/${orderId}`).set('Cookie', adminSession);
+  it('should fail - get the order without authorization', async () => {
+    const res = await myRequest.get(`/orders/${orderID}`).send();
+    expect(res.statusCode).not.to.equal(StatusCodes.OK);
+  });
 
-//         expect(res.statusCode).to.equal(StatusCodes.OK);
-//         expect(res.body).to.have.property('result');
-//         expect(res.body.result).to.have.property('_id', orderId);
-//     });
+  it('should succeed - update order status by admin', async () => {
+    let newStatus = 'Shipped';
+    let tempOrder = {
+      status: newStatus
+    }
+    adminSession = await admin.getSession();
+    const res = await myRequest.put(`/orders/${orderID}/status`).set('Cookie', adminSession).send(tempOrder);
 
-//     // Add more test cases for different scenarios
-// });
+    expect(res.statusCode).to.equal(StatusCodes.OK);
+    // print(JSON.stringify(res) + "fffffffff");
+    let ret = await Order.findOne({ _id: orderID });
+    expect(ret.status).to.equal(newStatus);
+  });
 
-// describe('GET /orders/search', () => {
-//     let sellerSession;
-//     beforeAll(async () => {
-//         sellerSession = await seller.getSession();
-//     });
+  it('should fail - update order status by non-admin user', async () => {
+    let newStatus = 'Shipped';
+    let tempOrder = {
+      status: newStatus
+    }
+    customerSession = await customer.getSession();
+    const res = await myRequest.put(`/orders/${orderID}/status`).set('Cookie', customerSession).send(tempOrder);
+    expect(res.statusCode).not.to.equal(StatusCodes.OK);
+  });
 
-//     it('should search for orders', async () => {
-//         const searchQuery = {
-//             status: 'Shipped',
-//             paymentType: 'card'
-//         };
+  it('should succeed - cancel the order by the owner', async () => {
+    customerSession = await customer.getSession();
+    const res = await myRequest.put(`/orders/${orderID}/cancel`).set('Cookie', customerSession).send();
+    expect(res.statusCode).to.equal(StatusCodes.OK);
+    let ret = await Order.findOne({ _id: orderID });
+    expect(ret.status).to.equal('Cancelled');
+  });
 
-//         const res = await myRequest.get('/orders/search').query(searchQuery).set('Cookie', sellerSession);
+  it('should fail - cancel the order by non-owner', async () => {
+    sellerSession = seller.getSession();
+    const res = await myRequest.put(`/orders/${orderID}/cancel`).set('Cookie', sellerSession).send();
+    expect(res.statusCode).not.to.equal(StatusCodes.OK);
+  });
 
-//         expect(res.statusCode).to.equal(StatusCodes.OK);
-//         expect(res.body).to.have.property('results');
-//         expect(res.body.results).to.be.an('array');
-//     });
 
-//     // Add more test cases for different search scenarios
-// });
 
-// describe('PUT /orders/:id/cancel', () => {
-//     let sellerSession;
-//     beforeAll(async () => {
-//         sellerSession = await seller.getSession();
-//     });
+  it('should succeed - search for orders', async () => {
+    const searchQuery = { userId: customerId, status: 'Shipped' };
+    customerSession = customer.getSession();
+    const res = await myRequest.get('/orders/search').set('Cookie', customerSession).query(searchQuery);
+    print(res, "-*-*-*-*")
+    expect(res.statusCode).to.equal(StatusCodes.OK);
 
-//     it('should cancel an order', async () => {
-//         const orderId = 'order_id';
-
-//         const res = await myRequest.put(`/orders/${orderId}/cancel`).set('Cookie', sellerSession);
-
-//         expect(res.statusCode).to.equal(StatusCodes.OK);
-//         expect(res.body).to.have.property('result');
-//         expect(res.body.result).to.have.property('status', 'Cancelled');
-
-//         const updatedOrder = await Order.findById(orderId);
-//         expect(updatedOrder.status).to.equal('Cancelled');
-//     });
-
-//     // Add more test cases for different scenarios
-// });
-
-// describe('PUT /orders/:id/status', () => {
-//     let adminSession;
-//     beforeAll(async () => {
-//         adminSession = await admin.getSession();
-//     });
-
-//     it('should update the status of an order', async () => {
-//         const orderId = 'order_id';
-//         const updatedStatus = 'Shipped';
-
-//         const res = await myRequest
-//             .put(`/orders/${orderId}/status`)
-//             .set('Cookie', adminSession)
-//             .send({ status: updatedStatus });
-
-//         expect(res.statusCode).to.equal(StatusCodes.OK);
-//         expect(res.body).to.have.property('result');
-//         expect(res.body.result).to.have.property('status', updatedStatus);
-
-//         const updatedOrder = await Order.findById(orderId);
-//         expect(updatedOrder.status).to.equal(updatedStatus);
-//     });
-
-//     // Add more test cases for different scenarios
-// });
+    expect(res.body).to.have.property('result');
+    expect(res.body.result).to.be.an('array');
+    expect(res.body.result).to.have.length.greaterThan(0);
+    expect(res.body.result[0]).to.have.property('status');
+    expect(res.body.result[0].status).to.equal('Shipped');
+  });
+});

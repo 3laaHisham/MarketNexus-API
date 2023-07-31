@@ -4,7 +4,7 @@ const router = express.Router();
 const controller = require('../controllers');
 
 const { orderService } = require('../services');
-const { createNewOrder, getAllOrders, updateOrder } = orderService;
+const { createNewOrder, getAllOrders, updateOrder, getOrder } = orderService;
 
 const { isAuthenticated, isAuthorized, isResourceOwner, queryParser } = require('../middlewares');
 
@@ -20,7 +20,7 @@ router.get(
   (req, res) => controller(res)(getAllOrders)(req.query)
 );
 
-router.get('/:id', (req, res) => controller(res)(getAllOrders)({ _id: req.params.id }));
+router.get('/:id', (req, res) => controller(res)(getOrder)({ _id: req.params.id }));
 
 router.put('/:id/status', isAuthorized('admin'), (req, res) =>
   controller(res)(updateOrder)(req.params.id, req.body)

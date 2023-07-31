@@ -1,8 +1,8 @@
 {
-  "orderDetails": {
-    "userID": "d"
-  },
-  "products": [
+  "order 1":
+  {
+      "userId":"f",
+    "products": [
     {
       "id": "d",
       "price": 20,
@@ -22,4 +22,5 @@
   "taxPrice": 4,
   "deliveryPrice": 4,
   "paymentType": "cash"
+}
 }

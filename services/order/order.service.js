@@ -55,7 +55,7 @@ async function createNewOrder(userId, order) {
 }
 
 async function getAllOrders(query) {
-  console.log(query, "-44444444444----------4")
+  console.log("********************", query)
   const isOrderValid = await verifySchema(queryOrdersSchema, query);
   if (!isOrderValid) throw new HttpError(StatusCodes.BAD_REQUEST, 'Order fields are not valid');
 
@@ -66,7 +66,6 @@ async function getAllOrders(query) {
     .populate('userId', 'name email')
     .populate('products.id', 'name numStock');
   if (orders.length == 0) throw new HttpError(StatusCodes.NOT_FOUND, 'No orders found');
-  // if (orders.length == 1) orders = orders[0];
 
   return {
     status: StatusCodes.OK,
@@ -85,7 +84,6 @@ async function getOrder(id) {
 }
 async function updateOrder(id, newOrder) {
   const isOrderValid = await verifySchema(updateOrderSchema, newOrder);
-  console.log(newOrder, "--------------------------")
   if (!isOrderValid) throw new HttpError(StatusCodes.BAD_REQUEST, 'Order fields are not valid');
 
   if (newOrder.status && newOrder.status == 'Delivered') newOrder.deliveredAt = Date.now();

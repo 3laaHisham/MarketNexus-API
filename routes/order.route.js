@@ -6,7 +6,7 @@ const controller = require('../controllers');
 const { orderService } = require('../services');
 const { createNewOrder, getAllOrders, updateOrder, getOrder } = orderService;
 
-const { isAuthenticated, isAuthorized, isResourceOwner, queryParser } = require('../middlewares');
+const { isAuthenticated, isAuthorized, isResourceOwner, queryParser, getCached } = require('../middlewares');
 
 const { Order } = require('../models');
 

@@ -9,7 +9,9 @@ let redisClient;
     password: 'iLiUvBPms3YF0iPLmIjBW25zx3YZIt5G',
     socket: {
       host: 'redis-15759.c135.eu-central-1-1.ec2.cloud.redislabs.com',
+      // host: '127.0.0.1:6379',
       port: 15759
+      // port: 6379
     }
   });
 

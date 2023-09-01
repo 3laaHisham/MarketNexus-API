@@ -2,7 +2,7 @@ const { StatusCodes } = require('http-status-codes');
 
 const { createReviewSchema, queryReviewsSchema, updateReviewSchema } = require('./review.schema');
 
-const { APIFeatures, HttpError, verifySchema, setRedis, keyGenerator } = require('../../utils');
+const { APIFeatures, HttpError, verifySchema, putRedis, keyGenerator } = require('../../utils');
 const { Review, Product } = require('../../models');
 
 async function createNewReview(userId, productId, review) {
@@ -53,7 +53,7 @@ async function getReviews(query) {
 
   const key = { route: 'review', ...query };
   const sortedKey = keyGenerator(key);
-  await setRedis(sortedKey, reviews);
+  await putRedis(sortedKey, reviews);
 
   return {
     status: StatusCodes.OK,

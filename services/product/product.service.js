@@ -1,6 +1,6 @@
 const { StatusCodes } = require('http-status-codes');
 const { Product } = require('../../models');
-const { APIFeatures, HttpError, verifySchema, setRedis, keyGenerator } = require('../../utils');
+const { APIFeatures, HttpError, verifySchema, putRedis, keyGenerator } = require('../../utils');
 
 const { queryProductsSchema, updateProductSchema, addProductSchema } = require('./product.schema');
 
@@ -27,7 +27,7 @@ const getProducts = async (query) => {
 
   const key = { route: 'product', ...query };
   const sortedKey = keyGenerator(key);
-  await setRedis(sortedKey, products);
+  await putRedis(sortedKey, products);
 
   return {
     status: StatusCodes.OK,

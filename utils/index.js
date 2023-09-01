@@ -2,7 +2,7 @@ const { hashPassword, comparePasswords } = require('./hash');
 const HttpError = require('./HttpError');
 const { generateToken, verifyToken } = require('./jwt');
 const { verifySchema, buildSchema, idRegex, featuresFields } = require('./validator');
-const { setRedis, getRedis, delRedis, clearRedis, keyGenerator } = require('./redis');
+const { putRedis, getRedis, delRedis, clearRedis, keyGenerator } = require('./redis');
 const { addressObject, addressJoi } = require('./commonObjects');
 const APIFeatures = require('./apiFeatures');
 
@@ -17,7 +17,7 @@ module.exports = {
   buildSchema,
   idRegex,
   featuresFields,
-  setRedis,
+  putRedis,
   delRedis,
   getRedis,
   clearRedis,

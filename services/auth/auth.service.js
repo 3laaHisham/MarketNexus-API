@@ -6,7 +6,7 @@ const {
   generateToken,
   verifyToken,
   verifySchema,
-  setRedis,
+  putRedis,
   getRedis,
   delRedis
 } = require('../../utils');
@@ -17,7 +17,7 @@ const register = async (userDetails) => {
   const isValidSchema = await verifySchema(registerSchema, userDetails);
   if (!isValidSchema) throw new HttpError(StatusCodes.BAD_REQUEST, 'Schema not satisfied');
 
-  const { email, password } = userDetails;
+  const { email } = userDetails;
 
   const isUser = await User.findOne({ email });
   if (isUser) throw new HttpError(StatusCodes.BAD_REQUEST, 'Email already taken');
@@ -55,7 +55,7 @@ const login = async (token, userDetails) => {
   if (!isPasswordMatch) throw new HttpError(StatusCodes.UNAUTHORIZED, 'Wrong password');
 
   const newToken = await generateToken(user.id, user.role);
-  await setRedis(newToken, newToken);
+  await putRedis(newToken, newToken);
 
   return {
     status: StatusCodes.OK,

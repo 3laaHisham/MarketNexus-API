@@ -95,13 +95,6 @@ productSchema.index(
   { weights: { name: 2, description: 1 } }
 );
 
-// Full test search using index
-productSchema.statics.search = async function (query) {
-  return await this.find({ $text: { $search: query } }, { score: { $meta: 'textScore' } }).sort({
-    score: { $meta: 'textScore' }
-  });
-};
-
 productSchema.virtual('reviews', {
   ref: 'Review',
   foreignField: 'productId',

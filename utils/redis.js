@@ -1,39 +1,30 @@
-const { createClient } = require('redis');
+const Redis = require('ioredis');
 const { StatusCodes } = require('http-status-codes');
+
 const HttpError = require('./HttpError');
 
-// self invoked
-let redisClient;
-(async () => {
-  redisClient = createClient({
-    password: 'iLiUvBPms3YF0iPLmIjBW25zx3YZIt5G',
-    socket: {
-      host: 'redis-15759.c135.eu-central-1-1.ec2.cloud.redislabs.com',
-      // host: '127.0.0.1:6379',
-      port: 15759
-      // port: 6379
-    }
-  });
+require('dotenv').config();
+const REDIS_PASSWORD = process.env.REDIS_SECRET_PASS;
 
-  redisClient.on('error', (error) => {
-    console.log(`Redis error: ${error}`);
-    throw new HttpError(StatusCodes.INTERNAL_SERVER_ERROR, 'Redis Error');
-  });
+const redisClient = new Redis({
+  password: REDIS_PASSWORD,
+  host: 'redis-15759.c135.eu-central-1-1.ec2.cloud.redislabs.com',
+  port: 15759
+});
 
-  await redisClient.connect();
-  await redisClient.ping();
-})();
+redisClient.on('error', (error) => {
+  console.log(`Redis error: ${error}`);
+  throw new HttpError(StatusCodes.INTERNAL_SERVER_ERROR, 'Redis Error');
+});
 
-const setRedis = async (key, data) =>
-  redisClient.set(JSON.stringify(key), JSON.stringify(data), {
-    EX: 36000
-  });
+const putRedis = async (key, data) =>
+  redisClient.set(JSON.stringify(key), JSON.stringify(data), 'EX', 3600);
 
 const getRedis = async (key) => redisClient.get(JSON.stringify(key));
 
 const delRedis = async (key) => redisClient.del(JSON.stringify(key));
 
-const clearRedis = async () => await redisClient.sendCommand(['FLUSHALL']);
+const clearRedis = async () => redisClient.flushall();
 
 const keyGenerator = (reqKey) => {
   const sortedKeys = Object.keys(reqKey).sort();
@@ -43,4 +34,4 @@ const keyGenerator = (reqKey) => {
   return sortedKey;
 };
 
-module.exports = { setRedis, getRedis, delRedis, clearRedis, keyGenerator };
+module.exports = { putRedis, getRedis, delRedis, clearRedis, keyGenerator };

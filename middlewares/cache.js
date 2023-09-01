@@ -7,12 +7,12 @@ const getCached = (res, next) => async (route, query) => {
 
   const cachedResults = await getRedis(sortedKey);
   if (cachedResults)
-    res.send({
-      status: StatusCodes.OK,
+    return res.send({
+      status: StatusCodes.NOT_MODIFIED,
       message: 'Retrieved data from cache',
       result: JSON.parse(cachedResults)
     });
-  else next();
+  else return next();
 };
 
 module.exports = { getCached };

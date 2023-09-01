@@ -1,26 +1,37 @@
 {
-  "order 1":
-  {
-      "userId":"f",
-    "products": [
-    {
-      "id": "d",
-      "price": 20,
-      "count": 4,
-      "color": "Red",
-      "size": "L"
-    }
-  ],
-  "discount": 0,
-  "address": {
-    "country": "egy",
-    "city": "AAA",
-    "street": "BBBB",
-    "flatNumber": "3"
+  "order 1": {
+    "products": [{}],
+    "discount": 0,
+    "address": {
+      "country": "egy",
+      "city": "AAA",
+      "street": "BBBB",
+      "flatNumber": "3"
+    },
+    "status": "Cancelled",
+    "taxPrice": 4,
+    "deliveryPrice": 4,
+    "paymentType": "cash"
   },
-  "status": "Not Processed",
-  "taxPrice": 4,
-  "deliveryPrice": 4,
-  "paymentType": "cash"
-}
+  "order 2": {
+    "products": [
+      {
+        "price": 20,
+        "count": 4,
+        "color": "Red",
+        "size": "L"
+      }
+    ],
+    "discount": 0,
+    "address": {
+      "country": "egy",
+      "city": "AAA",
+      "street": "BBBB",
+      "flatNumber": "3"
+    },
+    "status": "Cancelled",
+    "taxPrice": 4,
+    "deliveryPrice": 4,
+    "paymentType": "cash"
+  }
 }

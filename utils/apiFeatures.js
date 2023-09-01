@@ -1,7 +1,7 @@
 class APIFeatures {
   features = ['page', 'sort', 'limit', 'select', 'txtSearch'];
 
-  constructor(model, reqQuery, populate) {
+  constructor(model, reqQuery) {
     this.modelName = model.modelName;
     this.query = model;
     this.reqQuery = reqQuery;

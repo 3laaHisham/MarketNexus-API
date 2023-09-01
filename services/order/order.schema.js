@@ -25,7 +25,9 @@ const updateOrderSchema = buildSchema({
 
 const queryOrdersSchema = buildSchema({
   ...featuresFields,
-  userId: Joi.string().regex(idRegex).required(),
+
+  _id: Joi.string().regex(idRegex),
+  userId: Joi.string().regex(idRegex),
   status: Joi.string()
     .valid('Not Processed', 'Processing', 'Shipped', 'Delivered', 'Cancelled')
     .default('Not Processed'),

@@ -31,10 +31,11 @@ async function changeCountOfProduct(productId, amount, userId) {
     { new: true }
   );
   if (!cart) throw new HttpError(StatusCodes.NOT_FOUND, 'No product found to update');
+
   // Remove products if count = 0
-  cart.products.filter((product) => product.id == productId && product.count != 0);
-  console.log(cart, '-----------sssssssssssssss----------');
-  //TODO
+  cart.products = cart.products.filter((product) => product.count > 0);
+  await cart.save();
+
   return {
     status: StatusCodes.OK,
     message: 'product count is updated successfully',
@@ -43,8 +44,9 @@ async function changeCountOfProduct(productId, amount, userId) {
 }
 
 async function getCart(userId) {
-  const cart = await Cart.find({ userId });
+  const cart = await Cart.findOne({ userId });
   if (!cart) throw new HttpError(StatusCodes.NOT_FOUND, 'No carts found');
+
   return {
     status: StatusCodes.OK,
     message: 'cart is retrieved successfully',
@@ -52,23 +54,14 @@ async function getCart(userId) {
   };
 }
 
-async function emptyCart(userId) {
-  const cart = await Cart.findOneAndUpdate({ userId }, { products: [] });
-  if (!cart) throw new HttpError(StatusCodes.NOT_FOUND, 'No carts found to be deleted');
+async function deleteFromCart(userId, productID) {
+  const cart = await Cart.findOne({ userId });
 
-  return {
-    status: StatusCodes.OK,
-    message: 'cart is deleted successfully',
-    result: cart
-  };
-}
+  if (!productID) cart.products = [];
+  else cart.products = cart.products.filter((product) => product.id != productID);
 
-async function deleteFromCart(productID, userId) {
-  const cart = await Cart.findOneAndUpdate(
-    { userId, 'products.id': productID },
-    { $pull: { products: { id: productID } } },
-    { new: true }
-  );
+  await cart.save();
+
   return {
     status: StatusCodes.OK,
     message: 'cart is deleted successfully',
@@ -80,6 +73,5 @@ module.exports = {
   getCart,
   addToCart,
   deleteFromCart,
-  changeCountOfProduct,
-  emptyCart
+  changeCountOfProduct
 };

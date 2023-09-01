@@ -14,6 +14,11 @@ const isAuthenticated = async (req, res, next) => {
       return next();
     }
 
+    // console.log(token ? true : false);
+    // console.log(tokenExist ? true : false);
+    // console.log(decoded ? true : false);
+    // console.log('----------------------------');
+
     res.status(StatusCodes.UNAUTHORIZED).send('Unauthenticated');
   } catch (error) {
     console.log(error);

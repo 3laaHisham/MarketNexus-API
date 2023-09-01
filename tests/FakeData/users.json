@@ -38,5 +38,18 @@
     },
     "phone": 11100000000,
     "role": "admin"
+  },
+  "customer2Details": {
+    "name": "Test Customer2",
+    "email": "customer2@example.com",
+    "password": "password",
+    "address": {
+      "country": "egy",
+      "city": "zeft",
+      "street": "sakha",
+      "flatNumber": "3"
+    },
+    "phone": 10000050000,
+    "role": "customer"
   }
 }

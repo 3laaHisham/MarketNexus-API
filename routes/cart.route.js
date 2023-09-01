@@ -4,7 +4,7 @@ const router = express.Router();
 const controller = require('../controllers');
 
 const { cartService } = require('../services');
-const { getCart, addToCart, emptyCart, changeCountOfProduct, deleteFromCart } = cartService;
+const { getCart, addToCart, changeCountOfProduct, deleteFromCart } = cartService;
 
 const { isAuthenticated } = require('../middlewares');
 
@@ -23,9 +23,9 @@ router.put('/products/:id/reduce', (req, res) =>
 );
 
 router.delete('/products/:id', (req, res) =>
-  controller(res)(deleteFromCart)(req.params.id, req.session.user.id)
+  controller(res)(deleteFromCart)(req.session.user.id, req.params.id)
 );
 
-router.delete('/', (req, res) => controller(res)(emptyCart)(req.session.user.id));
+router.delete('/', (req, res) => controller(res)(deleteFromCart)(req.session.user.id));
 
 module.exports = router;

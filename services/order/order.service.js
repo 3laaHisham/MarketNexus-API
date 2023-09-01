@@ -55,17 +55,17 @@ async function createNewOrder(userId, order) {
 }
 
 async function getAllOrders(query) {
-  console.log("********************", query)
   const isOrderValid = await verifySchema(queryOrdersSchema, query);
   if (!isOrderValid) throw new HttpError(StatusCodes.BAD_REQUEST, 'Order fields are not valid');
 
   const apiFeatures = new APIFeatures(Order, query);
 
-  const orders = await apiFeatures
+  var orders = await apiFeatures
     .getQueryObj()
     .populate('userId', 'name email')
     .populate('products.id', 'name numStock');
   if (orders.length == 0) throw new HttpError(StatusCodes.NOT_FOUND, 'No orders found');
+  if (orders.length == 1) orders = orders[0];
 
   return {
     status: StatusCodes.OK,
@@ -73,15 +73,7 @@ async function getAllOrders(query) {
     result: orders
   };
 }
-async function getOrder(id) {
-  const order = await Order.findById(id)
-  if (!order) throw new HttpError(StatusCodes.NOT_FOUND, 'Order not found');
-  return {
-    status: StatusCodes.OK,
-    message: 'Order retrieved successfully',
-    result: order
-  };
-}
+
 async function updateOrder(id, newOrder) {
   const isOrderValid = await verifySchema(updateOrderSchema, newOrder);
   if (!isOrderValid) throw new HttpError(StatusCodes.BAD_REQUEST, 'Order fields are not valid');
@@ -110,4 +102,4 @@ async function updateOrder(id, newOrder) {
   };
 }
 
-module.exports = { createNewOrder, getAllOrders, updateOrder, getOrder };
+module.exports = { createNewOrder, getAllOrders, updateOrder };

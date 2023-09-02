@@ -40,4 +40,6 @@ router.delete('/:id', isAuthorized('admin'), (req, res) =>
   controller(res)(deleteUser)(req.params.id)
 );
 
+router.post('/confirm-signup', (req, res) => controller(res)(confirmSignup)(req.body));
+
 module.exports = router;

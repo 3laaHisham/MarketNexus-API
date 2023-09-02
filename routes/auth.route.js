@@ -22,4 +22,6 @@ router.put('/change-password', (req, res) =>
   controller(res)(changePassword)(req.session.user.id, req.body)
 );
 
+router.post('/forgot-password', (req, res) => controller(res)(forgotPassword)(req.body));
+
 module.exports = router;

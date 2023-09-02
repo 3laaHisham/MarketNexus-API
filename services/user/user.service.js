@@ -1,6 +1,6 @@
 const { StatusCodes } = require('http-status-codes');
 const { User } = require('../../models');
-const { APIFeatures, HttpError, verifySchema, putRedis, keyGenerator } = require('../../utils');
+const { APIFeatures, HttpError, verifySchema, putRedis, keyGenerator, sendEmail } = require('../../utils');
 
 const { queryUsersSchema, updateUserSchema } = require('./user.schema');
 

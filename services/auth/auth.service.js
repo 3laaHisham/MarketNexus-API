@@ -1,5 +1,6 @@
 const { StatusCodes } = require('http-status-codes');
 const { User, Cart } = require('../../models');
+const { sendEmail } = require('../../utils/mailer');
 
 const {
   HttpError,
@@ -30,6 +31,9 @@ const register = async (userDetails) => {
     products: []
   });
   await userCart.save();
+
+  const message = 'Thank you for registering. Please confirm your email address to activate your account.';
+  await sendEmail(email, message);
 
   return {
     status: StatusCodes.CREATED,
@@ -74,6 +78,24 @@ const logout = async (session) => {
   };
 };
 
+const forgotPassword = async (email) => {
+  const user = await User.findOne({ email });
+  if (!user) throw new HttpError(StatusCodes.NOT_FOUND, 'User not found');
+
+  const resetToken = await user.generatePasswordResetToken();
+  await user.save();
+
+  const resetUrl = `http://localhost:3000/reset-password/${resetToken}`;
+  const message = `You requested a password reset. Please go to ${resetUrl} to reset your password.`;
+
+  await sendEmail(email, message);
+
+  return {
+    status: StatusCodes.OK,
+    message: 'Password reset email sent'
+  };
+};
+
 const changePassword = async (id, newUser) => {
   const isValidSchema = await verifySchema(changePasswordSchema, newUser);
   if (!isValidSchema) throw new HttpError(StatusCodes.BAD_REQUEST, 'Not valid schema');
@@ -93,4 +115,4 @@ const changePassword = async (id, newUser) => {
   };
 };
 
-module.exports = { register, login, logout, changePassword };
+module.exports = { register, login, logout, changePassword, forgotPassword };

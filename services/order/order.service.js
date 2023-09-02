@@ -1,7 +1,7 @@
 const { StatusCodes } = require('http-status-codes');
 
-const { createOrderSchema, updateOrderSchema, queryOrdersSchema } = require('./order.schema');
-const { APIFeatures, HttpError, verifySchema } = require('../../utils');
+const { StatusCodes } = require('http-status-codes');
+const { APIFeatures, HttpError, verifySchema, sendEmail } = require('../../utils');
 const { Order, Cart, Product, User } = require('../../models');
 
 async function createNewOrder(userId, order) {
@@ -46,7 +46,9 @@ async function createNewOrder(userId, order) {
 
   const newOrder = new Order(orderDetails);
   const savedOrder = await newOrder.save();
-
+  
+  await sendEmail(user.email, 'MarketNexus Order Confirmation', `Your order has been confirmed. Order details: ${JSON.stringify(savedOrder)}`);
+  
   return {
     status: StatusCodes.OK,
     message: 'Order created successfully',

@@ -14,9 +14,11 @@ _An eCommerce Restful API built using NodeJS, Express and MongoDB. It introduces
 
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos (Postman) work well in this space. You may also link to more resources.
+The application can be used to manage an online store's backend operations. This includes creating, reading, updating, and deleting products, processing orders, and managing customer information. 
 
-[Postman Documentation](https://martian-robot-977935.postman.co/workspace/MarketNexus-API~009aa56b-3cba-452d-a6e5-611926683980/collection/23841686-b8c44d99-332c-40d4-8b96-11ea0963f3b0?action=share&creator=23841686)
+In addition, the application can send emails for the forgot-password, confirm signup, and order confirmation features. For example, when a user requests to reset their password, they will receive an email with a password reset token. When a user creates an account, they will receive a confirmation email. When a user creates an order, they will receive a confirmation email.
+
+For more detailed examples of how to use the application, refer to the [Postman Documentation](https://martian-robot-977935.postman.co/workspace/MarketNexus-API~009aa56b-3cba-452d-a6e5-611926683980/collection/23841686-b8c44d99-332c-40d4-8b96-11ea0963f3b0?action=share&creator=23841686).
 
 <details>
 <summary>API Endpoints</summary>
@@ -117,6 +119,16 @@ To get a local copy up and running follow these simple example steps.
 - [x] API Features (Filters, Sorting, Limit, Pagination & Full Text Search).
 - [x] CI/CD.
 - [ ] Documentation.
+
+## Email Functionality
+
+The application now has the ability to send emails for the forgot-password, confirm signup, and order confirmation features. This is done using the nodemailer package. 
+
+To use this functionality, you need to set up the SMTP transport configuration in the mailer.js file. This includes the host, port, secure option, and auth object with user and pass properties. 
+
+The sendEmail function in the mailer.js file can be used to send emails. It takes in an email address and a message, and sends an email to the given address with the given message.
+
+The forgot-password feature sends an email to the user with a password reset token when they request to reset their password. The confirm signup feature sends a confirmation email to the user after they create an account. The order confirmation feature sends a confirmation email to the user after they create an order.
 
 ## Contributing
 

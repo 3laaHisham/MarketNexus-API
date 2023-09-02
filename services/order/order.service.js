@@ -1,4 +1,5 @@
 const { StatusCodes } = require('http-status-codes');
+const { sendEmail } = require('../../utils/mailer');
 
 const { createOrderSchema, updateOrderSchema, queryOrdersSchema } = require('./order.schema');
 const { APIFeatures, HttpError, verifySchema } = require('../../utils');
@@ -46,6 +47,9 @@ async function createNewOrder(userId, order) {
 
   const newOrder = new Order(orderDetails);
   const savedOrder = await newOrder.save();
+
+  const message = 'Your order has been created. We will notify you when your order is processed.';
+  await sendEmail(user.email, message);
 
   return {
     status: StatusCodes.OK,

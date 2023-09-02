@@ -18,7 +18,13 @@ const { Order } = require('../models');
 
 router.use(queryParser, isAuthenticated);
 
-router.post('/', (req, res) => controller(res)(createNewOrder)(req.session.user.id, req.body));
+router.post('/', (req, res) => {
+  const order = controller(res)(createNewOrder)(req.session.user.id, req.body);
+  const email = req.session.user.email;
+  const orderDetails = JSON.stringify(order);
+  const thankYouMessage = 'Thank you for your order!';
+  mailer.sendEmail(email, 'Order Confirmation', `${thankYouMessage}\nOrder Details: ${orderDetails}`);
+});
 
 router.get(
   '/search',

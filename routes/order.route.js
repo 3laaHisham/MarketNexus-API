@@ -38,4 +38,6 @@ router.put(
   (req, res) => controller(res)(updateOrder)(req.params.id, { status: 'Cancelled' })
 );
 
+router.post('/confirm-order', (req, res) => controller(res)(confirmOrder)(req.body));
+
 module.exports = router;

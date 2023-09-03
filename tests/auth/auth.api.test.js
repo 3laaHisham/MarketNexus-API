@@ -144,8 +144,66 @@ describe('Auth Test Suite', () => {
 
       expect(res.statusCode).to.equal(StatusCodes.UNAUTHORIZED);
     });
-
-    it('should succeed', async () => {
+    
+    describe('POST /forgot-password', () => {
+      it('should fail: undefined body', async () => {
+        const res = await myRequest.post('/auth/forgot-password').send();
+    
+        expect(res.statusCode).to.equal(StatusCodes.BAD_REQUEST);
+      });
+    
+      it('should fail: not valid schema', async () => {
+        const res = await myRequest.post('/auth/forgot-password').send({ email: 'not an email' });
+    
+        expect(res.statusCode).to.equal(StatusCodes.BAD_REQUEST);
+      });
+    
+      it("should fail: email doesn't exist", async () => {
+        const res = await myRequest.post('/auth/forgot-password').send({ email: 'email@mail.com' });
+    
+        expect(res.statusCode).to.equal(StatusCodes.NOT_FOUND);
+      });
+    
+      it('should succeed', async () => {
+        const sendMailSpy = sinon.spy(mailer, 'sendMail');
+        const res = await myRequest.post('/auth/forgot-password').send({ email: customer2Details.email });
+    
+        expect(res.statusCode).to.equal(StatusCodes.OK);
+        expect(sendMailSpy.calledOnce).to.be.true;
+        sendMailSpy.restore();
+      });
+    });
+    
+    describe('POST /confirm-signup', () => {
+      it('should fail: undefined body', async () => {
+        const res = await myRequest.post('/auth/confirm-signup').send();
+    
+        expect(res.statusCode).to.equal(StatusCodes.BAD_REQUEST);
+      });
+    
+      it('should fail: not valid schema', async () => {
+        const res = await myRequest.post('/auth/confirm-signup').send({ email: 'not an email' });
+    
+        expect(res.statusCode).to.equal(StatusCodes.BAD_REQUEST);
+      });
+    
+      it("should fail: email doesn't exist", async () => {
+        const res = await myRequest.post('/auth/confirm-signup').send({ email: 'email@mail.com' });
+    
+        expect(res.statusCode).to.equal(StatusCodes.NOT_FOUND);
+      });
+    
+      it('should succeed', async () => {
+        const sendMailSpy = sinon.spy(mailer, 'sendMail');
+        const res = await myRequest.post('/auth/confirm-signup').send({ email: customer2Details.email });
+    
+        expect(res.statusCode).to.equal(StatusCodes.OK);
+        expect(sendMailSpy.calledOnce).to.be.true;
+        sendMailSpy.restore();
+      });
+    });
+    
+    module.exports = router;
       const res = await myRequest.post('/auth/logout').set('Cookie', customerSession).send();
 
       expect(res.statusCode).to.equal(StatusCodes.OK);

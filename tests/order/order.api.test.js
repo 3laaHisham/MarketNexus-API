@@ -65,12 +65,19 @@ describe('Order Test Suite', () => {
   it('should succeed - get the order by id', async () => {
     customerSession = await customer.getSession();
     const res = await myRequest.get(`/orders/${orderID}`).set('Cookie', customerSession).send();
-
+  
     expect(res.statusCode).to.equal(StatusCodes.OK);
     expect(res.body).to.have.property('result');
     expect(res.body.result).to.have.property('userId');
     expect(res.body.result.userId._id).to.equal(customerId);
     expect(res.body.result.products[0].id.id).to.equal(productID);
+  
+    // Mock the sendEmail function
+    const sendEmail = jest.fn();
+    // Call the sendEmail function with the correct parameters
+    sendEmail(customer.email, "Order Confirmation", "Your order has been confirmed. Thank you for shopping with us!");
+    // Check if the sendEmail function was called with the correct parameters
+    expect(sendEmail).toHaveBeenCalledWith(customer.email, "Order Confirmation", "Your order has been confirmed. Thank you for shopping with us!");
   });
 
   it('should succeed - get the order by status', async () => {

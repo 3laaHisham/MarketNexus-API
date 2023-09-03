@@ -14,6 +14,10 @@ router.post('/login', (req, res) =>
   controller(res, req.session)(login)((token = req.session.token), req.body)
 );
 
+router.post('/forgot-password', (req, res) => controller(res)(forgotPassword)(req.body.email));
+
+router.post('/confirm-signup', (req, res) => controller(res)(confirmSignup)(req.body.email));
+
 router.use(isAuthenticated);
 
 router.post('/logout', (req, res) => controller(res)(logout)(req.session));

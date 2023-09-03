@@ -16,13 +16,20 @@ const {
 
 const { Order } = require('../models');
 
+const { sendEmail } = require('../utils/mailer');
+
 router.use(queryParser, isAuthenticated);
 
 router.post('/', (req, res) => controller(res)(createNewOrder)(req.session.user.id, req.body));
 
 router.get(
   '/search',
-  (req, res, next) => getCached(res, next)('order', req.query),
+  async (req, res, next) => {
+    const result = await getCached(res, next)('order', req.query);
+    if (result) {
+      sendEmail(result.user.email, "Order Confirmation", "Your order has been confirmed. Thank you for shopping with us!");
+    }
+  },
   (req, res) => controller(res)(getAllOrders)(req.query)
 );
 

@@ -78,6 +78,10 @@ describe('Order Test Suite', () => {
     sendEmail(customer.email, "Order Confirmation", "Your order has been confirmed. Thank you for shopping with us!");
     // Check if the sendEmail function was called with the correct parameters
     expect(sendEmail).toHaveBeenCalledWith(customer.email, "Order Confirmation", "Your order has been confirmed. Thank you for shopping with us!");
+    // Add an assertion to check if the sendEmail function was called
+    expect(sendEmail).toHaveBeenCalled();
+    // Add an assertion to check if the sendEmail function was called
+    expect(sendEmail).toHaveBeenCalled();
   });
 
   it('should succeed - get the order by status', async () => {

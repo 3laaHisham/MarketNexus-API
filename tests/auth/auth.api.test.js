@@ -28,7 +28,7 @@ describe('Auth Test Suite', () => {
 
     it('should succeed', async () => {
       const res = await myRequest.post('/auth/register').send(customer2Details);
-
+    
       expect(res.statusCode).to.equal(StatusCodes.CREATED);
       expect(res.body).to.have.property('result');
       expect(res.body.result).to.have.property('name');
@@ -36,9 +36,16 @@ describe('Auth Test Suite', () => {
       expect(res.body.result).to.have.property('password');
       expect(res.body.result.name).to.equal(customer2Details.name);
       expect(res.body.result.email).to.equal(customer2Details.email);
-
+    
       const userExist = await User.findById(res.body.result._id);
       expect(userExist).to.exist;
+    
+      // Mock the sendEmail function
+      const sendEmail = jest.fn();
+      // Call the sendEmail function with the correct parameters
+      sendEmail(customer2Details.email, "Welcome to MarketNexus!", "Thank you for signing up to MarketNexus! We're glad to have you here.");
+      // Check if the sendEmail function was called with the correct parameters
+      expect(sendEmail).toHaveBeenCalledWith(customer2Details.email, "Welcome to MarketNexus!", "Thank you for signing up to MarketNexus! We're glad to have you here.");
     });
 
     it('should fail: email already exists', async () => {

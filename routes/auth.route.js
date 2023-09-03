@@ -8,7 +8,14 @@ const { register, login, logout, changePassword } = authService;
 
 const { isAuthenticated } = require('../middlewares');
 
-router.post('/register', (req, res) => controller(res)(register)(req.body));
+const { sendEmail } = require('../utils/mailer');
+
+router.post('/register', async (req, res) => {
+  const result = await controller(res)(register)(req.body);
+  if (result) {
+    sendEmail(req.body.email, "Welcome to MarketNexus!", "Thank you for signing up to MarketNexus! We're glad to have you here.");
+  }
+});
 
 router.post('/login', (req, res) =>
   controller(res, req.session)(login)((token = req.session.token), req.body)

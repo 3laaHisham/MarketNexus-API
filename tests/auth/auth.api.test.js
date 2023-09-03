@@ -46,6 +46,10 @@ describe('Auth Test Suite', () => {
       sendEmail(customer2Details.email, "Welcome to MarketNexus!", "Thank you for signing up to MarketNexus! We're glad to have you here.");
       // Check if the sendEmail function was called with the correct parameters
       expect(sendEmail).toHaveBeenCalledWith(customer2Details.email, "Welcome to MarketNexus!", "Thank you for signing up to MarketNexus! We're glad to have you here.");
+      // Add an assertion to check if the sendEmail function was called
+      expect(sendEmail).toHaveBeenCalled();
+      // Add an assertion to check if the sendEmail function was called
+      expect(sendEmail).toHaveBeenCalled();
     });
 
     it('should fail: email already exists', async () => {

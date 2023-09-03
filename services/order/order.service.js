@@ -1,8 +1,9 @@
 const { StatusCodes } = require('http-status-codes');
-
+const { StatusCodes } = require('http-status-codes');
 const { createOrderSchema, updateOrderSchema, queryOrdersSchema } = require('./order.schema');
 const { APIFeatures, HttpError, verifySchema } = require('../../utils');
 const { Order, Cart, Product, User } = require('../../models');
+const mailer = require('../../utils/mailer');
 
 async function createNewOrder(userId, order) {
   const cart = await Cart.findOne({ userId });
@@ -46,7 +47,9 @@ async function createNewOrder(userId, order) {
 
   const newOrder = new Order(orderDetails);
   const savedOrder = await newOrder.save();
-
+  
+  await mailer.sendMail(user.email, 'Order Confirmation', `Your order has been placed successfully. Order details: ${JSON.stringify(savedOrder)}`);
+  
   return {
     status: StatusCodes.OK,
     message: 'Order created successfully',

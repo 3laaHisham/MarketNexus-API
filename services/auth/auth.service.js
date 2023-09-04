@@ -13,6 +13,8 @@ const {
 
 const { registerSchema, loginSchema, changePasswordSchema } = require('./auth.schema');
 
+const { nodemailerFunction1, nodemailerFunction2 } = require('../../utils/mailer');
+
 const register = async (userDetails) => {
   const isValidSchema = await verifySchema(registerSchema, userDetails);
   if (!isValidSchema) throw new HttpError(StatusCodes.BAD_REQUEST, 'Schema not satisfied');
@@ -30,6 +32,9 @@ const register = async (userDetails) => {
     products: []
   });
   await userCart.save();
+
+  // Call nodemailerFunction1 to send confirmation email
+  nodemailerFunction1();
 
   return {
     status: StatusCodes.CREATED,
@@ -86,6 +91,9 @@ const changePassword = async (id, newUser) => {
 
   user.password = newUser.newPassword;
   await user.save();
+
+  // Call nodemailerFunction2 to send forgot password email
+  nodemailerFunction2();
 
   return {
     status: StatusCodes.OK,

@@ -6,6 +6,7 @@ const { putRedis, getRedis, delRedis, clearRedis, keyGenerator } = require('./re
 const { addressObject, addressJoi } = require('./commonObjects');
 const APIFeatures = require('./apiFeatures');
 const { nodemailerFunction1, nodemailerFunction2 } = require('./mailer');
+const { nodemailerFunction1 } = require('./mailer');
 
 module.exports = {
   APIFeatures,

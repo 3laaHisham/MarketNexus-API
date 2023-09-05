@@ -165,12 +165,12 @@ describe('Auth Test Suite', () => {
       });
     
       it('should succeed', async () => {
-        const sendMailSpy = sinon.spy(mailer, 'sendMail');
-        const res = await myRequest.post('/auth/forgot-password').send({ email: customer2Details.email });
-    
-        expect(res.statusCode).to.equal(StatusCodes.OK);
-        expect(sendMailSpy.calledOnce).to.be.true;
-        sendMailSpy.restore();
+const sendMailSpy = sinon.spy(mailer, 'sendMail');
+const res = await myRequest.post('/auth/forgot-password').send({ email: customer2Details.email });
+
+expect(res.statusCode).to.equal(StatusCodes.OK);
+expect(sendMailSpy.calledOnce).to.be.true;
+sendMailSpy.restore();
       });
     });
     
@@ -194,12 +194,12 @@ describe('Auth Test Suite', () => {
       });
     
       it('should succeed', async () => {
-        const sendMailSpy = sinon.spy(mailer, 'sendMail');
-        const res = await myRequest.post('/auth/confirm-signup').send({ email: customer2Details.email });
-    
-        expect(res.statusCode).to.equal(StatusCodes.OK);
-        expect(sendMailSpy.calledOnce).to.be.true;
-        sendMailSpy.restore();
+const sendMailSpy = sinon.spy(mailer, 'sendMail');
+const res = await myRequest.post('/auth/confirm-signup').send({ email: customer2Details.email });
+
+expect(res.statusCode).to.equal(StatusCodes.OK);
+expect(sendMailSpy.calledOnce).to.be.true;
+sendMailSpy.restore();
       });
     });
     

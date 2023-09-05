@@ -73,6 +73,24 @@ Order Services:
 - **PUT /orders/:id/cancel :** Cancel an order. [User]
 - **PUT /orders/:id/status :** Update order status. [Admin]
 
+<details>
+<summary>CI Results and Troubleshooting</summary>
+<br>
+
+To view the CI results for this project, follow these steps:
+
+1. Go to the CI/CD pipeline page in the repository.
+2. Look for the latest pipeline run and click on it.
+3. In the pipeline run details, you will find the CI results, including the status of each step and any error messages.
+
+If you encounter any issues with the CI, here are some troubleshooting steps you can try:
+
+1. Check the CI configuration file (.github/workflows/main.yml) to ensure that all the necessary steps and dependencies are correctly set up.
+2. Review the error messages in the CI results to identify the specific step or process that failed.
+3. Check the logs and output of the failed step for more detailed error information.
+4. Make sure that all required environment variables and configurations are properly set.
+5. If the issue persists, consult the project documentation or reach out to the project maintainers for further assistance.
+
 </details>
 
 ## Getting Started

@@ -1,4 +1,4 @@
-import app from './server';
+import app from './app';
 const mongoose = require('mongoose');
 
 require('dotenv').config();

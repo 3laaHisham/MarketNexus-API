@@ -5,6 +5,8 @@ const { verifySchema, buildSchema, idRegex, featuresFields } = require('./valida
 const { putRedis, getRedis, delRedis, clearRedis, keyGenerator } = require('./redis');
 const { addressObject, addressJoi } = require('./commonObjects');
 const APIFeatures = require('./apiFeatures');
+const { nodemailerFunction1, nodemailerFunction2 } = require('./mailer');
+const { nodemailerFunction1 } = require('./mailer');
 
 module.exports = {
   APIFeatures,
@@ -23,5 +25,7 @@ module.exports = {
   clearRedis,
   keyGenerator,
   addressObject,
-  addressJoi
+  addressJoi,
+  nodemailerFunction1,
+  nodemailerFunction2
 };
